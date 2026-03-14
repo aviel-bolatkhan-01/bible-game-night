@@ -1,0 +1,662 @@
+[
+  {
+    "q": "Which prophet saw the Lord seated on a throne, high and exalted, in the year King Uzziah died?",
+    "o": [
+      "Jeremiah",
+      "Isaiah",
+      "Ezekiel",
+      "Daniel"
+    ],
+    "a": 1,
+    "e": "Isaiah 6:1",
+    "d": "easy"
+  },
+  {
+    "q": "Which prophet was told to go to the potter's house to receive a message?",
+    "o": [
+      "Isaiah",
+      "Jeremiah",
+      "Amos",
+      "Hosea"
+    ],
+    "a": 1,
+    "e": "Jeremiah 18:1-2",
+    "d": "medium"
+  },
+  {
+    "q": "Which prophet was among the exiles by the Kebar River when he saw visions of God?",
+    "o": [
+      "Daniel",
+      "Ezekiel",
+      "Habakkuk",
+      "Zechariah"
+    ],
+    "a": 1,
+    "e": "Ezekiel 1:1",
+    "d": "medium"
+  },
+  {
+    "q": "Which prophet was asked by God, 'Can these bones live?'",
+    "o": [
+      "Isaiah",
+      "Jeremiah",
+      "Ezekiel",
+      "Joel"
+    ],
+    "a": 2,
+    "e": "Ezekiel 37:3",
+    "d": "easy"
+  },
+  {
+    "q": "Which prophet was given the name Belteshazzar in Babylon?",
+    "o": [
+      "Daniel",
+      "Shadrach",
+      "Meshach",
+      "Abednego"
+    ],
+    "a": 0,
+    "e": "Daniel 1:7",
+    "d": "easy"
+  },
+  {
+    "q": "Which prophet was commanded to marry a woman named Gomer?",
+    "o": [
+      "Hosea",
+      "Amos",
+      "Micah",
+      "Joel"
+    ],
+    "a": 0,
+    "e": "Hosea 1:2-3",
+    "d": "easy"
+  },
+  {
+    "q": "Which prophet predicted the outpouring of the Holy Spirit on all people (quoted by Peter at Pentecost)?",
+    "o": [
+      "Joel",
+      "Amos",
+      "Isaiah",
+      "Zechariah"
+    ],
+    "a": 0,
+    "e": "Joel 2:28 / Acts 2:17",
+    "d": "medium"
+  },
+  {
+    "q": "Which prophet was a shepherd of Tekoa?",
+    "o": [
+      "Amos",
+      "Micah",
+      "Malachi",
+      "Haggai"
+    ],
+    "a": 0,
+    "e": "Amos 1:1",
+    "d": "medium"
+  },
+  {
+    "q": "Which prophet wrote a very short book (1 chapter) against the nation of Edom?",
+    "o": [
+      "Obadiah",
+      "Nahum",
+      "Habakkuk",
+      "Zephaniah"
+    ],
+    "a": 0,
+    "e": "Obadiah 1:1",
+    "d": "medium"
+  },
+  {
+    "q": "Which prophet fled to Tarshish instead of going to Nineveh?",
+    "o": [
+      "Jonah",
+      "Isaiah",
+      "Elijah",
+      "Nahum"
+    ],
+    "a": 0,
+    "e": "Jonah 1:3",
+    "d": "easy"
+  },
+  {
+    "q": "Which prophet said the Messiah would be born in Bethlehem?",
+    "o": [
+      "Isaiah",
+      "Jeremiah",
+      "Micah",
+      "Malachi"
+    ],
+    "a": 2,
+    "e": "Micah 5:2",
+    "d": "easy"
+  },
+  {
+    "q": "Which prophet wrote about the fall of Nineveh (besides Jonah's message)?",
+    "o": [
+      "Nahum",
+      "Zephaniah",
+      "Haggai",
+      "Habakkuk"
+    ],
+    "a": 0,
+    "e": "Nahum 1:1",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet complained to God about the success of the wicked and was told the 'righteous will live by his faith'?",
+    "o": [
+      "Habakkuk",
+      "Malachi",
+      "Jeremiah",
+      "Job"
+    ],
+    "a": 0,
+    "e": "Habakkuk 2:4",
+    "d": "medium"
+  },
+  {
+    "q": "Which prophet's name means 'My Messenger' and wrote the last book of the OT?",
+    "o": [
+      "Malachi",
+      "Zechariah",
+      "Haggai",
+      "Micah"
+    ],
+    "a": 0,
+    "e": "Malachi means 'my messenger'.",
+    "d": "medium"
+  },
+  {
+    "q": "Which prophet encouraged the rebuilding of the Temple during the time of Zerubbabel?",
+    "o": [
+      "Haggai",
+      "Zechariah",
+      "Both Haggai & Zechariah",
+      "Malachi"
+    ],
+    "a": 2,
+    "e": "Haggai 1:1 and Zechariah 1:1",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet saw a vision of a flying scroll?",
+    "o": [
+      "Zechariah",
+      "Ezekiel",
+      "Daniel",
+      "Isaiah"
+    ],
+    "a": 0,
+    "e": "Zechariah 5:1",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet predicted that the sun of righteousness would rise with healing in its rays?",
+    "o": [
+      "Malachi",
+      "Isaiah",
+      "Joel",
+      "Hosea"
+    ],
+    "a": 0,
+    "e": "Malachi 4:2",
+    "d": "hard"
+  },
+  {
+    "q": "In which book do we find the prophecy of the New Covenant written on hearts?",
+    "o": [
+      "Isaiah",
+      "Jeremiah",
+      "Ezekiel",
+      "Daniel"
+    ],
+    "a": 1,
+    "e": "Jeremiah 31:31-33",
+    "d": "medium"
+  },
+  {
+    "q": "Who was the 'son of Buzi'?",
+    "o": [
+      "Ezekiel",
+      "Jeremiah",
+      "Daniel",
+      "Hosea"
+    ],
+    "a": 0,
+    "e": "Ezekiel 1:3",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet mentioned the 'abomination that causes desolation'?",
+    "o": [
+      "Daniel",
+      "Isaiah",
+      "Jeremiah",
+      "Ezekiel"
+    ],
+    "a": 0,
+    "e": "Daniel 9:27, 11:31, 12:11",
+    "d": "medium"
+  },
+  {
+    "q": "Which prophet saw a basket of summer fruit?",
+    "o": [
+      "Amos",
+      "Joel",
+      "Micah",
+      "Hosea"
+    ],
+    "a": 0,
+    "e": "Amos 8:1",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet spoke against the city of Tyre?",
+    "o": [
+      "Ezekiel",
+      "Isaiah",
+      "Both Ezekiel & Isaiah",
+      "Jeremiah"
+    ],
+    "a": 2,
+    "e": "Ezekiel 26 and Isaiah 23",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet had a vision of the Lord with a plumb line?",
+    "o": [
+      "Amos",
+      "Zechariah",
+      "Haggai",
+      "Micah"
+    ],
+    "a": 0,
+    "e": "Amos 7:7",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet predicted that the Messiah would enter Jerusalem riding on a donkey?",
+    "o": [
+      "Zechariah",
+      "Isaiah",
+      "Jeremiah",
+      "Micah"
+    ],
+    "a": 0,
+    "e": "Zechariah 9:9",
+    "d": "medium"
+  },
+  {
+    "q": "Who was the prophet during the reign of King Hezekiah?",
+    "o": [
+      "Isaiah",
+      "Jeremiah",
+      "Ezekiel",
+      "Daniel"
+    ],
+    "a": 0,
+    "e": "Isaiah 1:1, 37:2",
+    "d": "medium"
+  },
+  {
+    "q": "Which prophet saw a vision of four chariots coming out from between two mountains of bronze?",
+    "o": [
+      "Zechariah",
+      "Ezekiel",
+      "Daniel",
+      "Joel"
+    ],
+    "a": 0,
+    "e": "Zechariah 6:1",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet spoke about the 'Day of the LORD' more than any other (often called the 'Prophet of the Day of the LORD')?",
+    "o": [
+      "Zephaniah",
+      "Joel",
+      "Amos",
+      "Isaiah"
+    ],
+    "a": 0,
+    "e": "Zephaniah 1:14-18",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet was thrown into a cistern (muddy pit)?",
+    "o": [
+      "Jeremiah",
+      "Joseph",
+      "Daniel",
+      "Isaiah"
+    ],
+    "a": 0,
+    "e": "Jeremiah 38:6",
+    "d": "easy"
+  },
+  {
+    "q": "Which prophet saw a vision of a man with a measuring line in his hand?",
+    "o": [
+      "Zechariah",
+      "Ezekiel",
+      "Daniel",
+      "Amos"
+    ],
+    "a": 0,
+    "e": "Zechariah 2:1",
+    "d": "hard"
+  },
+  {
+    "q": "Who was the father of Isaiah?",
+    "o": [
+      "Amoz",
+      "Amos",
+      "Buzi",
+      "Hilkiyahu"
+    ],
+    "a": 0,
+    "e": "Isaiah 1:1",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet said 'Let justice roll on like a river'?",
+    "o": [
+      "Amos",
+      "Micah",
+      "Isaiah",
+      "Hosea"
+    ],
+    "a": 0,
+    "e": "Amos 5:24",
+    "d": "medium"
+  },
+  {
+    "q": "Which prophet predicted that the moon would turn to blood before the great and dreadful day of the LORD?",
+    "o": [
+      "Joel",
+      "Isaiah",
+      "Ezekiel",
+      "Zechariah"
+    ],
+    "a": 0,
+    "e": "Joel 2:31",
+    "d": "medium"
+  },
+  {
+    "q": "Who wrote 'Comfort, comfort my people, says your God'?",
+    "o": [
+      "Isaiah",
+      "Jeremiah",
+      "Ezekiel",
+      "Lamentations"
+    ],
+    "a": 0,
+    "e": "Isaiah 40:1",
+    "d": "easy"
+  },
+  {
+    "q": "Which prophet saw the glory of the LORD depart from the Temple?",
+    "o": [
+      "Ezekiel",
+      "Isaiah",
+      "Jeremiah",
+      "Daniel"
+    ],
+    "a": 0,
+    "e": "Ezekiel 10",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet mentioned 'Noah, Daniel and Job' as three righteous men?",
+    "o": [
+      "Ezekiel",
+      "Jeremiah",
+      "Isaiah",
+      "Malachi"
+    ],
+    "a": 0,
+    "e": "Ezekiel 14:14",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet predicted the exact length of the Babylonian captivity (70 years)?",
+    "o": [
+      "Jeremiah",
+      "Isaiah",
+      "Ezekiel",
+      "Daniel"
+    ],
+    "a": 0,
+    "e": "Jeremiah 25:11, 29:10",
+    "d": "medium"
+  },
+  {
+    "q": "Which prophet saw a vision of a scroll that was written on both sides with lament and woe?",
+    "o": [
+      "Ezekiel",
+      "John",
+      "Both Ezekiel & John",
+      "Jeremiah"
+    ],
+    "a": 2,
+    "e": "Ezekiel 2:10 and Revelation 5:1 (John's scroll was similar)",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet said 'The heart is deceitful above all things'?",
+    "o": [
+      "Jeremiah",
+      "Isaiah",
+      "Solomon",
+      "Ezekiel"
+    ],
+    "a": 0,
+    "e": "Jeremiah 17:9",
+    "d": "easy"
+  },
+  {
+    "q": "Which prophet predicted that the mountain of the LORD's temple would be established as the highest of mountains?",
+    "o": [
+      "Isaiah",
+      "Micah",
+      "Both Isaiah & Micah",
+      "Jeremiah"
+    ],
+    "a": 2,
+    "e": "Isaiah 2:2 and Micah 4:1 have the same prophecy.",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet saw a vision of Joshua the high priest standing before the angel of the LORD?",
+    "o": [
+      "Zechariah",
+      "Haggai",
+      "Malachi",
+      "Ezekiel"
+    ],
+    "a": 0,
+    "e": "Zechariah 3:1",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet predicted that God would send 'Elijah the prophet' before the day of the LORD?",
+    "o": [
+      "Malachi",
+      "John the Baptist",
+      "Isaiah",
+      "Joel"
+    ],
+    "a": 0,
+    "e": "Malachi 4:5",
+    "d": "medium"
+  },
+  {
+    "q": "Who was the 'son of Pethuel'?",
+    "o": [
+      "Joel",
+      "Amos",
+      "Hosea",
+      "Jonah"
+    ],
+    "a": 0,
+    "e": "Joel 1:1",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet was a priest from the town of Anathoth?",
+    "o": [
+      "Jeremiah",
+      "Ezekiel",
+      "Zechariah",
+      "Malachi"
+    ],
+    "a": 0,
+    "e": "Jeremiah 1:1",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet saw a vision of the Lord standing by an altar and saying 'Smite the capitals'?",
+    "o": [
+      "Amos",
+      "Isaiah",
+      "Jeremiah",
+      "Zephaniah"
+    ],
+    "a": 0,
+    "e": "Amos 9:1",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet predicted that the nations would beat their swords into plowshares?",
+    "o": [
+      "Isaiah",
+      "Micah",
+      "Both Isaiah & Micah",
+      "Joel (who said the opposite)"
+    ],
+    "a": 2,
+    "e": "Isaiah 2:4 and Micah 4:3. Joel 3:10 says the opposite.",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet mentioned the 'valley of Decision'?",
+    "o": [
+      "Joel",
+      "Zechariah",
+      "Zephaniah",
+      "Amos"
+    ],
+    "a": 0,
+    "e": "Joel 3:14",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet saw a vision of a gold lampstand with two olive trees?",
+    "o": [
+      "Zechariah",
+      "John",
+      "Both Zechariah & John",
+      "Ezekiel"
+    ],
+    "a": 2,
+    "e": "Zechariah 4:2-3 and Revelation 11:4",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet predicted that the Messiah would be 'cut off' after 62 sevens?",
+    "o": [
+      "Daniel",
+      "Isaiah",
+      "Jeremiah",
+      "Ezekiel"
+    ],
+    "a": 0,
+    "e": "Daniel 9:26",
+    "d": "hard"
+  },
+  {
+    "q": "Which prophet said 'Not by might nor by power, but by my Spirit'?",
+    "o": [
+      "Zechariah",
+      "Haggai",
+      "Isaiah",
+      "Joel"
+    ],
+    "a": 0,
+    "e": "Zechariah 4:6",
+    "d": "medium"
+  },
+  {
+    "q": "Which prophet saw a vision of the Lord's glory returning to the Temple through the East Gate?",
+    "o": [
+      "Ezekiel",
+      "Isaiah",
+      "Jeremiah",
+      "Daniel"
+    ],
+    "a": 0,
+    "e": "Ezekiel 43:1-4",
+    "d": "hard"
+  },
+  {"q": "Which prophet was swallowed by a great fish after trying to flee from God?", "o": ["Elijah", "Elisha", "Jonah", "Amos"], "a": 2, "e": "Jonah 1:17.", "d": "easy"},
+  {"q": "Which prophet was thrown into a lions' den for praying to God?", "o": ["Jeremiah", "Ezekiel", "Daniel", "Isaiah"], "a": 2, "e": "Daniel 6.", "d": "easy"},
+  {"q": "Who was the 'weeping prophet'?", "o": ["Isaiah", "Jeremiah", "Ezekiel", "Hosea"], "a": 1, "e": "Jeremiah is known for his sorrow over Jerusalem.", "d": "easy"},
+  {"q": "Which prophet was taken up to heaven in a whirlwind and a chariot of fire?", "o": ["Moses", "Elijah", "Elisha", "Enoch"], "a": 1, "e": "2 Kings 2:11.", "d": "easy"},
+  {"q": "Which prophet succeeded Elijah and performed many miracles, including healing Naaman?", "o": ["Elisha", "Samuel", "Nathan", "Isaiah"], "a": 0, "e": "2 Kings 2-5.", "d": "easy"},
+  {"q": "Which prophet confronted King David about his sin with Bathsheba?", "o": ["Samuel", "Nathan", "Gad", "Elijah"], "a": 1, "e": "2 Samuel 12.", "d": "easy"},
+  {"q": "Which prophet saw a vision of a valley of dry bones coming to life?", "o": ["Isaiah", "Jeremiah", "Ezekiel", "Joel"], "a": 2, "e": "Ezekiel 37.", "d": "medium"},
+  {"q": "Which prophet was called by God as a young boy in the Temple?", "o": ["Samuel", "Jeremiah", "Isaiah", "Daniel"], "a": 0, "e": "1 Samuel 3.", "d": "easy"},
+  {"q": "Which prophet was a dresser of sycamore-fig trees before being called by God?", "o": ["Amos", "Hosea", "Micah", "Joel"], "a": 0, "e": "Amos 7:14.", "d": "hard"},
+  {"q": "Which prophet predicted that a virgin would conceive and give birth to Immanuel?", "o": ["Isaiah", "Jeremiah", "Micah", "Malachi"], "a": 0, "e": "Isaiah 7:14.", "d": "medium"},
+  {"q": "Which prophet was told to buy a linen belt and hide it in a crevice in the rocks?", "o": ["Isaiah", "Jeremiah", "Ezekiel", "Hosea"], "a": 1, "e": "Jeremiah 13.", "d": "hard"},
+  {"q": "Which prophet saw a vision of a wheel within a wheel?", "o": ["Isaiah", "Ezekiel", "Daniel", "Zechariah"], "a": 1, "e": "Ezekiel 1:16.", "d": "hard"},
+  {"q": "Which prophet was fed by ravens near the Kerith Ravine?", "o": ["Elijah", "Elisha", "Amos", "Obadiah"], "a": 0, "e": "1 Kings 17:4-6.", "d": "easy"},
+  {"q": "Which prophet multiplied a widow's oil to help her pay her debts?", "o": ["Elijah", "Elisha", "Samuel", "Isaiah"], "a": 1, "e": "2 Kings 4:1-7.", "d": "medium"},
+  {"q": "Which prophet was mocked by youths for being bald, leading to a bear attack?", "o": ["Elijah", "Elisha", "Isaiah", "Jeremiah"], "a": 1, "e": "2 Kings 2:23-24.", "d": "medium"},
+  {"q": "Which prophet wrote the book of Lamentations?", "o": ["David", "Solomon", "Jeremiah", "Isaiah"], "a": 2, "e": "Jeremiah is the traditional author.", "d": "medium"},
+  {"q": "Which prophet predicted that the Messiah would be born in Bethlehem?", "o": ["Isaiah", "Micah", "Jeremiah", "Haggai"], "a": 1, "e": "Micah 5:2.", "d": "easy"},
+  {"q": "Which prophet saw a vision of a plumb line?", "o": ["Amos", "Micah", "Hosea", "Zechariah"], "a": 0, "e": "Amos 7:7-8.", "d": "hard"},
+  {"q": "Which prophet said, 'But let justice roll on like a river, righteousness like a never-failing stream!'?", "o": ["Amos", "Micah", "Isaiah", "Hosea"], "a": 0, "e": "Amos 5:24.", "d": "medium"},
+  {"q": "Which prophet's book is the shortest in the Old Testament?", "o": ["Joel", "Obadiah", "Nahum", "Habakkuk"], "a": 1, "e": "Obadiah has only 21 verses.", "d": "medium"},
+  {"q": "Which prophet predicted the 'New Covenant' where God's law would be written on hearts?", "o": ["Isaiah", "Jeremiah", "Ezekiel", "Joel"], "a": 1, "e": "Jeremiah 31:31-33.", "d": "medium"},
+  {"q": "Which prophet saw a vision of a woman in a basket (an ephah)?", "o": ["Zechariah", "Amos", "Ezekiel", "Daniel"], "a": 0, "e": "Zechariah 5:5-11.", "d": "hard"},
+  {"q": "Which prophet was told to name his children 'Lo-Ruhamah' and 'Lo-Ammi'?", "o": ["Hosea", "Amos", "Micah", "Joel"], "a": 0, "e": "Hosea 1.", "d": "hard"},
+  {"q": "Which prophet predicted that God would 'rebuild David's fallen tent'?", "o": ["Amos", "Isaiah", "Joel", "Haggai"], "a": 0, "e": "Amos 9:11.", "d": "hard"},
+  {"q": "Which prophet saw a vision of a golden lampstand and two olive trees?", "o": ["Zechariah", "Ezekiel", "Daniel", "Malachi"], "a": 0, "e": "Zechariah 4.", "d": "hard"},
+  {"q": "Which prophet urged the people to rebuild the Temple, saying, 'Is it a time for you yourselves to be living in your paneled houses, while this house remains a ruin?'?", "o": ["Haggai", "Zechariah", "Malachi", "Ezra"], "a": 0, "e": "Haggai 1:4.", "d": "medium"},
+  {"q": "Which prophet saw a vision of Joshua the high priest in filthy clothes being cleansed?", "o": ["Zechariah", "Haggai", "Malachi", "Ezekiel"], "a": 0, "e": "Zechariah 3.", "d": "hard"},
+  {"q": "Which prophet predicted the fall of Nineveh (besides Jonah)?", "o": ["Nahum", "Habakkuk", "Zephaniah", "Obadiah"], "a": 0, "e": "The book of Nahum is entirely about Nineveh.", "d": "hard"},
+  {"q": "Which prophet asked, 'How long, LORD, must I call for help, but you do not listen?'?", "o": ["Habakkuk", "Zephaniah", "Malachi", "Jeremiah"], "a": 0, "e": "Habakkuk 1:2.", "d": "medium"},
+  {"q": "Which prophet was told to shave his head and beard and divide the hair into three parts?", "o": ["Ezekiel", "Isaiah", "Jeremiah", "Amos"], "a": 0, "e": "Ezekiel 5.", "d": "hard"},
+  {"q": "Which prophet saw a vision of four horsemen?", "o": ["Daniel", "Ezekiel", "Zechariah", "Malachi"], "a": 2, "e": "Zechariah 1.", "d": "hard"},
+  {"q": "Which prophet had a servant named Gehazi?", "o": ["Elijah", "Elisha", "Samuel", "Isaiah"], "a": 1, "e": "2 Kings 4-5.", "d": "medium"},
+  {"q": "Which prophet healed Naaman the Syrian of leprosy?", "o": ["Elijah", "Elisha", "Isaiah", "Jeremiah"], "a": 1, "e": "2 Kings 5.", "d": "easy"},
+  {"q": "Which prophet predicted that the sun would move back ten steps for King Hezekiah?", "o": ["Isaiah", "Jeremiah", "Micah", "Nathan"], "a": 0, "e": "Isaiah 38.", "d": "medium"},
+  {"q": "Which prophet saw a vision of a man with a measuring line?", "o": ["Ezekiel", "Zechariah", "Amos", "Haggai"], "a": 1, "e": "Zechariah 2.", "d": "hard"},
+  {"q": "Which prophet said, 'He has shown you, O mortal, what is good... To act justly and to love mercy and to walk humbly with your God'?", "o": ["Micah", "Isaiah", "Amos", "Hosea"], "a": 0, "e": "Micah 6:8.", "d": "medium"},
+  {"q": "Which prophet was told to eat a scroll that tasted like honey?", "o": ["Isaiah", "Jeremiah", "Ezekiel", "Daniel"], "a": 2, "e": "Ezekiel 3:3.", "d": "hard"},
+  {"q": "Which prophet saw a vision of the LORD sitting on a throne, with seraphim above him?", "o": ["Isaiah", "Ezekiel", "Daniel", "Jeremiah"], "a": 0, "e": "Isaiah 6.", "d": "medium"},
+  {"q": "Which prophet predicted the return of 'Elijah' before the day of the LORD?", "o": ["Malachi", "Micah", "Joel", "Amos"], "a": 0, "e": "Malachi 4:5.", "d": "medium"},
+  {"q": "Which prophet was told, 'Before I formed you in the womb I knew you'?", "o": ["Isaiah", "Jeremiah", "Ezekiel", "Samuel"], "a": 1, "e": "Jeremiah 1:5.", "d": "medium"},
+  {"q": "Which prophet saw a vision of a basket of ripe fruit?", "o": ["Amos", "Haggai", "Zechariah", "Joel"], "a": 0, "e": "Amos 8.", "d": "hard"},
+  {"q": "Which prophet's name means 'My Messenger'?", "o": ["Malachi", "Micah", "Nahum", "Obadiah"], "a": 0, "e": "Malachi means messenger.", "d": "medium"},
+  {"q": "Which prophet said, 'But you, Bethlehem Ephrathah... out of you will come for me one who will be ruler over Israel'?", "o": ["Micah", "Isaiah", "Jeremiah", "Hosea"], "a": 0, "e": "Micah 5:2.", "d": "easy"},
+  {"q": "Which prophet was among the exiles by the Kebar River?", "o": ["Ezekiel", "Daniel", "Jeremiah", "Isaiah"], "a": 0, "e": "Ezekiel 1:1.", "d": "hard"},
+  {"q": "Which prophet saw four living creatures, each with four faces?", "o": ["Isaiah", "Ezekiel", "Daniel", "Zechariah"], "a": 1, "e": "Ezekiel 1.", "d": "hard"},
+  {"q": "Which prophet interpreted the handwriting on the wall for Belshazzar?", "o": ["Ezekiel", "Daniel", "Jeremiah", "Isaiah"], "a": 1, "e": "Daniel 5.", "d": "medium"},
+  {"q": "Which prophet saw a vision of a valley of dry bones?", "o": ["Isaiah", "Jeremiah", "Ezekiel", "Joel"], "a": 2, "e": "Ezekiel 37.", "d": "easy"},
+  {"q": "Which prophet predicted that the Messiah would be 'wounded for our transgressions'?", "o": ["Jeremiah", "Ezekiel", "Isaiah", "Daniel"], "a": 2, "e": "Isaiah 53.", "d": "easy"},
+  {"q": "Which prophet was told to marry a woman of whoredom to symbolize Israel's unfaithfulness?", "o": ["Hosea", "Amos", "Micah", "Joel"], "a": 0, "e": "Hosea 1.", "d": "medium"},
+  {"q": "Which prophet was a priest from the town of Anathoth?", "o": ["Jeremiah", "Ezekiel", "Zechariah", "Malachi"], "a": 0, "e": "Jeremiah 1:1.", "d": "hard"},
+  {"q": "Which prophet saw the Lord standing by an altar and saying 'Smite the capitals'?", "o": ["Amos", "Isaiah", "Jeremiah", "Zephaniah"], "a": 0, "e": "Amos 9:1.", "d": "hard"},
+  {"q": "Which prophet predicted that the nations would beat their swords into plowshares?", "o": ["Isaiah", "Micah", "Both Isaiah & Micah", "Joel"], "a": 2, "e": "Isaiah 2:4 and Micah 4:3.", "d": "hard"},
+  {"q": "Which prophet mentioned the 'valley of Decision'?", "o": ["Joel", "Zechariah", "Zephaniah", "Amos"], "a": 0, "e": "Joel 3:14.", "d": "hard"},
+  {"q": "Which prophet predicted that the Messiah would enter Jerusalem on a donkey?", "o": ["Zechariah", "Isaiah", "Micah", "Malachi"], "a": 0, "e": "Zechariah 9:9.", "d": "medium"},
+  {"q": "Which prophet saw a vision of a flying scroll?", "o": ["Zechariah", "Ezekiel", "Daniel", "Amos"], "a": 0, "e": "Zechariah 5:1.", "d": "hard"},
+  {"q": "Which prophet spoke about the 'Day of the LORD' more than any other?", "o": ["Zephaniah", "Joel", "Amos", "Isaiah"], "a": 0, "e": "Zephaniah 1.", "d": "hard"},
+  {"q": "Which prophet was given the name Belteshazzar?", "o": ["Daniel", "Shadrach", "Meshach", "Abednego"], "a": 0, "e": "Daniel 1:7.", "d": "easy"},
+  {"q": "Which prophet predicted the exact length of the Babylonian captivity?", "o": ["Jeremiah", "Isaiah", "Ezekiel", "Daniel"], "a": 0, "e": "Jeremiah 25.", "d": "medium"},
+  {"q": "Which prophet saw the glory of the LORD depart from the Temple?", "o": ["Ezekiel", "Isaiah", "Jeremiah", "Daniel"], "a": 0, "e": "Ezekiel 10.", "d": "hard"},
+  {"q": "Which prophet mentioned 'Noah, Daniel and Job'?", "o": ["Ezekiel", "Jeremiah", "Isaiah", "Malachi"], "a": 0, "e": "Ezekiel 14:14.", "d": "hard"}
+]

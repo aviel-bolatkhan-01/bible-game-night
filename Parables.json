@@ -1,0 +1,1322 @@
+[
+  {
+    "q": "In the Parable of the Sower, what does the seed represent?",
+    "o": [
+      "The Word of God",
+      "Money",
+      "Faith",
+      "People"
+    ],
+    "a": 0,
+    "e": "Luke 8:11 - 'The seed is the word of God.'",
+    "d": "easy"
+  },
+  {
+    "q": "What happened to the seed that fell on the path?",
+    "o": [
+      "Eaten by birds",
+      "Withered",
+      "Choked by thorns",
+      "Grew quickly"
+    ],
+    "a": 0,
+    "e": "Matthew 13:4.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Prodigal Son, what did the younger son ask for?",
+    "o": [
+      "His share of the estate",
+      "A new coat",
+      "A ring",
+      "A job"
+    ],
+    "a": 0,
+    "e": "Luke 15:12.",
+    "d": "easy"
+  },
+  {
+    "q": "What was the younger son's job when he ran out of money?",
+    "o": [
+      "Feeding pigs",
+      "Shepherding",
+      "Tax collecting",
+      "Fishing"
+    ],
+    "a": 0,
+    "e": "Luke 15:15.",
+    "d": "easy"
+  },
+  {
+    "q": "Who was the first person to pass by the injured man in the Parable of the Good Samaritan?",
+    "o": [
+      "A priest",
+      "A Levite",
+      "A Samaritan",
+      "A soldier"
+    ],
+    "a": 0,
+    "e": "Luke 10:31.",
+    "d": "medium"
+  },
+  {
+    "q": "Who was the second person to pass by in the Good Samaritan parable?",
+    "o": [
+      "A Levite",
+      "A priest",
+      "A Samaritan",
+      "A merchant"
+    ],
+    "a": 0,
+    "e": "Luke 10:32.",
+    "d": "medium"
+  },
+  {
+    "q": "Where did the Samaritan take the injured man?",
+    "o": [
+      "To an inn",
+      "To a hospital",
+      "To his home",
+      "To the temple"
+    ],
+    "a": 0,
+    "e": "Luke 10:34.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Ten Virgins, what did the five foolish virgins forget?",
+    "o": [
+      "Extra oil",
+      "Their lamps",
+      "Their invitations",
+      "Their shoes"
+    ],
+    "a": 0,
+    "e": "Matthew 25:3.",
+    "d": "easy"
+  },
+  {
+    "q": "What time did the bridegroom arrive in the Parable of the Ten Virgins?",
+    "o": [
+      "Midnight",
+      "Sunset",
+      "Noon",
+      "Dawn"
+    ],
+    "a": 0,
+    "e": "Matthew 25:6.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Talents, how many talents did the first servant receive?",
+    "o": [
+      "5",
+      "2",
+      "1",
+      "10"
+    ],
+    "a": 0,
+    "e": "Matthew 25:15.",
+    "d": "easy"
+  },
+  {
+    "q": "What did the servant who received one talent do with it?",
+    "o": [
+      "Buried it in the ground",
+      "Invested it",
+      "Spent it",
+      "Gave it away"
+    ],
+    "a": 0,
+    "e": "Matthew 25:25.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Lost Sheep, how many sheep were left in the open country?",
+    "o": [
+      "99",
+      "100",
+      "50",
+      "12"
+    ],
+    "a": 0,
+    "e": "Luke 15:4.",
+    "d": "easy"
+  },
+  {
+    "q": "What does the woman do when she finds her lost coin?",
+    "o": [
+      "Calls her friends to celebrate",
+      "Hides it",
+      "Gives it to the poor",
+      "Buys bread"
+    ],
+    "a": 0,
+    "e": "Luke 15:9.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Mustard Seed, what does the seed become?",
+    "o": [
+      "A large tree",
+      "A small bush",
+      "A flower",
+      "A vineyard"
+    ],
+    "a": 0,
+    "e": "Matthew 13:32.",
+    "d": "easy"
+  },
+  {
+    "q": "What is the kingdom of heaven compared to in the Parable of the Hidden Treasure?",
+    "o": [
+      "Treasure hidden in a field",
+      "A pearl",
+      "A net",
+      "All of these"
+    ],
+    "a": 3,
+    "e": "Matthew 13:44-47 mentions all these comparisons.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Pearl of Great Price, what does the merchant do?",
+    "o": [
+      "Sells everything he has to buy it",
+      "Steals it",
+      "Trades for it",
+      "Ignores it"
+    ],
+    "a": 0,
+    "e": "Matthew 13:46.",
+    "d": "easy"
+  },
+  {
+    "q": "What happened to the wheat and tares (weeds)?",
+    "o": [
+      "They grew together until harvest",
+      "The weeds were pulled immediately",
+      "The wheat was moved",
+      "They were both burned"
+    ],
+    "a": 0,
+    "e": "Matthew 13:30.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Unforgiving Servant, how much was the first servant's debt?",
+    "o": [
+      "10,000 talents",
+      "100 denarii",
+      "50 talents",
+      "1,000 gold pieces"
+    ],
+    "a": 0,
+    "e": "Matthew 18:24.",
+    "d": "hard"
+  },
+  {
+    "q": "How much did the second servant owe the first servant?",
+    "o": [
+      "100 denarii",
+      "10,000 talents",
+      "1 talent",
+      "50 denarii"
+    ],
+    "a": 0,
+    "e": "Matthew 18:28.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Rich Fool, what did the man plan to build?",
+    "o": [
+      "Bigger barns",
+      "A new palace",
+      "A temple",
+      "A wall"
+    ],
+    "a": 0,
+    "e": "Luke 12:18.",
+    "d": "easy"
+  },
+  {
+    "q": "What did God call the man in the Parable of the Rich Fool?",
+    "o": [
+      "You fool!",
+      "You sinner!",
+      "You wise man",
+      "You servant"
+    ],
+    "a": 0,
+    "e": "Luke 12:20.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Two Debtors, who will love the creditor more?",
+    "o": [
+      "The one who was forgiven more",
+      "The one who paid back fast",
+      "The one who had less debt",
+      "The creditor himself"
+    ],
+    "a": 0,
+    "e": "Luke 7:42-43.",
+    "d": "easy"
+  },
+  {
+    "q": "What did the laborers in the vineyard receive at the end of the day?",
+    "o": [
+      "The same wage (a denarius)",
+      "Different wages",
+      "Only food",
+      "Nothing"
+    ],
+    "a": 0,
+    "e": "Matthew 20:9-10.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Great Banquet, who were the first invited guests?",
+    "o": [
+      "They made excuses and didn't come",
+      "They came immediately",
+      "They brought gifts",
+      "They were already there"
+    ],
+    "a": 0,
+    "e": "Luke 14:18.",
+    "d": "easy"
+  },
+  {
+    "q": "Who was brought into the banquet instead?",
+    "o": [
+      "The poor, crippled, blind and lame",
+      "The kings",
+      "The disciples",
+      "The Romans"
+    ],
+    "a": 0,
+    "e": "Luke 14:21.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Pharisee and the Tax Collector, who went home justified?",
+    "o": [
+      "The tax collector",
+      "The Pharisee",
+      "Both",
+      "Neither"
+    ],
+    "a": 0,
+    "e": "Luke 18:14.",
+    "d": "easy"
+  },
+  {
+    "q": "What did the Pharisee pray about?",
+    "o": [
+      "How good he was compared to others",
+      "Forgiveness",
+      "The poor",
+      "The temple"
+    ],
+    "a": 0,
+    "e": "Luke 18:11-12.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Persistent Widow, why did the judge finally help her?",
+    "o": [
+      "Because she kept bothering him",
+      "Because he feared God",
+      "Because he loved justice",
+      "Because she paid him"
+    ],
+    "a": 0,
+    "e": "Luke 18:4-5.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Two Sons, which son did the father's will?",
+    "o": [
+      "The one who said no but then went",
+      "The one who said yes but didn't go",
+      "Both",
+      "Neither"
+    ],
+    "a": 0,
+    "e": "Matthew 21:28-31.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Wicked Tenants, who did the tenants kill first?",
+    "o": [
+      "The servants",
+      "The son",
+      "The owner",
+      "The soldiers"
+    ],
+    "a": 0,
+    "e": "Matthew 21:35-36.",
+    "d": "medium"
+  },
+  {
+    "q": "Who did the owner finally send to the tenants?",
+    "o": [
+      "His son",
+      "The high priest",
+      "An army",
+      "A prophet"
+    ],
+    "a": 0,
+    "e": "Matthew 21:37.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Marriage Feast, what happened to the man without wedding clothes?",
+    "o": [
+      "He was thrown out",
+      "He was given clothes",
+      "He was ignored",
+      "He was made a guest of honor"
+    ],
+    "a": 0,
+    "e": "Matthew 22:11-13.",
+    "d": "medium"
+  },
+  {
+    "q": "What does the Parable of the Wise and Foolish Builders teach?",
+    "o": [
+      "To build on the rock (Jesus' words)",
+      "To build on sand",
+      "To build big houses",
+      "To build quickly"
+    ],
+    "a": 0,
+    "e": "Matthew 7:24-27.",
+    "d": "easy"
+  },
+  {
+    "q": "What does the rock represent in the building parable?",
+    "o": [
+      "Hearing and doing Jesus' words",
+      "Literal stone",
+      "The church building",
+      "Money"
+    ],
+    "a": 0,
+    "e": "Matthew 7:24.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Faithful Servant, what is the master doing when he returns?",
+    "o": [
+      "Finding the servant doing his work",
+      "Sleeping",
+      "Eating",
+      "Traveling"
+    ],
+    "a": 0,
+    "e": "Matthew 24:46.",
+    "d": "medium"
+  },
+  {
+    "q": "What did the master do to the unfaithful servant?",
+    "o": [
+      "Cut him to pieces",
+      "Promoted him",
+      "Forgave him",
+      "Ignored him"
+    ],
+    "a": 0,
+    "e": "Matthew 24:51.",
+    "d": "hard"
+  },
+  {
+    "q": "In the Parable of the Net, what happens to the bad fish?",
+    "o": [
+      "Thrown away",
+      "Kept in baskets",
+      "Sold",
+      "Eaten"
+    ],
+    "a": 0,
+    "e": "Matthew 13:48.",
+    "d": "easy"
+  },
+  {
+    "q": "What does the yeast represent in the Parable of the Leaven?",
+    "o": [
+      "The Kingdom of Heaven",
+      "Sin",
+      "Bread",
+      "Growth of evil"
+    ],
+    "a": 0,
+    "e": "Matthew 13:33.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Budding Fig Tree, what season is near?",
+    "o": [
+      "Summer",
+      "Winter",
+      "Spring",
+      "Autumn"
+    ],
+    "a": 0,
+    "e": "Matthew 24:32.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Sheep and the Goats, who are the sheep?",
+    "o": [
+      "Those who helped 'the least of these'",
+      "The Jews",
+      "The disciples",
+      "The rich"
+    ],
+    "a": 0,
+    "e": "Matthew 25:34-40.",
+    "d": "easy"
+  },
+  {
+    "q": "Where are the goats placed?",
+    "o": [
+      "On the left",
+      "On the right",
+      "In the middle",
+      "Outside"
+    ],
+    "a": 0,
+    "e": "Matthew 25:33.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Rich Man and Lazarus, where did Lazarus go after death?",
+    "o": [
+      "Abraham's side",
+      "Hades",
+      "Purgatory",
+      "Earth"
+    ],
+    "a": 0,
+    "e": "Luke 16:22.",
+    "d": "easy"
+  },
+  {
+    "q": "What did the rich man ask for in Hades?",
+    "o": [
+      "A drop of water",
+      "A feast",
+      "His money",
+      "To be resurrected"
+    ],
+    "a": 0,
+    "e": "Luke 16:24.",
+    "d": "easy"
+  },
+  {
+    "q": "Who did the rich man want to warn?",
+    "o": [
+      "His five brothers",
+      "His parents",
+      "The Pharisees",
+      "His friends"
+    ],
+    "a": 0,
+    "e": "Luke 16:28.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Barren Fig Tree, how many years did the owner look for fruit?",
+    "o": [
+      "3 years",
+      "1 year",
+      "7 years",
+      "10 years"
+    ],
+    "a": 0,
+    "e": "Luke 13:7.",
+    "d": "hard"
+  },
+  {
+    "q": "What did the gardener suggest for the barren tree?",
+    "o": [
+      "Give it one more year and dig around it",
+      "Cut it down now",
+      "Plant a new one",
+      "Water it more"
+    ],
+    "a": 0,
+    "e": "Luke 13:8-9.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Friend at Midnight, what was the friend asking for?",
+    "o": [
+      "Three loaves of bread",
+      "A bed",
+      "Money",
+      "Wine"
+    ],
+    "a": 0,
+    "e": "Luke 11:5.",
+    "d": "medium"
+  },
+  {
+    "q": "What is the main lesson of the Friend at Midnight?",
+    "o": [
+      "Persistence in prayer",
+      "Don't wake neighbors",
+      "Hospitality is hard",
+      "Bread is important"
+    ],
+    "a": 0,
+    "e": "Luke 11:8-9.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Unjust Steward, what did the steward do to secure his future?",
+    "o": [
+      "Reduced the debts of his master's debtors",
+      "Stole more money",
+      "Ran away",
+      "Asked for a raise"
+    ],
+    "a": 0,
+    "e": "Luke 16:5-7.",
+    "d": "hard"
+  },
+  {
+    "q": "In the Parable of the Ten Minas, how many minas did each servant receive?",
+    "o": [
+      "1",
+      "10",
+      "5",
+      "12"
+    ],
+    "a": 0,
+    "e": "Luke 19:13.",
+    "d": "medium"
+  },
+  {
+    "q": "What happened to the servant who did nothing with his mina?",
+    "o": [
+      "It was taken and given to the one with ten",
+      "He was executed",
+      "He was forgiven",
+      "He was promoted"
+    ],
+    "a": 0,
+    "e": "Luke 19:24.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Growing Seed (Mark 4), how does the seed grow?",
+    "o": [
+      "The man knows not how",
+      "With much fertilizer",
+      "By constant watering",
+      "By the man's effort"
+    ],
+    "a": 0,
+    "e": "Mark 4:27.",
+    "d": "hard"
+  },
+  {
+    "q": "What is the 'lamp under a basket' parable about?",
+    "o": [
+      "Not hiding your light/faith",
+      "Saving energy",
+      "Being safe with fire",
+      "Buying good lamps"
+    ],
+    "a": 0,
+    "e": "Matthew 5:15.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the New Cloth on Old Garment, what happens?",
+    "o": [
+      "The patch pulls away and makes the tear worse",
+      "It looks beautiful",
+      "It lasts forever",
+      "It shrinks"
+    ],
+    "a": 0,
+    "e": "Matthew 9:16.",
+    "d": "medium"
+  },
+  {
+    "q": "What happens when new wine is put into old wineskins?",
+    "o": [
+      "The skins burst",
+      "The wine tastes better",
+      "The skins stretch",
+      "Nothing"
+    ],
+    "a": 0,
+    "e": "Matthew 9:17.",
+    "d": "medium"
+  },
+  {
+    "q": "The Parable of the Children in the Marketplace is about what?",
+    "o": [
+      "The people's rejection of both John and Jesus",
+      "Playing games",
+      "Buying food",
+      "Children's behavior"
+    ],
+    "a": 0,
+    "e": "Matthew 11:16-19.",
+    "d": "hard"
+  },
+  {
+    "q": "The Parable of the Strong Man's House teaches that one must first do what to rob it?",
+    "o": [
+      "Bind the strong man",
+      "Quietly enter",
+      "Bring a large army",
+      "Wait for him to leave"
+    ],
+    "a": 0,
+    "e": "Matthew 12:29.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Return of the Unclean Spirit, how many other spirits does it bring back?",
+    "o": [
+      "7",
+      "3",
+      "12",
+      "1"
+    ],
+    "a": 0,
+    "e": "Matthew 12:45.",
+    "d": "hard"
+  },
+  {
+    "q": "The Parable of the Householder (Matthew 13:52) compares a scribe to a householder bringing out what?",
+    "o": [
+      "Treasures new and old",
+      "Bread and wine",
+      "Gold and silver",
+      "Old clothes"
+    ],
+    "a": 0,
+    "e": "Matthew 13:52.",
+    "d": "hard"
+  },
+  {
+    "q": "In the Parable of the Lost Sheep (Matthew 18), what is the focus?",
+    "o": [
+      "God's desire that none should perish",
+      "The shepherd's skill",
+      "The sheep's stupidity",
+      "The number 100"
+    ],
+    "a": 0,
+    "e": "Matthew 18:14.",
+    "d": "medium"
+  },
+  {
+    "q": "Which parable is about 'counting the cost'?",
+    "o": [
+      "The Tower Builder",
+      "The Sower",
+      "The Talents",
+      "The Net"
+    ],
+    "a": 0,
+    "e": "Luke 14:28.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the King Going to War, what does he consider?",
+    "o": [
+      "Whether his 10,000 can meet 20,000",
+      "The cost of armor",
+      "The weather",
+      "The route"
+    ],
+    "a": 0,
+    "e": "Luke 14:31.",
+    "d": "medium"
+  },
+  {
+    "q": "The Parable of the Master and Servant (Luke 17) teaches what?",
+    "o": [
+      "We are unworthy servants just doing our duty",
+      "Servants should be paid more",
+      "Masters should cook for servants",
+      "Work is optional"
+    ],
+    "a": 0,
+    "e": "Luke 17:10.",
+    "d": "hard"
+  },
+  {
+    "q": "The Parable of the Wedding Guests (Luke 14) advises to sit where?",
+    "o": [
+      "The lowest place",
+      "The highest place",
+      "The middle",
+      "Outside"
+    ],
+    "a": 0,
+    "e": "Luke 14:10.",
+    "d": "easy"
+  },
+  {
+    "q": "The Parable of the Good Shepherd is primarily found in which Gospel?",
+    "o": [
+      "John",
+      "Matthew",
+      "Mark",
+      "Luke"
+    ],
+    "a": 0,
+    "e": "John 10.",
+    "d": "easy"
+  },
+  {
+    "q": "What does the Good Shepherd do for the sheep?",
+    "o": [
+      "Lays down his life",
+      "Shears them",
+      "Sells them",
+      "Feeds them once a week"
+    ],
+    "a": 0,
+    "e": "John 10:11.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Vine and Branches, who is the gardener?",
+    "o": [
+      "The Father",
+      "Jesus",
+      "The disciples",
+      "The Holy Spirit"
+    ],
+    "a": 0,
+    "e": "John 15:1.",
+    "d": "medium"
+  },
+  {
+    "q": "What happens to the branch that does not bear fruit?",
+    "o": [
+      "Cut off and burned",
+      "Pruned to bear more",
+      "Ignored",
+      "Watered more"
+    ],
+    "a": 0,
+    "e": "John 15:2, 6.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Sower parable, what do the thorns represent?",
+    "o": [
+      "Worries of this life and deceitfulness of wealth",
+      "Persecution",
+      "Satan",
+      "Lack of understanding"
+    ],
+    "a": 0,
+    "e": "Matthew 13:22.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Sower parable, what does the rocky ground represent?",
+    "o": [
+      "Those who receive with joy but have no root",
+      "Those who don't hear",
+      "Hard-hearted people",
+      "Rich people"
+    ],
+    "a": 0,
+    "e": "Matthew 13:20-21.",
+    "d": "medium"
+  },
+  {
+    "q": "How much fruit did the good soil produce?",
+    "o": [
+      "100, 60 or 30 fold",
+      "10 fold",
+      "Double",
+      "Infinite"
+    ],
+    "a": 0,
+    "e": "Matthew 13:23.",
+    "d": "medium"
+  },
+  {
+    "q": "What is the main theme of the Parable of the Wheat and Tares?",
+    "o": [
+      "God's final judgment and separation",
+      "How to farm",
+      "The beauty of fields",
+      "The danger of weeds"
+    ],
+    "a": 0,
+    "e": "Matthew 13:37-43.",
+    "d": "medium"
+  },
+  {
+    "q": "The Parable of the Salt without Savor teaches what?",
+    "o": [
+      "The uselessness of a nominal believer",
+      "How to season food",
+      "The price of salt",
+      "Preservation"
+    ],
+    "a": 0,
+    "e": "Matthew 5:13.",
+    "d": "medium"
+  },
+  {
+    "q": "The Parable of the Two Foundations is the conclusion to what famous sermon?",
+    "o": [
+      "Sermon on the Mount",
+      "Olivet Discourse",
+      "Upper Room Discourse",
+      "Bread of Life Discourse"
+    ],
+    "a": 0,
+    "e": "Matthew 7:24-27.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Wedding Banquet, what happened to the servants of the king?",
+    "o": [
+      "Some were seized and killed",
+      "They were all promoted",
+      "They quit",
+      "They ate the food"
+    ],
+    "a": 0,
+    "e": "Matthew 22:6.",
+    "d": "hard"
+  },
+  {
+    "q": "What did the king do to the city of the murderers?",
+    "o": [
+      "Burned it",
+      "Forgave it",
+      "Taxed it",
+      "Visited it"
+    ],
+    "a": 0,
+    "e": "Matthew 22:7.",
+    "d": "hard"
+  },
+  {
+    "q": "In the Parable of the Ten Virgins, what did the wise ones have in jars?",
+    "o": [
+      "Oil",
+      "Water",
+      "Wine",
+      "Perfume"
+    ],
+    "a": 0,
+    "e": "Matthew 25:4.",
+    "d": "easy"
+  },
+  {
+    "q": "What was the reply to the foolish virgins when they asked for oil?",
+    "o": [
+      "No, there may not be enough for both",
+      "Yes, here is some",
+      "Go buy your own",
+      "Both A and C"
+    ],
+    "a": 3,
+    "e": "Matthew 25:9.",
+    "d": "medium"
+  },
+  {
+    "q": "What does 'Watch therefore, for you know neither the day nor the hour' refer to?",
+    "o": [
+      "The coming of the Son of Man",
+      "The weather",
+      "The harvest",
+      "The end of the week"
+    ],
+    "a": 0,
+    "e": "Matthew 25:13.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Talents parable, what was the reward for the faithful servants?",
+    "o": [
+      "Being put in charge of many things",
+      "A vacation",
+      "Gold coins",
+      "Freedom"
+    ],
+    "a": 0,
+    "e": "Matthew 25:21.",
+    "d": "medium"
+  },
+  {
+    "q": "What is 'outer darkness' in the Parable of the Talents?",
+    "o": [
+      "A place of weeping and gnashing of teeth",
+      "The night sky",
+      "A cave",
+      "The wilderness"
+    ],
+    "a": 0,
+    "e": "Matthew 25:30.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Sheep and Goats, what criteria is used for judgment?",
+    "o": [
+      "Compassion shown to the needy",
+      "Knowledge of scripture",
+      "Ability to preach",
+      "Financial status"
+    ],
+    "a": 0,
+    "e": "Matthew 25:35-40.",
+    "d": "easy"
+  },
+  {
+    "q": "Who is 'the neighbor' in the Good Samaritan parable?",
+    "o": [
+      "The one who showed mercy",
+      "The man who was robbed",
+      "The priest",
+      "Everyone living nearby"
+    ],
+    "a": 0,
+    "e": "Luke 10:36-37.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Importunate Friend, what is the lesson?",
+    "o": [
+      "Ask, seek, knock",
+      "Don't bother friends at night",
+      "Sleep is important",
+      "Bread is a gift"
+    ],
+    "a": 0,
+    "e": "Luke 11:9-10.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Rich Fool, whose land produced a plentiful crop?",
+    "o": [
+      "A certain rich man",
+      "A poor farmer",
+      "Abraham",
+      "The disciples"
+    ],
+    "a": 0,
+    "e": "Luke 12:16.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Parable of the Master's Return (Luke 12), what is the servant blessed for?",
+    "o": [
+      "Being ready/awake",
+      "Sleeping well",
+      "Cooking a feast",
+      "Inviting neighbors"
+    ],
+    "a": 0,
+    "e": "Luke 12:37-38.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Great Supper, what were the three excuses?",
+    "o": [
+      "Bought a field, bought oxen, married a wife",
+      "Sick, busy, tired",
+      "Too far, too late, too early",
+      "Forgot, lost way, no clothes"
+    ],
+    "a": 0,
+    "e": "Luke 14:18-20.",
+    "d": "hard"
+  },
+  {
+    "q": "In the Lost Coin parable, how many silver coins did the woman have?",
+    "o": [
+      "10",
+      "100",
+      "5",
+      "1"
+    ],
+    "a": 0,
+    "e": "Luke 15:8.",
+    "d": "medium"
+  },
+  {
+    "q": "What did the Prodigal Son say to his father upon return?",
+    "o": [
+      "I have sinned against heaven and you",
+      "Give me more money",
+      "I'm hungry",
+      "Hello father"
+    ],
+    "a": 0,
+    "e": "Luke 15:21.",
+    "d": "easy"
+  },
+  {
+    "q": "What was the father's reaction to the Prodigal's return?",
+    "o": [
+      "Ran to him and kissed him",
+      "Anger",
+      "Indifference",
+      "Asked for the money back"
+    ],
+    "a": 0,
+    "e": "Luke 15:20.",
+    "d": "easy"
+  },
+  {
+    "q": "What did the older brother do when the Prodigal returned?",
+    "o": [
+      "Became angry and refused to go in",
+      "Celebrated",
+      "Left home",
+      "Hugged his brother"
+    ],
+    "a": 0,
+    "e": "Luke 15:28.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Unjust Steward, why was he being fired?",
+    "o": [
+      "Wasting his master's possessions",
+      "Stealing",
+      "Laziness",
+      "Being too kind"
+    ],
+    "a": 0,
+    "e": "Luke 16:1.",
+    "d": "hard"
+  },
+  {
+    "q": "In the Rich Man and Lazarus, what was the rich man clothed in?",
+    "o": [
+      "Purple and fine linen",
+      "Rags",
+      "Gold armor",
+      "Silk"
+    ],
+    "a": 0,
+    "e": "Luke 16:19.",
+    "d": "hard"
+  },
+  {
+    "q": "What lay at the rich man's gate?",
+    "o": [
+      "A beggar named Lazarus",
+      "A guard",
+      "A dog",
+      "A wall"
+    ],
+    "a": 0,
+    "e": "Luke 16:20.",
+    "d": "easy"
+  },
+  {
+    "q": "What did the dogs do to Lazarus?",
+    "o": [
+      "Licked his sores",
+      "Bit him",
+      "Bark at him",
+      "Chased him"
+    ],
+    "a": 0,
+    "e": "Luke 16:21.",
+    "d": "medium"
+  },
+  {
+    "q": "What separated the rich man from Lazarus after death?",
+    "o": [
+      "A great gulf/chasm",
+      "A river",
+      "A mountain",
+      "A wall"
+    ],
+    "a": 0,
+    "e": "Luke 16:26.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Persistent Widow, who did she seek justice from?",
+    "o": [
+      "An unjust judge",
+      "A king",
+      "A priest",
+      "A Roman"
+    ],
+    "a": 0,
+    "e": "Luke 18:2.",
+    "d": "easy"
+  },
+  {
+    "q": "In the Pharisee and Tax Collector, where were they praying?",
+    "o": [
+      "In the Temple",
+      "In the street",
+      "At home",
+      "In a cave"
+    ],
+    "a": 0,
+    "e": "Luke 18:10.",
+    "d": "easy"
+  },
+  {
+    "q": "What did the tax collector do while praying?",
+    "o": [
+      "Beat his breast and wouldn't look up",
+      "Looked at heaven",
+      "Shouted",
+      "Gave money"
+    ],
+    "a": 0,
+    "e": "Luke 18:13.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Parable of the Minas (Luke 19), how many servants were called?",
+    "o": [
+      "10",
+      "3",
+      "5",
+      "12"
+    ],
+    "a": 0,
+    "e": "Luke 19:13.",
+    "d": "medium"
+  },
+  {
+    "q": "In the Minas parable, why did the citizens hate the nobleman?",
+    "o": [
+      "They didn't want him to reign over them",
+      "He was mean",
+      "He was poor",
+      "He was a Roman"
+    ],
+    "a": 0,
+    "e": "Luke 19:14.",
+    "d": "hard"
+  },
+  {
+    "q": "In the Wicked Tenants, what did they do to the son?",
+    "o": [
+      "Threw him out and killed him",
+      "Worshipped him",
+      "Ignored him",
+      "Paid him"
+    ],
+    "a": 0,
+    "e": "Matthew 21:39.",
+    "d": "medium"
+  },
+  {
+    "q": "Which parable describes the 'lowest seat' at a wedding?",
+    "o": [
+      "The Wedding Guests",
+      "The Ten Virgins",
+      "The Great Banquet",
+      "The Sower"
+    ],
+    "a": 0,
+    "e": "Luke 14:7-11.",
+    "d": "medium"
+  },
+  {
+    "q": "What does the 'Salt of the Earth' refer to?",
+    "o": [
+      "Believers' influence",
+      "Literal salt",
+      "The ocean",
+      "The ground"
+    ],
+    "a": 0,
+    "e": "Matthew 5:13.",
+    "d": "easy"
+  },
+  {
+    "q": "The Parable of the Fig Tree in Matthew 24 is about what?",
+    "o": [
+      "Signs of the end times",
+      "Hunger",
+      "Fruitfulness",
+      "Gardening"
+    ],
+    "a": 0,
+    "e": "Matthew 24:32-33.",
+    "d": "medium"
+  },
+  {
+    "q": "How many parables are in the Gospel of John?",
+    "o": [
+      "Zero",
+      "Three",
+      "Twelve",
+      "Seven"
+    ],
+    "a": 0,
+    "e": "John has allegories (Vine, Shepherd) but no formal parables.",
+    "d": "hard"
+  },
+  {
+    "q": "In the Parable of the Net, what does the 'sea' represent?",
+    "o": [
+      "The world",
+      "The church",
+      "Galilee",
+      "Heaven"
+    ],
+    "a": 0,
+    "e": "Traditional interpretation.",
+    "d": "hard"
+  },
+  {
+    "q": "Who is the 'Strong Man' in the parable?",
+    "o": [
+      "Satan",
+      "Jesus",
+      "Samson",
+      "David"
+    ],
+    "a": 0,
+    "e": "Matthew 12:29.",
+    "d": "medium"
+  },
+  {
+    "q": "The 'Pearl of Great Price' is found by whom?",
+    "o": [
+      "A merchant",
+      "A farmer",
+      "A king",
+      "A disciple"
+    ],
+    "a": 0,
+    "e": "Matthew 13:45.",
+    "d": "easy"
+  },
+  {
+    "q": "The 'Hidden Treasure' is found by whom?",
+    "o": [
+      "A man",
+      "A merchant",
+      "A thief",
+      "A child"
+    ],
+    "a": 0,
+    "e": "Matthew 13:44.",
+    "d": "easy"
+  }
+]

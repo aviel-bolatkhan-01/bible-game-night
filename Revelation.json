@@ -1,0 +1,1322 @@
+[
+  {
+    "q": "Who wrote the Book of Revelation?",
+    "o": [
+      "Peter",
+      "John",
+      "Paul",
+      "James"
+    ],
+    "a": 1,
+    "e": "Revelation 1:1, 4, 9",
+    "d": "easy"
+  },
+  {
+    "q": "On which island was John when he received the vision?",
+    "o": [
+      "Cyprus",
+      "Crete",
+      "Patmos",
+      "Malta"
+    ],
+    "a": 2,
+    "e": "Revelation 1:9",
+    "d": "easy"
+  },
+  {
+    "q": "To how many churches was the book specifically addressed?",
+    "o": [
+      "3",
+      "7",
+      "12",
+      "10"
+    ],
+    "a": 1,
+    "e": "Revelation 1:4",
+    "d": "easy"
+  },
+  {
+    "q": "In the vision of Christ in Chapter 1, what comes out of His mouth?",
+    "o": [
+      "Fire",
+      "A sharp double-edged sword",
+      "Water",
+      "A golden chain"
+    ],
+    "a": 1,
+    "e": "Revelation 1:16",
+    "d": "medium"
+  },
+  {
+    "q": "Which church is described as 'lukewarm'?",
+    "o": [
+      "Ephesus",
+      "Sardis",
+      "Laodicea",
+      "Philadelphia"
+    ],
+    "a": 2,
+    "e": "Revelation 3:16",
+    "d": "medium"
+  },
+  {
+    "q": "What is the color of the first horse in the four horsemen?",
+    "o": [
+      "Red",
+      "Black",
+      "Pale",
+      "White"
+    ],
+    "a": 3,
+    "e": "Revelation 6:2",
+    "d": "medium"
+  },
+  {
+    "q": "The rider on the red horse was given power to take what from the earth?",
+    "o": [
+      "Famine",
+      "Peace",
+      "Wealth",
+      "Faith"
+    ],
+    "a": 1,
+    "e": "Revelation 6:4",
+    "d": "medium"
+  },
+  {
+    "q": "What was the rider on the black horse holding in his hand?",
+    "o": [
+      "A sword",
+      "A bow",
+      "A pair of scales",
+      "A scythe"
+    ],
+    "a": 2,
+    "e": "Revelation 6:5",
+    "d": "hard"
+  },
+  {
+    "q": "What was the name of the rider on the pale horse?",
+    "o": [
+      "Hades",
+      "Famine",
+      "Death",
+      "War"
+    ],
+    "a": 2,
+    "e": "Revelation 6:8",
+    "d": "medium"
+  },
+  {
+    "q": "How many people were 'sealed' from the tribes of Israel?",
+    "o": [
+      "12,000",
+      "144,000",
+      "7,000",
+      "1,000,000"
+    ],
+    "a": 1,
+    "e": "Revelation 7:4",
+    "d": "easy"
+  },
+  {
+    "q": "What happened when the seventh seal was opened?",
+    "o": [
+      "Thunder",
+      "Earthquake",
+      "Silence in heaven for half an hour",
+      "A great shout"
+    ],
+    "a": 2,
+    "e": "Revelation 8:1",
+    "d": "hard"
+  },
+  {
+    "q": "What was the name of the great star that fell on the waters during the third trumpet?",
+    "o": [
+      "Absinthe",
+      "Wormwood",
+      "Bitterness",
+      "Lucifer"
+    ],
+    "a": 1,
+    "e": "Revelation 8:11",
+    "d": "hard"
+  },
+  {
+    "q": "The fifth trumpet brought locusts with stings like what?",
+    "o": [
+      "Bees",
+      "Scorpions",
+      "Wasps",
+      "Serpents"
+    ],
+    "a": 1,
+    "e": "Revelation 9:3",
+    "d": "medium"
+  },
+  {
+    "q": "Who is the king of the locusts in the fifth trumpet?",
+    "o": [
+      "Beelzebub",
+      "Abaddon (Apollyon)",
+      "Satan",
+      "Belial"
+    ],
+    "a": 1,
+    "e": "Revelation 9:11",
+    "d": "hard"
+  },
+  {
+    "q": "What did John do with the little scroll given to him by the angel?",
+    "o": [
+      "Hid it",
+      "Burned it",
+      "Ate it",
+      "Read it aloud"
+    ],
+    "a": 2,
+    "e": "Revelation 10:10",
+    "d": "medium"
+  },
+  {
+    "q": "The two witnesses prophesied for how many days?",
+    "o": [
+      "40 days",
+      "1,000 days",
+      "1,260 days",
+      "3 days"
+    ],
+    "a": 2,
+    "e": "Revelation 11:3",
+    "d": "hard"
+  },
+  {
+    "q": "What appeared in heaven: a woman clothed with the...?",
+    "o": [
+      "Sun",
+      "Moon",
+      "Stars",
+      "Clouds"
+    ],
+    "a": 0,
+    "e": "Revelation 12:1",
+    "d": "medium"
+  },
+  {
+    "q": "How many heads did the great red dragon have?",
+    "o": [
+      "1",
+      "7",
+      "10",
+      "12"
+    ],
+    "a": 1,
+    "e": "Revelation 12:3",
+    "d": "medium"
+  },
+  {
+    "q": "Who led the angels in war against the dragon?",
+    "o": [
+      "Gabriel",
+      "Michael",
+      "The Lamb",
+      "John"
+    ],
+    "a": 1,
+    "e": "Revelation 12:7",
+    "d": "easy"
+  },
+  {
+    "q": "The beast from the sea had ten horns and how many heads?",
+    "o": [
+      "1",
+      "7",
+      "10",
+      "12"
+    ],
+    "a": 1,
+    "e": "Revelation 13:1",
+    "d": "medium"
+  },
+  {
+    "q": "What is the number of the beast?",
+    "o": [
+      "777",
+      "616",
+      "666",
+      "999"
+    ],
+    "a": 2,
+    "e": "Revelation 13:18",
+    "d": "easy"
+  },
+  {
+    "q": "On which mountain did the Lamb stand with the 144,000?",
+    "o": [
+      "Sinai",
+      "Zion",
+      "Olives",
+      "Moriah"
+    ],
+    "a": 1,
+    "e": "Revelation 14:1",
+    "d": "medium"
+  },
+  {
+    "q": "How many golden bowls full of the wrath of God were there?",
+    "o": [
+      "3",
+      "7",
+      "12",
+      "10"
+    ],
+    "a": 1,
+    "e": "Revelation 15:7",
+    "d": "easy"
+  },
+  {
+    "q": "Where did the demons gather the kings of the world for battle?",
+    "o": [
+      "Jerusalem",
+      "Babylon",
+      "Armageddon",
+      "Rome"
+    ],
+    "a": 2,
+    "e": "Revelation 16:16",
+    "d": "easy"
+  },
+  {
+    "q": "The great prostitute was sitting on a scarlet beast with how many heads?",
+    "o": [
+      "7",
+      "1",
+      "10",
+      "12"
+    ],
+    "a": 0,
+    "e": "Revelation 17:3",
+    "d": "medium"
+  },
+  {
+    "q": "What was written on the forehead of the woman on the beast?",
+    "o": [
+      "Sinner",
+      "Mystery Babylon the Great",
+      "Queen of Earth",
+      "Desolation"
+    ],
+    "a": 1,
+    "e": "Revelation 17:5",
+    "d": "hard"
+  },
+  {
+    "q": "What was the name of the rider on the white horse in Chapter 19?",
+    "o": [
+      "Faithful and True",
+      "The Word of God",
+      "King of Kings",
+      "All of the above"
+    ],
+    "a": 3,
+    "e": "Revelation 19:11, 13, 16",
+    "d": "medium"
+  },
+  {
+    "q": "What came out of the mouth of the rider on the white horse to strike the nations?",
+    "o": [
+      "Fire",
+      "A sharp sword",
+      "Words of judgment",
+      "A scepter"
+    ],
+    "a": 1,
+    "e": "Revelation 19:15",
+    "d": "medium"
+  },
+  {
+    "q": "For how many years was the dragon bound in the Abyss?",
+    "o": [
+      "100",
+      "7",
+      "1,000",
+      "40"
+    ],
+    "a": 2,
+    "e": "Revelation 20:2",
+    "d": "easy"
+  },
+  {
+    "q": "Those whose names were not found in the Book of Life were thrown where?",
+    "o": [
+      "The Abyss",
+      "Outer Darkness",
+      "The Lake of Fire",
+      "The Grave"
+    ],
+    "a": 2,
+    "e": "Revelation 20:15",
+    "d": "easy"
+  },
+  {
+    "q": "In the New Jerusalem, how many gates are there?",
+    "o": [
+      "7",
+      "10",
+      "12",
+      "4"
+    ],
+    "a": 2,
+    "e": "Revelation 21:12",
+    "d": "medium"
+  },
+  {
+    "q": "The gates of the New Jerusalem are each made of a single what?",
+    "o": [
+      "Gold",
+      "Diamond",
+      "Pearl",
+      "Emerald"
+    ],
+    "a": 2,
+    "e": "Revelation 21:21",
+    "d": "easy"
+  },
+  {
+    "q": "What is the main street of the New Jerusalem made of?",
+    "o": [
+      "Pure gold",
+      "Crystal",
+      "Silver",
+      "White stone"
+    ],
+    "a": 0,
+    "e": "Revelation 21:21",
+    "d": "easy"
+  },
+  {
+    "q": "Why is there no temple in the New Jerusalem?",
+    "o": [
+      "God and the Lamb are its temple",
+      "It was destroyed",
+      "It is not needed",
+      "It is invisible"
+    ],
+    "a": 0,
+    "e": "Revelation 21:22",
+    "d": "medium"
+  },
+  {
+    "q": "What flows from the throne of God and of the Lamb?",
+    "o": [
+      "River of Fire",
+      "River of Life",
+      "Honey",
+      "Oil"
+    ],
+    "a": 1,
+    "e": "Revelation 22:1",
+    "d": "easy"
+  },
+  {
+    "q": "On each side of the river stands the tree of life, bearing how many crops of fruit?",
+    "o": [
+      "1",
+      "4",
+      "7",
+      "12"
+    ],
+    "a": 3,
+    "e": "Revelation 22:2",
+    "d": "hard"
+  },
+  {
+    "q": "The leaves of the tree of life are for the what of the nations?",
+    "o": [
+      "Feeding",
+      "Healing",
+      "Protection",
+      "Shadow"
+    ],
+    "a": 1,
+    "e": "Revelation 22:2",
+    "d": "medium"
+  },
+  {
+    "q": "Jesus says, 'I am the Alpha and the...?'",
+    "o": [
+      "Beta",
+      "Zeta",
+      "Omega",
+      "Final"
+    ],
+    "a": 2,
+    "e": "Revelation 22:13",
+    "d": "easy"
+  },
+  {
+    "q": "Jesus says, 'Look, I am coming _____!'",
+    "o": [
+      "Soon",
+      "Later",
+      "With fire",
+      "Secretly"
+    ],
+    "a": 0,
+    "e": "Revelation 22:7, 12, 20",
+    "d": "easy"
+  },
+  {
+    "q": "What is the final word of the Bible?",
+    "o": [
+      "Amen",
+      "Hallelujah",
+      "God",
+      "Jesus"
+    ],
+    "a": 0,
+    "e": "Revelation 22:21",
+    "d": "easy"
+  },
+  {
+    "q": "Which of these is NOT one of the seven churches?",
+    "o": [
+      "Ephesus",
+      "Colossae",
+      "Smyrna",
+      "Pergamum"
+    ],
+    "a": 1,
+    "e": "Colossae is an Epistle, not one of the seven.",
+    "d": "medium"
+  },
+  {
+    "q": "To which church did Jesus say 'I have placed before you an open door'?",
+    "o": [
+      "Philadelphia",
+      "Thyatira",
+      "Sardis",
+      "Laodicea"
+    ],
+    "a": 0,
+    "e": "Revelation 3:8",
+    "d": "hard"
+  },
+  {
+    "q": "What was the first thing John saw after a door opened in heaven (Chapter 4)?",
+    "o": [
+      "An angel",
+      "A throne",
+      "A lion",
+      "A rainbow"
+    ],
+    "a": 1,
+    "e": "Revelation 4:2",
+    "d": "medium"
+  },
+  {
+    "q": "How many living creatures were around the throne?",
+    "o": [
+      "4",
+      "7",
+      "12",
+      "24"
+    ],
+    "a": 0,
+    "e": "Revelation 4:6",
+    "d": "medium"
+  },
+  {
+    "q": "How many elders were seated around the throne?",
+    "o": [
+      "7",
+      "12",
+      "24",
+      "144"
+    ],
+    "a": 2,
+    "e": "Revelation 4:4",
+    "d": "medium"
+  },
+  {
+    "q": "The first living creature was like a what?",
+    "o": [
+      "Lion",
+      "Ox",
+      "Man",
+      "Eagle"
+    ],
+    "a": 0,
+    "e": "Revelation 4:7",
+    "d": "medium"
+  },
+  {
+    "q": "Who was found worthy to open the scroll with seven seals?",
+    "o": [
+      "John",
+      "Moses",
+      "The Lamb",
+      "An archangel"
+    ],
+    "a": 2,
+    "e": "Revelation 5:5-6",
+    "d": "easy"
+  },
+  {
+    "q": "The Lamb had seven horns and seven what?",
+    "o": [
+      "Eyes",
+      "Wings",
+      "Heads",
+      "Crowns"
+    ],
+    "a": 0,
+    "e": "Revelation 5:6",
+    "d": "hard"
+  },
+  {
+    "q": "What happened to the sun when the sixth seal was opened?",
+    "o": [
+      "Turned black",
+      "Exploded",
+      "Turned to blood",
+      "Vanished"
+    ],
+    "a": 0,
+    "e": "Revelation 6:12",
+    "d": "medium"
+  },
+  {
+    "q": "What happened to the moon when the sixth seal was opened?",
+    "o": [
+      "Turned black",
+      "Turned to blood",
+      "Fell to earth",
+      "Shone brighter"
+    ],
+    "a": 1,
+    "e": "Revelation 6:12",
+    "d": "medium"
+  },
+  {
+    "q": "When the first trumpet sounded, what was hurled upon the earth?",
+    "o": [
+      "Fire and brimstone",
+      "Hail and fire mixed with blood",
+      "Locusts",
+      "Darkness"
+    ],
+    "a": 1,
+    "e": "Revelation 8:7",
+    "d": "hard"
+  },
+  {
+    "q": "When the second trumpet sounded, a mountain was thrown into the what?",
+    "o": [
+      "Sea",
+      "Abyss",
+      "Valley",
+      "City"
+    ],
+    "a": 0,
+    "e": "Revelation 8:8",
+    "d": "hard"
+  },
+  {
+    "q": "What fraction of the earth/sea was destroyed by the trumpets?",
+    "o": [
+      "1/2",
+      "1/4",
+      "1/3",
+      "1/10"
+    ],
+    "a": 2,
+    "e": "Revelation 8:7-12",
+    "d": "medium"
+  },
+  {
+    "q": "What was the name of the angel of the Abyss in Greek?",
+    "o": [
+      "Abaddon",
+      "Apollyon",
+      "Satan",
+      "Hades"
+    ],
+    "a": 1,
+    "e": "Revelation 9:11",
+    "d": "hard"
+  },
+  {
+    "q": "John was told the city of Jerusalem would be trampled for how many months?",
+    "o": [
+      "12",
+      "40",
+      "42",
+      "7"
+    ],
+    "a": 2,
+    "e": "Revelation 11:2",
+    "d": "hard"
+  },
+  {
+    "q": "After the two witnesses were killed, for how many days were their bodies left in the street?",
+    "o": [
+      "3",
+      "3.5",
+      "7",
+      "10"
+    ],
+    "a": 1,
+    "e": "Revelation 11:9",
+    "d": "hard"
+  },
+  {
+    "q": "What was the woman in Chapter 12 standing on?",
+    "o": [
+      "The earth",
+      "The moon",
+      "The sun",
+      "A dragon"
+    ],
+    "a": 1,
+    "e": "Revelation 12:1",
+    "d": "hard"
+  },
+  {
+    "q": "Where did the woman flee to be cared for by God?",
+    "o": [
+      "Egypt",
+      "The wilderness",
+      "Heaven",
+      "A cave"
+    ],
+    "a": 1,
+    "e": "Revelation 12:6",
+    "d": "medium"
+  },
+  {
+    "q": "The second beast (from the earth) had two horns like a what?",
+    "o": [
+      "Lamb",
+      "Goat",
+      "Ram",
+      "Dragon"
+    ],
+    "a": 0,
+    "e": "Revelation 13:11",
+    "d": "hard"
+  },
+  {
+    "q": "What was the first bowl of wrath poured out on?",
+    "o": [
+      "The sea",
+      "The land (causing sores)",
+      "The sun",
+      "The air"
+    ],
+    "a": 1,
+    "e": "Revelation 16:2",
+    "d": "hard"
+  },
+  {
+    "q": "The fourth bowl was poured out on the sun, giving it power to do what?",
+    "o": [
+      "Go dark",
+      "Burn people with fire",
+      "Turn to blood",
+      "Explode"
+    ],
+    "a": 1,
+    "e": "Revelation 16:8",
+    "d": "hard"
+  },
+  {
+    "q": "The sixth bowl was poured out on which river?",
+    "o": [
+      "Nile",
+      "Jordan",
+      "Euphrates",
+      "Tigris"
+    ],
+    "a": 2,
+    "e": "Revelation 16:12",
+    "d": "medium"
+  },
+  {
+    "q": "The seven heads of the beast are seven what?",
+    "o": [
+      "Hills",
+      "Kings",
+      "Nations",
+      "Both Hills and Kings"
+    ],
+    "a": 3,
+    "e": "Revelation 17:9-10",
+    "d": "hard"
+  },
+  {
+    "q": "The ten horns are ten what?",
+    "o": [
+      "Kings",
+      "Generals",
+      "Nations",
+      "Demons"
+    ],
+    "a": 0,
+    "e": "Revelation 17:12",
+    "d": "medium"
+  },
+  {
+    "q": "What was the fate of Babylon the Great?",
+    "o": [
+      "Fell in one hour",
+      "Repented",
+      "Converted",
+      "Became a paradise"
+    ],
+    "a": 0,
+    "e": "Revelation 18:10, 17, 19",
+    "d": "medium"
+  },
+  {
+    "q": "Who is the 'Morning Star'?",
+    "o": [
+      "John",
+      "Michael",
+      "Jesus",
+      "Gabriel"
+    ],
+    "a": 2,
+    "e": "Revelation 22:16",
+    "d": "medium"
+  },
+  {
+    "q": "The New Jerusalem comes down from where?",
+    "o": [
+      "The mountains",
+      "The sea",
+      "Heaven",
+      "The sun"
+    ],
+    "a": 2,
+    "e": "Revelation 21:2",
+    "d": "easy"
+  },
+  {
+    "q": "What is the length/width/height of the New Jerusalem?",
+    "o": [
+      "12,000 stadia",
+      "144,000 miles",
+      "7,000 stadia",
+      "1,000 miles"
+    ],
+    "a": 0,
+    "e": "Revelation 21:16",
+    "d": "hard"
+  },
+  {
+    "q": "The wall of the New Jerusalem was how many cubits thick?",
+    "o": [
+      "12",
+      "72",
+      "144",
+      "100"
+    ],
+    "a": 2,
+    "e": "Revelation 21:17",
+    "d": "hard"
+  },
+  {
+    "q": "Which church had 'forsaken their first love'?",
+    "o": [
+      "Ephesus",
+      "Smyrna",
+      "Pergamum",
+      "Thyatira"
+    ],
+    "a": 0,
+    "e": "Revelation 2:4",
+    "d": "medium"
+  },
+  {
+    "q": "Which church was told 'you are about to suffer' and 'be faithful even to the point of death'?",
+    "o": [
+      "Smyrna",
+      "Sardis",
+      "Laodicea",
+      "Ephesus"
+    ],
+    "a": 0,
+    "e": "Revelation 2:10",
+    "d": "hard"
+  },
+  {
+    "q": "Which church was warned about 'Jezebel'?",
+    "o": [
+      "Philadelphia",
+      "Thyatira",
+      "Sardis",
+      "Smyrna"
+    ],
+    "a": 1,
+    "e": "Revelation 2:20",
+    "d": "hard"
+  },
+  {
+    "q": "Which church had a reputation for being alive but was dead?",
+    "o": [
+      "Sardis",
+      "Laodicea",
+      "Pergamum",
+      "Thyatira"
+    ],
+    "a": 0,
+    "e": "Revelation 3:1",
+    "d": "medium"
+  },
+  {
+    "q": "Who said 'Holy, holy, holy is the Lord God Almighty'?",
+    "o": [
+      "The 24 elders",
+      "The 4 living creatures",
+      "The angels",
+      "The 144,000"
+    ],
+    "a": 1,
+    "e": "Revelation 4:8",
+    "d": "medium"
+  },
+  {
+    "q": "The smoke of the incense with the prayers of the saints went up before whom?",
+    "o": [
+      "John",
+      "The Elders",
+      "God",
+      "The Lamb"
+    ],
+    "a": 2,
+    "e": "Revelation 8:4",
+    "d": "medium"
+  },
+  {
+    "q": "When the fourth trumpet sounded, a third of what was struck?",
+    "o": [
+      "Sun, moon, and stars",
+      "Trees",
+      "Grass",
+      "Fish"
+    ],
+    "a": 0,
+    "e": "Revelation 8:12",
+    "d": "medium"
+  },
+  {
+    "q": "What was John told NOT to seal up?",
+    "o": [
+      "The little scroll",
+      "The words of the prophecy of this book",
+      "The seven thunders",
+      "The gates"
+    ],
+    "a": 1,
+    "e": "Revelation 22:10",
+    "d": "hard"
+  },
+  {
+    "q": "What did the seven thunders do?",
+    "o": [
+      "Spoke",
+      "Brought rain",
+      "Destroyed the sea",
+      "Vanished"
+    ],
+    "a": 0,
+    "e": "Revelation 10:3-4 (but John was told to seal what they said)",
+    "d": "hard"
+  },
+  {
+    "q": "Who said 'It is done!' from the throne?",
+    "o": [
+      "God",
+      "An angel",
+      "The Lamb",
+      "John"
+    ],
+    "a": 0,
+    "e": "Revelation 16:17 and 21:6",
+    "d": "medium"
+  },
+  {
+    "q": "The beast was captured along with whom?",
+    "o": [
+      "The Dragon",
+      "The False Prophet",
+      "The Prostitute",
+      "Kings of Earth"
+    ],
+    "a": 1,
+    "e": "Revelation 19:20",
+    "d": "medium"
+  },
+  {
+    "q": "How many months was the first 'Woe' (fifth trumpet) to last?",
+    "o": [
+      "5 months",
+      "12 months",
+      "3 months",
+      "7 months"
+    ],
+    "a": 0,
+    "e": "Revelation 9:5",
+    "d": "hard"
+  },
+  {
+    "q": "The New Jerusalem had the glory of God and its brilliance was like a very precious ____?",
+    "o": [
+      "Jasper",
+      "Ruby",
+      "Sapphire",
+      "Gold"
+    ],
+    "a": 0,
+    "e": "Revelation 21:11",
+    "d": "hard"
+  },
+  {
+    "q": "The 12 foundations of the wall had the names of the 12 ____ of the Lamb?",
+    "o": [
+      "Tribes",
+      "Apostles",
+      "Angels",
+      "Prophets"
+    ],
+    "a": 1,
+    "e": "Revelation 21:14",
+    "d": "medium"
+  },
+  {
+    "q": "The 12 gates were 12 ____?",
+    "o": [
+      "Pearls",
+      "Angels",
+      "Stones",
+      "Tribes"
+    ],
+    "a": 0,
+    "e": "Revelation 21:21",
+    "d": "medium"
+  },
+  {
+    "q": "What was the measurement unit used for the New Jerusalem's wall?",
+    "o": [
+      "Angelic cubit",
+      "Human measurement",
+      "Stadia",
+      "Miles"
+    ],
+    "a": 1,
+    "e": "Revelation 21:17 - 'by human measurement, which the angel was using.'",
+    "d": "hard"
+  },
+  {
+    "q": "Who are those who have the right to the tree of life?",
+    "o": [
+      "The strong",
+      "Those who wash their robes",
+      "The Israelites",
+      "The angels"
+    ],
+    "a": 1,
+    "e": "Revelation 22:14",
+    "d": "medium"
+  },
+  {
+    "q": "What happens to those who add to the words of the book?",
+    "o": [
+      "Nothing",
+      "God will add to them the plagues of the book",
+      "They are exiled",
+      "They lose their life"
+    ],
+    "a": 1,
+    "e": "Revelation 22:18",
+    "d": "medium"
+  },
+  {
+    "q": "What happens to those who take words away from the book?",
+    "o": [
+      "God will take away their share in the tree of life",
+      "They are cursed",
+      "They are ignored",
+      "Nothing"
+    ],
+    "a": 0,
+    "e": "Revelation 22:19",
+    "d": "medium"
+  },
+  {
+    "q": "How many wings did each of the four living creatures have?",
+    "o": [
+      "2",
+      "4",
+      "6",
+      "8"
+    ],
+    "a": 2,
+    "e": "Revelation 4:8",
+    "d": "hard"
+  },
+  {
+    "q": "What did the 24 elders do with their crowns?",
+    "o": [
+      "Wore them",
+      "Polished them",
+      "Lay them before the throne",
+      "Gave them to John"
+    ],
+    "a": 2,
+    "e": "Revelation 4:10",
+    "d": "medium"
+  },
+  {
+    "q": "Which tribe of Israel is NOT mentioned in the list of the 144,000?",
+    "o": [
+      "Judah",
+      "Dan",
+      "Gad",
+      "Asher"
+    ],
+    "a": 1,
+    "e": "Revelation 7:5-8 (Dan is omitted, replaced by Manasseh or Levi is included)",
+    "d": "hard"
+  },
+  {
+    "q": "The seventh trumpet announces that the kingdom of the world has become the kingdom of our ___?",
+    "o": [
+      "Lord",
+      "Christ",
+      "Both Lord and His Christ",
+      "God"
+    ],
+    "a": 2,
+    "e": "Revelation 11:15",
+    "d": "medium"
+  },
+  {
+    "q": "What was the 'mark' required to buy or sell?",
+    "o": [
+      "A gold coin",
+      "The name of the beast or the number of its name",
+      "A special ring",
+      "A certificate"
+    ],
+    "a": 1,
+    "e": "Revelation 13:17",
+    "d": "easy"
+  },
+  {
+    "q": "What was the harvest of the earth reaped with?",
+    "o": [
+      "A sharp sickle",
+      "A sword",
+      "A plow",
+      "Hands"
+    ],
+    "a": 0,
+    "e": "Revelation 14:14",
+    "d": "medium"
+  },
+  {
+    "q": "The winepress of God's wrath was trodden outside the city, and blood flowed as high as a ____'s bridle?",
+    "o": [
+      "Lion",
+      "Horse",
+      "Camel",
+      "Ox"
+    ],
+    "a": 1,
+    "e": "Revelation 14:20",
+    "d": "medium"
+  },
+  {
+    "q": "What was the song of Moses and the song of the ____?",
+    "o": [
+      "Lamb",
+      "Cross",
+      "Angels",
+      "Victory"
+    ],
+    "a": 0,
+    "e": "Revelation 15:3",
+    "d": "medium"
+  },
+  {
+    "q": "The fifth bowl was poured out on the throne of the ___?",
+    "o": [
+      "God",
+      "Beast",
+      "Lamb",
+      "John"
+    ],
+    "a": 1,
+    "e": "Revelation 16:10",
+    "d": "hard"
+  },
+  {
+    "q": "What came out of the mouths of the dragon, beast, and false prophet like frogs?",
+    "o": [
+      "Lies",
+      "Unclean spirits",
+      "Fire",
+      "Smoke"
+    ],
+    "a": 1,
+    "e": "Revelation 16:13",
+    "d": "hard"
+  },
+  {
+    "q": "Which city is the great city that rules over the kings of the earth?",
+    "o": [
+      "Jerusalem",
+      "Babylon (symbolic)",
+      "Rome",
+      "Nineveh"
+    ],
+    "a": 1,
+    "e": "Revelation 17:18",
+    "d": "medium"
+  },
+  {
+    "q": "Who is the Bride of the Lamb?",
+    "o": [
+      "The Church (the New Jerusalem)",
+      "Mary",
+      "Eve",
+      "The Angels"
+    ],
+    "a": 0,
+    "e": "Revelation 21:2, 9",
+    "d": "medium"
+  },
+  {
+    "q": "What is the wedding called?",
+    "o": [
+      "Wedding of the Lamb",
+      "Wedding of Christ",
+      "Heavenly Banquet",
+      "The Great Feast"
+    ],
+    "a": 0,
+    "e": "Revelation 19:7",
+    "d": "easy"
+  },
+  {
+    "q": "What happened to the beast and false prophet?",
+    "o": [
+      "Exiled",
+      "Thrown alive into the lake of fire",
+      "Died in battle",
+      "Repented"
+    ],
+    "a": 1,
+    "e": "Revelation 19:20",
+    "d": "medium"
+  },
+  {
+    "q": "How many angels were at the 12 gates?",
+    "o": [
+      "12",
+      "1",
+      "7",
+      "24"
+    ],
+    "a": 0,
+    "e": "Revelation 21:12",
+    "d": "medium"
+  },
+  {
+    "q": "The foundations of the wall were decorated with every kind of precious ___?",
+    "o": [
+      "Metal",
+      "Stone",
+      "Wood",
+      "Fabric"
+    ],
+    "a": 1,
+    "e": "Revelation 21:19",
+    "d": "medium"
+  },
+  {
+    "q": "The angel who talked to John had a measuring rod made of ___?",
+    "o": [
+      "Gold",
+      "Silver",
+      "Reed",
+      "Wood"
+    ],
+    "a": 0,
+    "e": "Revelation 21:15",
+    "d": "hard"
+  },
+  {
+    "q": "Who did John try to worship but was told 'Don't do that!'?",
+    "o": [
+      "The Lamb",
+      "The Angel",
+      "The Elders",
+      "The Beast"
+    ],
+    "a": 1,
+    "e": "Revelation 19:10 and 22:8-9",
+    "d": "medium"
+  },
+  {
+    "q": "Which \u0446\u0435\u0440\u043a\u043e\u0432\u044c had the 'throne of Satan' in their city?",
+    "o": [
+      "Pergamum",
+      "Smyrna",
+      "Ephesus",
+      "Sardis"
+    ],
+    "a": 0,
+    "e": "Revelation 2:13",
+    "d": "hard"
+  },
+  {
+    "q": "What was the 'hidden manna' and 'white stone' promised to?",
+    "o": [
+      "The one who overcomes",
+      "The martyrs",
+      "The Israelites",
+      "The priests"
+    ],
+    "a": 0,
+    "e": "Revelation 2:17",
+    "d": "hard"
+  },
+  {
+    "q": "Which church was told 'you have a little strength, yet you have kept my word'?",
+    "o": [
+      "Philadelphia",
+      "Smyrna",
+      "Thyatira",
+      "Sardis"
+    ],
+    "a": 0,
+    "e": "Revelation 3:8",
+    "d": "hard"
+  },
+  {
+    "q": "John saw a rainbow that shone like an ___?",
+    "o": [
+      "Emerald",
+      "Ruby",
+      "Diamond",
+      "Opal"
+    ],
+    "a": 0,
+    "e": "Revelation 4:3",
+    "d": "hard"
+  }
+]

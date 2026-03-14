@@ -40769,7 +40769,7 @@ function createRoom(){
     document.getElementById('lobby-panel').style.display='block';
     document.getElementById('start-btn').disabled=false;
     renderQRCode(code);
-    ref.on('value',sn=>{ const d=sn.val(); if(!d)return; updateLobbyUI(d); if(d.status==='playing')joinFromRoom(d); });
+    ref.on('value',sn=>{ const d=sn.val(); if(!d)return; updateLobbyUI(d); if(d.status==='playing'){ ref.off(); joinFromRoom(d); } });
     toast('Room '+code+' created!');
   }).catch(e=>toast('Error: '+e.message));
 }
@@ -40826,7 +40826,7 @@ function joinRoomByCode(code){
     document.getElementById('start-btn').disabled=true;
     // Hide QR for joiners
     const qrWrap = document.getElementById('lobby-qr'); if(qrWrap) qrWrap.style.display='none';
-    ref.on('value',sn2=>{ const d2=sn2.val(); if(!d2)return; updateLobbyUI(d2); if(d2.status==='playing')joinFromRoom(d2); });
+    ref.on('value',sn2=>{ const d2=sn2.val(); if(!d2)return; updateLobbyUI(d2); if(d2.status==='playing'){ ref.off(); joinFromRoom(d2); } });
     toast('Joined room '+code+'!');
   }).catch(e=>toast('Error: '+e.message));
 }

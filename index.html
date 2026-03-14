@@ -51,7 +51,7 @@
   --nav-h: calc(60px + var(--safe-b));
 }
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
-html,body { height:100%; overscroll-behavior:none; overflow-x:hidden; }
+html,body { height:100%; overscroll-behavior:none; overflow-x:clip; }
 body {
   font-family: 'Nunito', sans-serif;
   font-size: 15px;
@@ -60,7 +60,7 @@ body {
   background: var(--bg);
   min-height: 100vh;
   min-height: -webkit-fill-available;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* ─── BACKGROUND — warm grain + cross watermark ─── */
@@ -40086,7 +40086,7 @@ function beginGame(){
     return { ...p, name: finalName };
   });
 
-  G.pool=buildPool(); G.qi=0; G.pi=0; G.done=false;
+  G.pool=buildPool(); G.qi=0; G.pi=0; G.done=false; G.onlineGame=false;
   G.scores={}; G.hearts={}; G.streaks={};
   G.players.forEach(p=>{ G.scores[p.name]=0; G.hearts[p.name]=3; G.streaks[p.name]=0; });
 
@@ -40855,13 +40855,135 @@ function toggleReady(){
 }
 function startOnline(){ if(!G.roomRef)return; sfx.tap(); G.roomRef.update({status:'playing'}); }
 function joinFromRoom(d){
-  if(G.roomRef) G.roomRef.off();
-  G.players=Object.values(d.players||{}).map(p=>({name:p.name,avatar:p.avatar,diff:p.diff||'easy'}));
+  // Keep roomRef alive for game sync
+  const playerEntries=Object.entries(d.players||{});
+  let players=playerEntries.map(([uid,p])=>({name:p.name,avatar:p.avatar,diff:p.diff||'easy',uid}));
+  const usedNames=new Set();
+  players=players.map(p=>{let n=p.name,c=2;while(usedNames.has(n)){n=p.name+' '+c;c++;}usedNames.add(n);return{...p,name:n};});
+  G.players=players;
   G.sub=d.sub||'classic';
-  G.pool=buildPool(); G.qi=0; G.pi=0;
-  G.scores={}; G.hearts={}; G.streaks={};
-  G.players.forEach(p=>{ G.scores[p.name]=0; G.hearts[p.name]=3; G.streaks[p.name]=0; });
-  showSplash(0,()=>{ go('game'); renderQ(); });
+  G.qi=0;G.pi=0;G.done=false;G.onlineGame=true;G.isAnswerer=false;G._lastOnlineState=null;G.roomPool=null;G.roomOrders=null;
+  G.scores={};G.hearts={};G.streaks={};
+  G.players.forEach(p=>{G.scores[p.name]=0;G.hearts[p.name]=3;G.streaks[p.name]=0;});
+
+  G.roomRef.child('gameState').on('value',sn=>{
+    const gs=sn.val();if(!gs)return;
+    if(gs.pool&&!G.roomPool){G.roomPool=gs.pool;G.roomOrders=gs.orders;}
+    if(gs.scores)Object.assign(G.scores,gs.scores);
+    if(gs.hearts)Object.assign(G.hearts,gs.hearts);
+    const stateKey=gs.phase+':'+gs.qi+':'+gs.pi+':'+(gs.t||0);
+    if(stateKey===G._lastOnlineState)return;
+    G._lastOnlineState=stateKey;
+    if(gs.phase==='question'){G.qi=gs.qi;G.pi=gs.pi;G.done=false;renderOnlineQ();}
+    else if(gs.phase==='result'){showOnlineResult(gs);}
+    else if(gs.phase==='ended'){if(G.roomRef){G.roomRef.child('gameState').off();G.roomRef.off();}endGame();}
+  });
+
+  if(G.isHost){
+    G.pool=buildPool();
+    const poolData=G.pool.slice(0,40).map(q=>({q:q.q||'',o:q.o||[],a:q.a||0,d:q.d||'',cat:q.cat||q.r||'',e:q.e||'',r:q.r||'',b:q.b||'',blank:q.blank||''}));
+    const ordersData=poolData.map(()=>shuf([0,1,2,3]));
+    G.roomRef.child('gameState').set({pool:poolData,orders:ordersData,qi:0,pi:0,scores:{},hearts:{},phase:'question',t:Date.now()});
+  }
+  showSplash(0,()=>go('game'));
+}
+
+function renderOnlineQ(){
+  if(!G.roomPool)return;
+  const q=G.roomPool[G.qi];if(!q){if(G.roomRef)G.roomRef.child('gameState').update({phase:'ended'});return;}
+  const order=G.roomOrders[G.qi];
+  const p=G.players[G.pi];if(!p)return;
+  const isMyTurn=p.uid===G.uid;
+  stopTimers();clearAutoAdvance();
+  go('game');
+  document.getElementById('g-av').textContent=p.avatar;
+  document.getElementById('g-nm').textContent=p.name+(isMyTurn?' (You)':'');
+  document.getElementById('g-score').textContent=G.scores[p.name]||0;
+  document.getElementById('g-round').textContent=(G.scores[p.name]||0)+' / '+G.cfg.winScore;
+  renderHearts('g-hearts',G.hearts[p.name]!=null?G.hearts[p.name]:3);
+  document.getElementById('g-cat').textContent=catLabel(q.cat||q.r||'');
+  document.getElementById('g-fb').style.display='none';
+  document.getElementById('g-next-row').style.display='none';
+  document.getElementById('g-auto-bar').style.display='none';
+  const sb=document.getElementById('g-streak-badge');if(sb){sb.style.display='none';sb.classList.remove('streak-pulse');}
+  document.getElementById('g-team-scores').style.display='none';
+  document.getElementById('g-txt').textContent=q.q;
+  const wrap=document.getElementById('g-opts');wrap.innerHTML='';
+  const keys=['A','B','C','D'];
+  order.forEach((orig,di)=>{
+    const btn=document.createElement('button');btn.className='opt';
+    btn.style.cssText=`animation:scrIn .3s ${di*.06}s both`;
+    btn.innerHTML=`<span class="opt-key">${keys[di]}</span><span>${q.o[orig]}</span>`;
+    btn.dataset.origIdx=orig;
+    if(isMyTurn)btn.onclick=()=>answerOnline(btn,orig===q.a,q);
+    else btn.disabled=true;
+    wrap.appendChild(btn);
+  });
+  if(!isMyTurn){
+    const fb=document.getElementById('g-fb');fb.style.display='block';fb.style.background='rgba(100,80,20,0.15)';fb.style.color='var(--gold)';
+    fb.innerHTML=`<strong>Waiting for ${p.name}…</strong>`;
+  }
+  updateProgress();
+  if(G.cfg.timer&&isMyTurn){const pTim=p.diff==='easy'?25:p.diff==='hard'?12:20;startTimer('g-tbar','g-tsecs',pTim,()=>answerOnline(null,false,q,true));}
+  else{document.getElementById('g-tbar').style.transform='scaleX(1)';document.getElementById('g-tsecs').textContent='';}
+}
+
+function answerOnline(btn,isOk,q,timedOut){
+  if(G.done)return;G.done=true;G.isAnswerer=true;stopTimers();
+  document.querySelectorAll('#g-opts .opt').forEach(b=>b.disabled=true);
+  const p=G.players[G.pi];
+  const origIdx=btn?parseInt(btn.dataset.origIdx):-1;
+  if(isOk){
+    G.scores[p.name]=(G.scores[p.name]||0)+1;G.streaks[p.name]=(G.streaks[p.name]||0)+1;
+    sfx.correct();haptic('correct');addXP(10);
+    if(G.profile){G.profile.correct=(G.profile.correct||0)+1;saveProfile();}
+  } else {
+    G.streaks[p.name]=0;
+    if(G.cfg.hearts)G.hearts[p.name]=Math.max(0,(G.hearts[p.name]!=null?G.hearts[p.name]:3)-1);
+    sfx.wrong();haptic('wrong');
+  }
+  const gameOver=G.scores[p.name]>=(G.cfg.winScore||10)||(G.cfg.hearts&&G.hearts[p.name]<=0);
+  G.roomRef.child('gameState').update({
+    phase:'result',
+    result:{correct:isOk,selectedOrig:origIdx,correctA:q.a,timedOut:timedOut||false},
+    scores:G.scores,hearts:G.hearts,
+    nextQi:G.qi+1,nextPi:(G.pi+1)%G.players.length,
+    gameOver:gameOver||false,t:Date.now()
+  });
+}
+
+function showOnlineResult(gs){
+  const result=gs.result;if(!result)return;
+  if(gs.scores)Object.assign(G.scores,gs.scores);
+  if(gs.hearts)Object.assign(G.hearts,gs.hearts);
+  const p=G.players[gs.pi];if(!p)return;
+  const q=G.roomPool?G.roomPool[gs.qi]:null;
+  const fb=document.getElementById('g-fb');fb.style.display='block';fb.style.background='';fb.style.color='';
+  if(result.timedOut){
+    fb.className='fb bad';const ct=q?q.o[q.a]:'';fb.innerHTML=`<strong>⏱ Time's up!</strong> Correct: ${ct}. ${q?q.e:''}`;
+  } else if(result.correct){
+    fb.className='fb ok';fb.innerHTML=`<strong>✓ Correct!</strong> ${q?q.e:''}`;
+  } else {
+    fb.className='fb bad';const ct=q?q.o[q.a]:'';fb.innerHTML=`<strong>✗ Wrong.</strong> Correct: ${ct}. ${q?q.e:''}`;
+  }
+  document.querySelectorAll('#g-opts .opt').forEach(b=>{
+    const orig=parseInt(b.dataset.origIdx);
+    if(orig===result.selectedOrig)b.classList.add(result.correct?'correct':'wrong');
+    if(orig===result.correctA&&!result.correct)b.classList.add('correct');
+    b.disabled=true;
+  });
+  document.getElementById('g-score').textContent=G.scores[p.name]||0;
+  document.getElementById('g-round').textContent=(G.scores[p.name]||0)+' / '+G.cfg.winScore;
+  renderHearts('g-hearts',G.hearts[p.name]!=null?G.hearts[p.name]:3);
+  if(!G.isAnswerer)return;
+  G.isAnswerer=false;
+  if(gs.gameOver){setTimeout(()=>{if(G.roomRef){G.roomRef.child('gameState').update({phase:'ended'});}endGame();},2200);return;}
+  setTimeout(()=>{
+    if(!G.roomRef)return;
+    let nqi=gs.nextQi||G.qi+1,npi=gs.nextPi!=null?gs.nextPi:(G.pi+1)%G.players.length;
+    if(nqi>=(G.roomPool?G.roomPool.length:40))nqi=0;
+    G.roomRef.child('gameState').update({phase:'question',qi:nqi,pi:npi,t:Date.now()});
+  },2200);
 }
 function copyCode(){
   const code=document.getElementById('rc-disp').textContent;

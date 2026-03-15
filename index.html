@@ -39581,7 +39581,7 @@ const G={
   // lightning
   lScore:0, lTimId:null,
   // cfg
-  cfg:{sound:true,timer:true,hearts:true,sudden:false,winScore:10,translation:'NIV'},
+  cfg:{sound:true,timer:true,hearts:true,sudden:false,winScore:10},
   donAmt:'$10',
 };
 
@@ -39608,7 +39608,7 @@ function initFB(){
             avatar: user.photoURL ? '🧑' : '😊',
             church:'', xp:0, correct:0, bestStreak:0,
             powerups:{fifty:0,skip:0},
-            theme:'light', translation:'NIV',
+            theme:'light',
             weeklyXP:0, weeklyReset: wk(),
             friendCode: Math.random().toString(36).slice(2,8).toUpperCase(),
             friends:[], notifications:false
@@ -39686,7 +39686,7 @@ function createProfile(){
     powerups: { fifty: 3, time: 3, skip: 3 },
     tier: 'free', gamesToday: 0, lastGameDate: new Date().toISOString().split('T')[0],
     friends: {}, friendCode: mkCode(),
-    theme: 'light', translation: 'NIV',
+    theme: 'light',
     weeklyXP: 0, weeklyReset: wk()
   };
   if(church){ G.profile.clanName=church; autoCreateClan(church,av); }
@@ -41290,15 +41290,7 @@ function buildSettingsList(){
   </div>`;
   el.appendChild(thDiv);
 
-  // Translation picker
-  const curTrans=(G.profile&&G.profile.translation)||'NIV';
-  const trDiv=document.createElement('div');
-  trDiv.innerHTML=`<div class="settings-section-title">Bible Translation</div>
-  <div class="trans-grid">
-    ${['KJV','ESV','NLT','NIV','CSB','NKJV'].map(t=>`
-    <div class="trans-btn ${curTrans===t?'active':''}" onclick="setTranslation('${t}')">${t}</div>`).join('')}
-  </div>`;
-  el.appendChild(trDiv);
+  // Translation picker removed - no translations implemented
 }
 function togGlobal(k){
   G.cfg[k]=!G.cfg[k];
@@ -42158,18 +42150,8 @@ function initTheme(){
 /* ══════════════════════════════════════════════════
    BIBLE TRANSLATION
 ══════════════════════════════════════════════════ */
-function setTranslation(t){
-  if(!G.profile) return;
-  G.profile.translation=t;
-  G.cfg.translation=t;
-  saveProfile();
-  document.querySelectorAll('.trans-btn').forEach(b=>b.classList.toggle('active',b.textContent===t));
-  toast('Translation set to '+t);
-}
-function getTranslationBadge(){
-  const t=(G.profile&&G.profile.translation)||(G.cfg&&G.cfg.translation)||'NIV';
-  return `<span class="trans-badge">${t}</span>`;
-}
+function setTranslation(t){ /* Removed - no translations implemented */ }
+function getTranslationBadge(){ return ''; /* Removed - no translations implemented */ }
 
 /* ══════════════════════════════════════════════════
    COMBO MULTIPLIER

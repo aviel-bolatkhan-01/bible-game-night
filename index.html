@@ -271,7 +271,7 @@ body::after {
   border: none;
   border-radius: var(--r2);
   cursor: pointer;
-  transition: opacity .15s, transform .12s, box-shadow .15s;
+  transition: opacity .15s, transform .12s, box-shadow .15s, background .15s, filter .15s, border-color .15s;
   position: relative;
   overflow: hidden;
   -webkit-user-select: none;
@@ -942,7 +942,7 @@ body::after {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: transform .12s;
+  transition: transform .12s, background .15s, border-color .15s;
 }
 .setup-av-btn:active { transform: scale(.9); }
 .setup-inp {
@@ -1149,7 +1149,7 @@ body::after {
   border: 1.5px solid rgba(196,136,10,.18);
   color: var(--ink); font-size: 18px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: background .12s; line-height: 1;
+  transition: background .15s, border-color .15s; line-height: 1;
 }
 .step-btn:active { background: rgba(196,136,10,.12); }
 .step-val { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; color: var(--gold1); min-width: 28px; text-align: center; }
@@ -1515,14 +1515,12 @@ body { background: var(--bg); color: var(--ink); }
   color: #FFFFFF;
   box-shadow: none;
 }
-.btn-primary:hover:not(:disabled) { background: var(--gold1); box-shadow: none; }
 .btn-gold {
   background: var(--gold1);
   border-bottom-color: var(--gold);
   color: #1a1a1a;
   box-shadow: none;
 }
-.btn-gold:hover:not(:disabled) { background: var(--gold1); filter: brightness(0.95); box-shadow: none; }
 .btn-ruby {
   background: var(--red);
   border-bottom-color: var(--red1);
@@ -1887,12 +1885,6 @@ body { background: var(--bg); color: var(--ink); }
 /* ── Focus & Hover ──────────────────────── */
 :focus-visible { outline-color: var(--green1); }
 .btn:focus-visible, .opt:focus-visible { box-shadow: 0 0 0 3px rgba(88,204,2,.25); }
-@media (hover: hover) {
-  .opt:hover:not(:disabled) { background: var(--bg1); border-color: var(--blue); transform: translateY(-1px); }
-  .chip:hover:not(.sel) { background: var(--bg1); border-color: rgba(88,204,2,.3) !important; }
-  .btn:hover:not(:disabled) { filter: brightness(1.06); }
-  .card-sm:hover, .mode-card:hover { border-color: rgba(88,204,2,.25); }
-}
 
 /* ── Misc overrides ─────────────────────── */
 .gold { color: var(--gold); }
@@ -1942,23 +1934,67 @@ body { background: var(--bg); color: var(--ink); }
   animation: scrIn .32s cubic-bezier(.22,1,.36,1) both;
 }
 
-/* ─── BETTER OPTION HOVER (desktop) ─────────── */
+/* ─── COMPREHENSIVE HOVER STATES (default/light theme) ─────────── */
 @media (hover: hover) {
   .opt:hover:not(:disabled) {
-    background: rgba(196,136,10,.06);
-    border-color: rgba(196,136,10,.28);
+    background: rgba(88,204,2,.06);
+    border-color: rgba(88,204,2,.28);
     transform: translateY(-1px);
   }
   .chip:hover:not(.sel) {
-    background: rgba(255,255,255,.06);
-    border-color: rgba(180,140,60,.28);
+    background: rgba(88,204,2,.06);
+    border-color: rgba(88,204,2,.25);
   }
   .btn:hover:not(:disabled) {
-    filter: brightness(1.06);
+    filter: brightness(1.08);
   }
   .card-sm:hover, .mode-card:hover {
-    border-color: rgba(196,136,10,.22);
+    border-color: rgba(88,204,2,.25);
   }
+  /* Primary green → lighter green */
+  .btn-primary:hover:not(:disabled) { background: #6AD80A; filter: none; box-shadow: none; }
+  /* Gold → lighter gold */
+  .btn-gold:hover:not(:disabled) { background: #E0B888; filter: none; box-shadow: none; }
+  /* Ghost → slightly darker bg */
+  .btn-ghost:hover:not(:disabled) { background: #F0F0F0; border-color: rgba(0,0,0,.18); filter: none; }
+  /* Google → gray tint */
+  .btn-google:hover { background: #F5F5F5; filter: none; }
+  /* Apple → dark gray */
+  .btn-apple:hover { background: #2A2A2A; filter: none; }
+  /* Email auth (green) → lighter green */
+  .btn-email-auth:hover { filter: brightness(1.12); }
+  /* Friend buttons */
+  .friend-btn-chat:hover { filter: brightness(1.12); }
+  .friend-btn-challenge:hover { background: #FFA820; filter: none; }
+  /* True/False */
+  .tf-t:hover:not(:disabled) { background: rgba(88,204,2,.16); border-color: rgba(88,204,2,.35); filter: none; }
+  .tf-f:hover:not(:disabled) { background: rgba(255,75,75,.16); border-color: rgba(255,75,75,.35); filter: none; }
+  /* Toggle buttons */
+  .toggle-btn.on:hover { filter: brightness(1.1); }
+  .toggle-btn.off:hover { background: #E8E8E8; filter: none; }
+  /* Step buttons */
+  .step-btn:hover { background: #F0F0F0; border-color: rgba(0,0,0,.18); filter: none; }
+  /* Setup avatar */
+  .setup-av-btn:hover { background: #F0F0F0; border-color: rgba(0,0,0,.18); filter: none; }
+  /* Diff chip unselected */
+  .diff-chip:hover:not(.sel) { background: #E8E8E8; border-color: rgba(0,0,0,.2); filter: none; }
+  .diff-chip.sel:hover { filter: brightness(1.08); }
+  /* Voter */
+  .voter:hover { background: #F5F5F5; border-color: rgba(0,0,0,.14); filter: none; }
+  .voter.voted:hover { filter: brightness(1.06); }
+  .voter.cur-voter:hover { filter: brightness(1.06); }
+  /* Nav buttons */
+  .nb:hover { color: var(--ink2); filter: none; }
+  /* Share */
+  .btn-share:hover { background: rgba(28,176,246,.18); filter: none; }
+  /* Ruby */
+  .btn-ruby:hover:not(:disabled) { background: #A02020; filter: none; }
+  /* Blue */
+  .btn-blue:hover:not(:disabled) { background: #254888; filter: none; }
+  /* Green explicit */
+  .btn-green:hover:not(:disabled) { background: #6AD80A; filter: none; }
+  /* Chip selected */
+  .chip.sel:hover { filter: brightness(1.08); }
 }
 
 /* ─── ACTIVE GAME INDICATOR DOT ─────────────── */
@@ -2023,11 +2059,8 @@ html[data-theme="dark"] .social-tab { color: var(--ink3); }
 html[data-theme="dark"] .conv-row { background: var(--card-bg); color: var(--ink); }
 /* Dark theme buttons */
 html[data-theme="dark"] .btn-primary { background: #E0A860; border-bottom-color: #C49050; color: #1A1A20; font-weight: 800; }
-html[data-theme="dark"] .btn-primary:hover:not(:disabled) { background: #E8B470; }
 html[data-theme="dark"] .btn-gold { background: #E0A860; color: #1A1A20; font-weight: 800; }
-html[data-theme="dark"] .btn-gold:hover:not(:disabled) { background: #E8B470; }
 html[data-theme="dark"] .btn-ghost { background: var(--card-bg); border-color: var(--inp-border); color: var(--ink); }
-html[data-theme="dark"] .btn-ghost:hover:not(:disabled) { background: var(--bg3); border-color: #52525E; }
 html[data-theme="dark"] .btn-ghost:active { background: var(--bg3); color: var(--ink); }
 html[data-theme="dark"] .btn-ghost.active { background: rgba(224,168,96,.12); color: #E0A860; border-color: rgba(224,168,96,.35); }
 html[data-theme="dark"] .nb.on, html[data-theme="dark"] .nb.on svg { color: #E0A860; fill: #E0A860; }
@@ -2062,10 +2095,8 @@ html[data-theme="dark"] .profile-bar .plvl { color: #E0A860; }
 html[data-theme="dark"] .profile-bar .wins-num { color: #E0A860; }
 /* Match history boxes */
 html[data-theme="dark"] .card-sm { background: var(--card-bg); border-color: var(--inp-border); color: var(--ink); }
-html[data-theme="dark"] .card-sm:hover { border-color: #52525E; }
 /* Game screen - answer options */
 html[data-theme="dark"] .opt { background: var(--bg3); border-color: var(--inp-border); color: var(--ink); }
-html[data-theme="dark"] .opt:hover:not(:disabled) { background: var(--card-bg); border-color: #52525E; }
 html[data-theme="dark"] .opt-key { color: var(--ink2); background: var(--card-bg); border-color: var(--inp-border); }
 html[data-theme="dark"] .opt.correct { background: rgba(94,138,94,.18); border-color: #5E8A5E; }
 html[data-theme="dark"] .opt.correct .opt-key { color: #5E8A5E; background: rgba(94,138,94,.12); border-color: #5E8A5E; }
@@ -2117,7 +2148,6 @@ html[data-theme="dark"] .divider::before, html[data-theme="dark"] .divider::afte
 html[data-theme="dark"] .btn-ghost { border-color: var(--inp-border); border-bottom-color: var(--inp-border); }
 /* Google auth button */
 html[data-theme="dark"] .btn-google { background: var(--bg3); border-color: var(--inp-border); color: var(--ink); }
-html[data-theme="dark"] .btn-google:hover { background: var(--card-bg); }
 /* Email auth */
 html[data-theme="dark"] .btn-email-auth { background: #E0A860; color: #1A1A20; }
 /* Auth divider */
@@ -2213,11 +2243,52 @@ html[data-theme="dark"] .opt:active:not(:disabled) { background: var(--card-bg) 
 /* Mode card states */
 html[data-theme="dark"] .mode-card.sel { background: rgba(224,168,96,.12); border-color: #E0A860; border-bottom-color: #C49050; }
 html[data-theme="dark"] .mode-card:active { box-shadow: none; }
-/* Hover states for desktop */
+/* Hover states for desktop — Dark theme */
 @media (hover: hover) {
   html[data-theme="dark"] .opt:hover:not(:disabled) { background: rgba(224,168,96,.08); border-color: rgba(224,168,96,.28); }
-  html[data-theme="dark"] .chip:hover:not(.sel) { background: var(--bg3); border-color: rgba(224,168,96,.28); }
+  html[data-theme="dark"] .chip:hover:not(.sel) { background: rgba(224,168,96,.08); border-color: rgba(224,168,96,.28); }
   html[data-theme="dark"] .card-sm:hover, html[data-theme="dark"] .mode-card:hover { border-color: rgba(224,168,96,.22); }
+  /* Gold buttons → lighter gold */
+  html[data-theme="dark"] .btn-primary:hover:not(:disabled) { background: #ECC080; }
+  html[data-theme="dark"] .btn-gold:hover:not(:disabled) { background: #ECC080; filter: none; }
+  html[data-theme="dark"] .btn-email-auth:hover { background: #ECC080; }
+  html[data-theme="dark"] .friend-btn-chat:hover { background: #ECC080; }
+  html[data-theme="dark"] .chip.sel:hover { background: #ECC080; }
+  html[data-theme="dark"] .diff-chip.sel:hover { background: #ECC080; }
+  /* Ghost buttons → slightly lighter bg */
+  html[data-theme="dark"] .btn-ghost:hover:not(:disabled) { background: #3A3A44; border-color: #5A5A66; }
+  html[data-theme="dark"] .btn-google:hover { background: #3A3A44; }
+  /* Orange/challenge → lighter orange */
+  html[data-theme="dark"] .friend-btn-challenge:hover { background: #D88A40; }
+  /* True/False → lighter versions of their colors */
+  html[data-theme="dark"] .tf-t:hover:not(:disabled) { background: rgba(94,138,94,.3); border-color: #70A070; }
+  html[data-theme="dark"] .tf-f:hover:not(:disabled) { background: rgba(200,50,50,.3); border-color: #D84848; }
+  /* Toggle buttons */
+  html[data-theme="dark"] .toggle-btn.on:hover { background: rgba(224,168,96,.25); }
+  html[data-theme="dark"] .toggle-btn.off:hover { background: #3A3A44; }
+  /* Step buttons → lighter gray */
+  html[data-theme="dark"] .step-btn:hover { background: #3A3A44; border-color: #5A5A66; }
+  /* Setup avatar → lighter gray */
+  html[data-theme="dark"] .setup-av-btn:hover { background: #3A3A44; border-color: #5A5A66; }
+  /* Voter buttons */
+  html[data-theme="dark"] .voter:hover { background: #3A3A44; border-color: #5A5A66; }
+  html[data-theme="dark"] .voter.voted:hover { background: rgba(94,138,94,.25); border-color: #70A070; }
+  html[data-theme="dark"] .voter.cur-voter:hover { background: rgba(224,168,96,.25); }
+  /* Nav buttons */
+  html[data-theme="dark"] .nb:hover { color: var(--ink2); }
+  html[data-theme="dark"] .nb-join:hover { background: rgba(224,168,96,.28); }
+  /* Diff chip unselected */
+  html[data-theme="dark"] .diff-chip:hover:not(.sel) { background: #3A3A44; border-color: #5A5A66; }
+  /* Apple button */
+  html[data-theme="dark"] .btn-apple:hover { background: #2A2A2A; }
+  /* Share button */
+  html[data-theme="dark"] .btn-share:hover { background: rgba(28,176,246,.18); }
+  /* Ruby button */
+  html[data-theme="dark"] .btn-ruby:hover:not(:disabled) { background: #A02020; }
+  /* Blue button */
+  html[data-theme="dark"] .btn-blue:hover:not(:disabled) { background: #254888; }
+  /* Green button */
+  html[data-theme="dark"] .btn-green:hover:not(:disabled) { background: #70A070; }
 }
 /* Dark placeholder */
 html[data-theme="dark"] .inp::placeholder { color: var(--ink3); }
@@ -2250,6 +2321,68 @@ html[data-theme="green"] .my-code { color: #4A6F4A; }
 html[data-theme="green"] .toggle-btn.on { background: #5E8A5E; border-color: #4A6F4A; color: #FFFFFF; }
 html[data-theme="green"] .chip { background: #E4EAE0; color: #2C3328; border-color: rgba(0,0,0,.08); }
 html[data-theme="green"] .chip.sel { background: #5E8A5E; color: #FFFFFF; border-color: #4A6F4A; }
+html[data-theme="green"] .btn-ghost { background: #F8FAF6; border-color: #C4CFC0; color: var(--ink2); }
+html[data-theme="green"] .btn-google { background: #F8FAF6; border-color: #C4CFC0; color: var(--ink); }
+html[data-theme="green"] .btn-email-auth { background: #5E8A5E; color: #FFFFFF; }
+html[data-theme="green"] .friend-btn-chat { background: #5E8A5E; color: #FFFFFF; }
+html[data-theme="green"] .friend-btn-challenge { background: #C4842A; color: #FFFFFF; }
+html[data-theme="green"] .tf-t { background: rgba(94,138,94,.12); border-color: rgba(94,138,94,.3); color: #4A6F4A; }
+html[data-theme="green"] .tf-f { background: rgba(200,50,50,.1); border-color: rgba(200,50,50,.25); color: #A03030; }
+html[data-theme="green"] .diff-chip { background: #E4EAE0; border-color: #C4CFC0; color: var(--ink2); }
+html[data-theme="green"] .diff-chip.sel { background: #5E8A5E; border-color: #4A6F4A; color: #FFFFFF; }
+html[data-theme="green"] .voter { background: #F8FAF6; border-color: #C4CFC0; color: var(--ink2); }
+html[data-theme="green"] .voter.voted { background: rgba(94,138,94,.12); border-color: #5E8A5E; color: var(--ink); }
+html[data-theme="green"] .voter.cur-voter { background: rgba(94,138,94,.15); border-color: #5E8A5E; color: #4A6F4A; }
+html[data-theme="green"] .toggle-btn.off { background: #E4EAE0; border-color: #C4CFC0; color: var(--ink3); }
+html[data-theme="green"] .step-btn { background: #F8FAF6; border-color: #C4CFC0; color: var(--ink); }
+html[data-theme="green"] .setup-av-btn { background: #F8FAF6; border-color: #C4CFC0; }
+/* Hover states for desktop — Green theme */
+@media (hover: hover) {
+  /* Primary green buttons → lighter sage green */
+  html[data-theme="green"] .btn-primary:hover:not(:disabled) { background: #72A072; }
+  html[data-theme="green"] .btn-gold:hover:not(:disabled) { background: #72A072; filter: none; }
+  html[data-theme="green"] .btn-email-auth:hover { background: #72A072; }
+  html[data-theme="green"] .friend-btn-chat:hover { background: #72A072; }
+  html[data-theme="green"] .chip.sel:hover { background: #72A072; }
+  html[data-theme="green"] .diff-chip.sel:hover { background: #72A072; }
+  html[data-theme="green"] .toggle-btn.on:hover { background: #72A072; }
+  html[data-theme="green"] .btn-green:hover:not(:disabled) { background: #72A072; }
+  /* Ghost/secondary → slightly darker bg */
+  html[data-theme="green"] .btn-ghost:hover:not(:disabled) { background: #E4EAE0; border-color: #A8B8A4; }
+  html[data-theme="green"] .btn-google:hover { background: #E4EAE0; }
+  /* Challenge gold → lighter gold */
+  html[data-theme="green"] .friend-btn-challenge:hover { background: #D49838; }
+  /* True/False */
+  html[data-theme="green"] .tf-t:hover:not(:disabled) { background: rgba(94,138,94,.2); border-color: #5E8A5E; }
+  html[data-theme="green"] .tf-f:hover:not(:disabled) { background: rgba(200,50,50,.16); border-color: #C04040; }
+  /* Toggle off */
+  html[data-theme="green"] .toggle-btn.off:hover { background: #D6DDD0; }
+  /* Step buttons */
+  html[data-theme="green"] .step-btn:hover { background: #E4EAE0; border-color: #A8B8A4; }
+  /* Setup avatar */
+  html[data-theme="green"] .setup-av-btn:hover { background: #E4EAE0; border-color: #A8B8A4; }
+  /* Chips unselected */
+  html[data-theme="green"] .chip:hover:not(.sel) { background: #D6DDD0; border-color: rgba(94,138,94,.3) !important; }
+  html[data-theme="green"] .diff-chip:hover:not(.sel) { background: #D6DDD0; border-color: #A8B8A4; }
+  /* Voter buttons */
+  html[data-theme="green"] .voter:hover { background: #E4EAE0; border-color: #A8B8A4; }
+  html[data-theme="green"] .voter.voted:hover { background: rgba(94,138,94,.2); border-color: #72A072; }
+  html[data-theme="green"] .voter.cur-voter:hover { background: rgba(94,138,94,.25); }
+  /* Nav buttons */
+  html[data-theme="green"] .nb:hover { color: var(--ink2); }
+  html[data-theme="green"] .nb-join:hover { background: rgba(94,138,94,.2); }
+  /* Options */
+  html[data-theme="green"] .opt:hover:not(:disabled) { background: #E4EAE0; border-color: rgba(94,138,94,.3); }
+  html[data-theme="green"] .card-sm:hover, html[data-theme="green"] .mode-card:hover { border-color: rgba(94,138,94,.3); }
+  /* Apple button */
+  html[data-theme="green"] .btn-apple:hover { background: #2A2A2A; }
+  /* Share button */
+  html[data-theme="green"] .btn-share:hover { background: rgba(28,176,246,.16); }
+  /* Ruby button */
+  html[data-theme="green"] .btn-ruby:hover:not(:disabled) { background: #A02020; }
+  /* Blue button */
+  html[data-theme="green"] .btn-blue:hover:not(:disabled) { background: #254888; }
+}
 
 html[data-theme="warmth"] {
   --bg: #FAF4ED; --bg2: #F3EBE0; --bg3: #E8DDD0;
@@ -2267,6 +2400,68 @@ html[data-theme="warmth"] .nb.on, html[data-theme="warmth"] .nb.on svg { color: 
 html[data-theme="warmth"] .toggle-btn.on { background: #B07850; border-color: #8F6040; color: #FFFFFF; }
 html[data-theme="warmth"] .chip { background: #F3EBE0; color: #3D2E22; border-color: rgba(0,0,0,.08); }
 html[data-theme="warmth"] .chip.sel { background: #B07850; color: #FFFFFF; border-color: #8F6040; }
+html[data-theme="warmth"] .btn-ghost { background: #FDF9F4; border-color: #D8CCBC; color: var(--ink2); }
+html[data-theme="warmth"] .btn-google { background: #FDF9F4; border-color: #D8CCBC; color: var(--ink); }
+html[data-theme="warmth"] .btn-email-auth { background: #B07850; color: #FFFFFF; }
+html[data-theme="warmth"] .friend-btn-chat { background: #B07850; color: #FFFFFF; }
+html[data-theme="warmth"] .friend-btn-challenge { background: #C48838; color: #FFFFFF; }
+html[data-theme="warmth"] .tf-t { background: rgba(94,138,94,.1); border-color: rgba(94,138,94,.25); color: #5E8A5E; }
+html[data-theme="warmth"] .tf-f { background: rgba(200,50,50,.1); border-color: rgba(200,50,50,.25); color: #A03030; }
+html[data-theme="warmth"] .diff-chip { background: #F3EBE0; border-color: #D8CCBC; color: var(--ink2); }
+html[data-theme="warmth"] .diff-chip.sel { background: #B07850; border-color: #8F6040; color: #FFFFFF; }
+html[data-theme="warmth"] .voter { background: #FDF9F4; border-color: #D8CCBC; color: var(--ink2); }
+html[data-theme="warmth"] .voter.voted { background: rgba(176,120,80,.12); border-color: #B07850; color: var(--ink); }
+html[data-theme="warmth"] .voter.cur-voter { background: rgba(176,120,80,.15); border-color: #B07850; color: #8F6040; }
+html[data-theme="warmth"] .toggle-btn.off { background: #F3EBE0; border-color: #D8CCBC; color: var(--ink3); }
+html[data-theme="warmth"] .step-btn { background: #FDF9F4; border-color: #D8CCBC; color: var(--ink); }
+html[data-theme="warmth"] .setup-av-btn { background: #FDF9F4; border-color: #D8CCBC; }
+/* Hover states for desktop — Warmth theme */
+@media (hover: hover) {
+  /* Terracotta buttons → lighter terracotta */
+  html[data-theme="warmth"] .btn-primary:hover:not(:disabled) { background: #C48E68; }
+  html[data-theme="warmth"] .btn-gold:hover:not(:disabled) { background: #C48E68; filter: none; }
+  html[data-theme="warmth"] .btn-email-auth:hover { background: #C48E68; }
+  html[data-theme="warmth"] .friend-btn-chat:hover { background: #C48E68; }
+  html[data-theme="warmth"] .chip.sel:hover { background: #C48E68; }
+  html[data-theme="warmth"] .diff-chip.sel:hover { background: #C48E68; }
+  html[data-theme="warmth"] .toggle-btn.on:hover { background: #C48E68; }
+  html[data-theme="warmth"] .btn-green:hover:not(:disabled) { background: #C48E68; }
+  /* Ghost/secondary → slightly darker bg */
+  html[data-theme="warmth"] .btn-ghost:hover:not(:disabled) { background: #F3EBE0; border-color: #C4B8A8; }
+  html[data-theme="warmth"] .btn-google:hover { background: #F3EBE0; }
+  /* Challenge gold → lighter gold */
+  html[data-theme="warmth"] .friend-btn-challenge:hover { background: #D49848; }
+  /* True/False */
+  html[data-theme="warmth"] .tf-t:hover:not(:disabled) { background: rgba(94,138,94,.18); border-color: #5E8A5E; }
+  html[data-theme="warmth"] .tf-f:hover:not(:disabled) { background: rgba(200,50,50,.16); border-color: #C04040; }
+  /* Toggle off */
+  html[data-theme="warmth"] .toggle-btn.off:hover { background: #E8DDD0; }
+  /* Step buttons */
+  html[data-theme="warmth"] .step-btn:hover { background: #F3EBE0; border-color: #C4B8A8; }
+  /* Setup avatar */
+  html[data-theme="warmth"] .setup-av-btn:hover { background: #F3EBE0; border-color: #C4B8A8; }
+  /* Chips unselected */
+  html[data-theme="warmth"] .chip:hover:not(.sel) { background: #E8DDD0; border-color: rgba(176,120,80,.3) !important; }
+  html[data-theme="warmth"] .diff-chip:hover:not(.sel) { background: #E8DDD0; border-color: #C4B8A8; }
+  /* Voter buttons */
+  html[data-theme="warmth"] .voter:hover { background: #F3EBE0; border-color: #C4B8A8; }
+  html[data-theme="warmth"] .voter.voted:hover { background: rgba(176,120,80,.2); border-color: #C48E68; }
+  html[data-theme="warmth"] .voter.cur-voter:hover { background: rgba(176,120,80,.25); }
+  /* Nav buttons */
+  html[data-theme="warmth"] .nb:hover { color: var(--ink2); }
+  html[data-theme="warmth"] .nb-join:hover { background: rgba(176,120,80,.18); }
+  /* Options */
+  html[data-theme="warmth"] .opt:hover:not(:disabled) { background: #F3EBE0; border-color: rgba(176,120,80,.3); }
+  html[data-theme="warmth"] .card-sm:hover, html[data-theme="warmth"] .mode-card:hover { border-color: rgba(176,120,80,.3); }
+  /* Apple button */
+  html[data-theme="warmth"] .btn-apple:hover { background: #2A2A2A; }
+  /* Share button */
+  html[data-theme="warmth"] .btn-share:hover { background: rgba(28,176,246,.16); }
+  /* Ruby button */
+  html[data-theme="warmth"] .btn-ruby:hover:not(:disabled) { background: #A02020; }
+  /* Blue button */
+  html[data-theme="warmth"] .btn-blue:hover:not(:disabled) { background: #254888; }
+}
 
 /* ── Theme / Translation Picker ── */
 .theme-grid, .trans-grid {
@@ -2301,7 +2496,7 @@ html[data-theme="warmth"] .chip.sel { background: #B07850; color: #FFFFFF; borde
   display: flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; padding: 13px 16px; border-radius: 14px; font-family: 'Nunito',sans-serif;
   font-weight: 800; font-size: 15px; cursor: pointer; border: 2px solid transparent;
-  transition: transform .1s, box-shadow .1s; box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  transition: transform .1s, box-shadow .1s, background .15s, filter .15s; box-shadow: 0 2px 8px rgba(0,0,0,.1);
 }
 .btn-social:active { transform: translateY(2px); box-shadow: 0 1px 4px rgba(0,0,0,.1); }
 .btn-google { background: #fff; border-color: #dadce0; color: #3c4043; }
@@ -2324,7 +2519,7 @@ html[data-theme="warmth"] .chip.sel { background: #B07850; color: #FFFFFF; borde
 .friend-name { font-family: 'Nunito',sans-serif; font-weight: 800; font-size: 15px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .friend-xp { font-size: 12px; color: var(--ink3); }
 .friend-actions { display: flex; gap: 6px; flex-shrink: 0; }
-.friend-btn { padding: 6px 10px; border-radius: 10px; font-family: 'Nunito',sans-serif; font-weight: 800; font-size: 12px; cursor: pointer; border: none; }
+.friend-btn { padding: 6px 10px; border-radius: 10px; font-family: 'Nunito',sans-serif; font-weight: 800; font-size: 12px; cursor: pointer; border: none; transition: background .15s, filter .15s; }
 .friend-btn-chat { background: var(--green1,#58cc02); color: #fff; }
 .friend-btn-challenge { background: #ff9600; color: #fff; }
 .my-code-box { background: var(--bg2,#f0f9e8); border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 16px; }

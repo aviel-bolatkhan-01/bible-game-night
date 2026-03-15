@@ -39802,7 +39802,7 @@ function go(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   const el=document.getElementById('s-'+id);
   if(el) el.classList.add('active');
-  const showNav=!GAME_SCREENS.includes(id)&&!!G.profile;
+  const showNav=!GAME_SCREENS.includes(id);
   document.getElementById('main-nav').style.display=showNav?'':'none';
   // scroll to top of new screen
   const sc=el&&el.querySelector('.scroller');

@@ -138,6 +138,7 @@ body::after {
 .scroller {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding-bottom: 8px;
@@ -40690,12 +40691,13 @@ function joinFromRoom(d){
   G._myVoteSubmitted=false; G._votesRef=null;
   G.roomRef.child('gameState').on('value',sn=>{
     const gs=sn.val();if(!gs)return;
-    if(gs.pool&&!G.roomPool){G.roomPool=gs.pool;G.roomOrders=gs.orders;}
+    if(gs.pool&&!G.roomPool){G.roomPool=gs.pool;G.roomOrders=gs.orders;console.log('[BGN] Received pool with',G.roomPool.length,'questions');}
     if(gs.scores)Object.assign(G.scores,gs.scores);
     if(gs.hearts)Object.assign(G.hearts,gs.hearts);
     const stateKey=gs.phase+':'+gs.qi+':'+(gs.t||0);
     if(stateKey===G._lastOnlineState)return;
     G._lastOnlineState=stateKey;
+    console.log('[BGN] Game state changed: phase='+gs.phase+', qi='+gs.qi);
     if(gs.phase==='question'){G.qi=gs.qi;G.pi=gs.pi;G.done=false;renderOnlineQ();}
     else if(gs.phase==='result'){showOnlineResult(gs);}
     else if(gs.phase==='ended'){if(G.roomRef){G.roomRef.child('gameState').off();G.roomRef.off();}endGame();}
@@ -40705,7 +40707,8 @@ function joinFromRoom(d){
     G.pool=buildPool();
     const poolData=G.pool.slice(0,40).map(q=>({q:q.q||'',o:q.o||[],a:q.a||0,d:q.d||'',cat:q.cat||q.r||'',e:q.e||'',r:q.r||'',b:q.b||'',blank:q.blank||''}));
     const ordersData=poolData.map(()=>shuf([0,1,2,3]));
-    G.roomRef.child('gameState').set({pool:poolData,orders:ordersData,qi:0,pi:0,scores:{},hearts:{},phase:'question',t:Date.now()});
+    G.roomRef.child('gameState').set({pool:poolData,orders:ordersData,qi:0,pi:0,scores:{},hearts:{},phase:'question',t:Date.now()})
+      .catch(err=>{console.error('Failed to set gameState:', err);toast('Game sync failed');});
   }
   showSplash(0,()=>go('game'));
   // Online game: auto-dismiss splash so joiner isn't blocked waiting for a tap

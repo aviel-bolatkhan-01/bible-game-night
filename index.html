@@ -42829,6 +42829,10 @@ function handleAuthError(e, label){
     showPopupBlockedModal();
     return true;
   }
+  if(e.code==='auth/operation-not-allowed'){
+    showAuthMethodDisabledModal();
+    return true;
+  }
   toast(label+': '+e.message);
   return false;
 }
@@ -42878,6 +42882,32 @@ function showDomainErrorModal(){
         <li>Click <strong>Save</strong></li>
       </ol>
       <button onclick="navigator.clipboard.writeText('${domain}');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy domain',1500)" style="width:100%;padding:12px;background:var(--gold,#C89458);color:var(--bg,#0d0906);border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;">Copy domain</button>
+    </div>`;
+  document.body.appendChild(m);
+  m.addEventListener('click',ev=>{ if(ev.target===m) m.remove(); });
+}
+function showAuthMethodDisabledModal(){
+  const existing=document.getElementById('auth-method-disabled-modal');
+  if(existing) existing.remove();
+  const m=document.createElement('div');
+  m.id='auth-method-disabled-modal';
+  m.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.75);padding:20px;';
+  m.innerHTML=`
+    <div style="background:var(--bg2,#221608);border:1px solid var(--line,rgba(200,158,72,.15));border-radius:16px;max-width:420px;width:100%;padding:28px 24px;color:var(--ink,#f2e8d0);font-family:'Nunito',sans-serif;position:relative;">
+      <button onclick="this.closest('#auth-method-disabled-modal').remove()" style="position:absolute;top:12px;right:14px;background:none;border:none;color:var(--ink2,#b09068);font-size:22px;cursor:pointer;line-height:1;">&times;</button>
+      <div style="font-size:18px;font-weight:700;margin-bottom:12px;">Sign-in Method Disabled</div>
+      <p style="margin-bottom:14px;font-size:14px;line-height:1.6;color:var(--ink2,#b09068);">
+        Email/Password sign-in is not enabled in your Firebase project.
+      </p>
+      <p style="margin-bottom:14px;font-size:14px;font-weight:600;">To enable it:</p>
+      <ol style="margin:0 0 16px 18px;font-size:13px;line-height:1.9;color:var(--ink,#f2e8d0);">
+        <li>Open <a href="https://console.firebase.google.com/" target="_blank" rel="noopener" style="color:var(--gold1,#D4A574);text-decoration:underline;">Firebase Console</a></li>
+        <li>Go to <strong>Authentication</strong> &rarr; <strong>Sign-in method</strong></li>
+        <li>Find <strong>Email/Password</strong> in the list</li>
+        <li>Click it and toggle <strong>Enable</strong></li>
+        <li>Click <strong>Save</strong></li>
+      </ol>
+      <p style="margin-bottom:14px;font-size:13px;color:var(--ink2,#b09068);">After enabling, refresh this page and try signing in again.</p>
     </div>`;
   document.body.appendChild(m);
   m.addEventListener('click',ev=>{ if(ev.target===m) m.remove(); });

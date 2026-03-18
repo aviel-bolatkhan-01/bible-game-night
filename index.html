@@ -40442,6 +40442,7 @@ function initFB(){
       if(user){
         G.uid=user.uid; G.fbOk=true; fbDot(true);
         if(getAuthRedirectPending()) setAuthRedirectPending('');
+        updateProfileSigninCard();
         // If signed in via social, auto-create profile from display name
         if(!G.profile && user.displayName){
           G.profile={
@@ -40478,6 +40479,10 @@ function initFB(){
         } else {
           toast('Signed in!');
         }
+      } else if(!G.auth.currentUser){
+        G.auth.signInAnonymously()
+          .then(c=>{ G.uid=c.user.uid; G.fbOk=true; fbDot(true); if(G.profile)pushProfile(); listenForChallenges(); cleanExpiredChallenges(); })
+          .catch(()=>fbDot(false));
       }
     }).catch(e=>{
       if(getAuthRedirectPending()) setAuthRedirectPending('');
@@ -43133,44 +43138,39 @@ function profileSignIn(method){
     return;
   }
   if(!G.auth){ toast('Firebase not configured'); return; }
+  if(method==='google'){
+    const provider=new firebase.auth.GoogleAuthProvider();
+    setAuthRedirectPending('google');
+    G.auth.signInWithRedirect(provider).catch(e=>handleAuthError(e,'Sign-in failed'));
+    return;
+  }
   let provider;
-  if(method==='google') provider=new firebase.auth.GoogleAuthProvider();
-  else if(method==='apple') provider=new firebase.auth.OAuthProvider('apple.com');
+  if(method==='apple') provider=new firebase.auth.OAuthProvider('apple.com');
   else return;
   const currentUser=G.auth.currentUser;
-  const useRedirect=(method==='google');
   if(currentUser&&currentUser.isAnonymous){
     const credential=provider;
-    if(useRedirect) setAuthRedirectPending(method);
-    const linkCall=useRedirect?currentUser.linkWithRedirect(credential):currentUser.linkWithPopup(credential);
+    const linkCall=currentUser.linkWithPopup(credential);
     linkCall.then(result=>{
-      if(!useRedirect){
-        toast('Account linked! Your progress is saved.');
-        updateProfileSigninCard();
-      }
+      toast('Account linked! Your progress is saved.');
+      updateProfileSigninCard();
     }).catch(e=>{
       if(e.code==='auth/unauthorized-domain'){ showDomainErrorModal(); return; }
       if(e.code==='auth/credential-already-in-use'||e.code==='auth/email-already-in-use'){
-        const signInCall=useRedirect?G.auth.signInWithRedirect(provider):G.auth.signInWithPopup(provider);
-        if(useRedirect) setAuthRedirectPending(method);
+        const signInCall=G.auth.signInWithPopup(provider);
         signInCall.then(()=>{
-          if(!useRedirect){
-            toast('Signed in! Progress synced.');
-            updateProfileSigninCard();
-          }
+          toast('Signed in! Progress synced.');
+          updateProfileSigninCard();
         }).catch(e2=>handleAuthError(e2,'Sign-in failed'));
       } else {
         handleAuthError(e,'Sign-in failed');
       }
     });
   } else {
-    const signInCall=useRedirect?G.auth.signInWithRedirect(provider):G.auth.signInWithPopup(provider);
-    if(useRedirect) setAuthRedirectPending(method);
+    const signInCall=G.auth.signInWithPopup(provider);
     signInCall.then(()=>{
-      if(!useRedirect){
-        toast('Signed in!');
-        updateProfileSigninCard();
-      }
+      toast('Signed in!');
+      updateProfileSigninCard();
     }).catch(e=>handleAuthError(e,'Sign-in failed'));
   }
 }

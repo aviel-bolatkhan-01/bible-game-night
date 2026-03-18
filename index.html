@@ -7,14 +7,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#58CC02">
 <meta name="description" content="Lamp - Bible trivia game for families and churches. Play locally or online with friends.">
-<meta property="og:title" content="Lamp - Bible Trivia with friends">
+<meta property="og:title" content="Lamp - Bible Game Night">
 <meta property="og:description" content="Test your Scripture knowledge with friends and family. Multiple game modes, achievements, and clan battles.">
 <meta property="og:type" content="website">
 <meta name="apple-mobile-web-app-title" content="Lamp">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="icon.svg">
-<title>Lamp - Bible Trivia with friends</title>
+<title>Lamp - Bible Game Night</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Cinzel:wght@500;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -2915,7 +2915,6 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
   <div style="padding:14px 0 10px;flex-shrink:0;display:flex;align-items:center;gap:10px;">
     <div style="flex:1;">
       <div class="home-greeting" id="home-greeting"></div>
-      <div class="eyebrow" style="margin-bottom:2px;">Bible Trivia with Friends</div>
       <div class="h1" style="font-size:clamp(24px,6.5vw,38px);line-height:1.05;"><em>Lamp</em></div>
     </div>
     <!-- Animated oil lamp SVG icon -->
@@ -3009,9 +3008,9 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
       </div>
     </div>
 
-    <!-- Question Type -->
+    <!-- Game Mode -->
     <div class="chips-wrap" id="sub-row">
-      <div class="label" style="margin-bottom:7px;">Question Type</div>
+      <div class="label" style="margin-bottom:7px;">Game Mode</div>
       <div class="chips" id="sub-chips">
         <button class="chip sel" onclick="pickSub(this,'classic')">🎯 Classic</button>
         <button class="chip" onclick="pickSub(this,'truefalse')">✅ True / False</button>
@@ -3732,11 +3731,11 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
       <button class="chip" onclick="pickChDiff(this,'hard')" id="ch-diff-hard">⚔️ Hard</button>
     </div>
 
-    <label class="label">Question Type</label>
+    <label class="label">Game Mode</label>
     <div id="ch-qtype-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
       <button class="chip sel" onclick="pickChQType(this,'classic')" id="ch-qtype-classic">🎯 Classic</button>
       <button class="chip" onclick="pickChQType(this,'truefalse')" id="ch-qtype-truefalse">✅ True/False</button>
-      <button class="chip" onclick="pickChQType(this,'fillin')" id="ch-qtype-fillin">📖 Fill-in-Verse</button>
+      <button class="chip" onclick="pickChQType(this,'verse')" id="ch-qtype-fillin">📖 Fill-in-Verse</button>
       <button class="chip" onclick="pickChQType(this,'lightning')" id="ch-qtype-lightning">⚡ Lightning</button>
       <button class="chip" onclick="pickChQType(this,'team')" id="ch-qtype-team">👥 Team Mode</button>
     </div>
@@ -41530,10 +41529,12 @@ function playAgain(){
     if(G.isHost){
       G.roomRef.once('value').then(sn=>{
         const d=sn.val()||{};
+        const roomSub=normalizeOnlineSub((d&& (d.qtype||d.sub)) || G.sub);
+        G.sub=roomSub;
         const roomDiff=d.difficulty||G.diff||'easy';
         G.diff=roomDiff;
         G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
-        const upd={status:'waiting',difficulty:roomDiff,sub:d.sub||G.sub||'classic'};
+        const upd={status:'waiting',difficulty:roomDiff,sub:roomSub,qtype:roomSub};
         Object.keys(d.players||{}).forEach(uid=>{
           upd['players/'+uid+'/ready']=false;
           upd['players/'+uid+'/diff']=roomDiff;
@@ -41609,14 +41610,16 @@ function createRoom(){
   G.meReady=false;
   document.getElementById('ready-btn').textContent='✓ Mark Ready';
   const code=mkCode(); G.roomId=code; G.isHost=true;
+  const roomSub=normalizeOnlineSub(G.sub);
+  G.sub=roomSub;
   const ref=G.db.ref('rooms/'+code); G.roomRef=ref;
   ref.set({
-    code, host:G.uid, status:'waiting', sub:G.sub, difficulty:G.diff, createdAt:Date.now(),
+    code, host:G.uid, status:'waiting', sub:roomSub, qtype:roomSub, difficulty:G.diff, createdAt:Date.now(),
     players:{[G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff}}
   }).then(()=>{
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
-    updateLobbyModeNote({sub:G.sub,difficulty:G.diff});
+    updateLobbyModeNote({sub:roomSub,qtype:roomSub,difficulty:G.diff});
     document.getElementById('start-btn').disabled=false;
     renderQRCode(code);
     ref.on('value',sn=>{ const d=sn.val(); if(!d)return; updateLobbyUI(d); if(d.status==='playing'){ ref.off(); joinFromRoom(d); } });
@@ -41677,6 +41680,7 @@ function joinRoomByCode(code){
     const d=sn.val();
     if(!d){ toast('Room not found'); return; }
     if(d.status==='playing'){ toast('Game already in progress'); return; }
+    G.sub=normalizeOnlineSub((d&& (d.qtype||d.sub)) || G.sub);
     if(d.difficulty){
       G.diff=d.difficulty;
       G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
@@ -41700,9 +41704,13 @@ function joinRoom(){
   closeOv('ov-join');
   joinRoomByCode(code);
 }
+function normalizeOnlineSub(mode){
+  if(mode==='fillin') return 'verse';
+  return mode||'classic';
+}
 function chQTypeLabel(qtype){
-  const qtLabels={classic:'🎯 Classic',truefalse:'✅ True/False',fillin:'📖 Fill-in-Verse',lightning:'⚡ Lightning',team:'👥 Team Mode'};
-  return qtLabels[qtype]||'🎯 Classic';
+  const qtLabels={classic:'🎯 Classic',truefalse:'✅ True/False',verse:'📖 Fill-in-Verse',fillin:'📖 Fill-in-Verse',lightning:'⚡ Lightning',team:'👥 Team Mode'};
+  return qtLabels[normalizeOnlineSub(qtype)]||'🎯 Classic';
 }
 function chDiffLabel(diff){
   return diff==='easy'?'Easy':diff==='medium'?'Medium':'Hard';
@@ -41751,10 +41759,12 @@ function startOnline(){
     const ps=Object.values(d.players||{});
     const allReady=ps.length>=2 && ps.every(p=>!!p.ready);
     if(!allReady){ toast('Both players must press Ready first.'); return; }
+    const roomSub=normalizeOnlineSub((d&& (d.qtype||d.sub)) || G.sub);
+    G.sub=roomSub;
     const roomDiff=d.difficulty||G.diff||'easy';
     G.diff=roomDiff;
     G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
-    const upd={status:'playing',difficulty:roomDiff,sub:d.sub||G.sub||'classic'};
+    const upd={status:'playing',difficulty:roomDiff,sub:roomSub,qtype:roomSub};
     Object.keys(d.players||{}).forEach(uid=>{ upd['players/'+uid+'/diff']=roomDiff; });
     G.roomRef.update(upd);
   }).catch(()=>toast('Unable to start room right now.'));
@@ -41769,7 +41779,7 @@ function joinFromRoom(d){
   const usedNames=new Set();
   players=players.map(p=>{let n=p.name,c=2;while(usedNames.has(n)){n=p.name+' '+c;c++;}usedNames.add(n);return{...p,name:n};});
   G.players=players;
-  G.sub=d.sub||'classic';
+  G.sub=normalizeOnlineSub((d&& (d.qtype||d.sub)) || 'classic');
   G.qi=0;G.pi=0;G.done=false;G.onlineGame=true;G.isAnswerer=false;G._lastOnlineState=null;G._onlineQKey=null;G.roomPool=null;G.roomOrders=null;
   G.scores={};G.hearts={};G.streaks={};
   G.players.forEach(p=>{G.scores[p.name]=0;G.hearts[p.name]=3;G.streaks[p.name]=0;});
@@ -43411,9 +43421,10 @@ function sendChallenge(){
   sfx.tap();
 
   // Set difficulty and question type globally so buildPool uses them
+  const challengeSub=normalizeOnlineSub(_chQType);
   G.diff=_chDiff;
   G.TIM=_chDiff==='easy'?25:_chDiff==='hard'?12:20;
-  G.sub=_chQType;
+  G.sub=challengeSub;
 
   // Get target friend data for adding to room
   const targetF=getFriendData(_chTargetUid);
@@ -43424,7 +43435,7 @@ function sendChallenge(){
     senderAvatar:G.profile.avatar,
     mode:'online',
     difficulty:_chDiff,
-    qtype:_chQType,
+    qtype:challengeSub,
     timestamp:Date.now(),
     status:'pending'
   };
@@ -43434,8 +43445,8 @@ function sendChallenge(){
   challengeData.roomCode=code;
   const ref=G.db.ref('rooms/'+code);
   ref.set({
-    code, host:G.uid, status:'waiting', sub:_chQType, createdAt:Date.now(),
-    challenge:true, difficulty:_chDiff, qtype:_chQType,
+    code, host:G.uid, status:'waiting', sub:challengeSub, qtype:challengeSub, createdAt:Date.now(),
+    challenge:true, difficulty:_chDiff,
     challengeTarget:_chTargetUid,
     players:{
       [G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:_chDiff},
@@ -43463,7 +43474,7 @@ function sendChallenge(){
       // Navigate to lobby and show the room
       document.getElementById('rc-disp').textContent=challengeData.roomCode;
       document.getElementById('lobby-panel').style.display='block';
-      updateLobbyModeNote({qtype:_chQType,difficulty:_chDiff});
+      updateLobbyModeNote({qtype:challengeSub,difficulty:_chDiff});
       document.getElementById('start-btn').disabled=false;
       renderQRCode(challengeData.roomCode);
       go('lobby');
@@ -43541,7 +43552,7 @@ function acceptChallenge(){
   // Set difficulty and question type from challenge
   G.diff=ch.difficulty||'easy';
   G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
-  G.sub=ch.qtype||'classic';
+  G.sub=normalizeOnlineSub((ch&& (ch.qtype||ch.sub)) || 'classic');
 
   if(ch.roomCode){
     // Join the room the sender created

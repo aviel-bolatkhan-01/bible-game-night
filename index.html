@@ -40430,6 +40430,30 @@ const ORIGINAL_VERSE_WORD_BANK=['grace','truth','peace','mercy','hope','glory','
 function questionKey(q){
   return q&& (q._id || q.q || q.r || q.b || '');
 }
+function normTxt(s){
+  return String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
+}
+function canonicalQuestionKey(q,subOverride){
+  const mode=normalizeOnlineSub(subOverride||G.sub||'classic');
+  if(mode==='truefalse'){
+    return `tf:${normTxt(q.q)}`;
+  }
+  if(mode==='verse'){
+    return `verse:${normTxt(q.b)}|${normTxt(q.blank)}|${normTxt(q.a)}|${normTxt(q.r)}`;
+  }
+  return `mcq:${normTxt(q.q)}|${normTxt((q.o||[]).join('|'))}|${normTxt(q.cat||q.r||'')}`;
+}
+function dedupeQuestions(list,subOverride){
+  const seen=new Set();
+  const out=[];
+  (list||[]).forEach(q=>{
+    const k=canonicalQuestionKey(q,subOverride);
+    if(!k||seen.has(k)) return;
+    seen.add(k);
+    out.push(q);
+  });
+  return out;
+}
 function expandModeQuestionBanks(){
   const localShuf=(a)=>{
     const r=[...a];
@@ -40937,6 +40961,13 @@ function shuf(a){ const r=[...a]; for(let i=r.length-1;i>0;i--){ const j=0|Math.
 function slug(s){ return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
 function isTFQuestion(q){ return typeof q.a === 'boolean'; }
 function getOptionButtons(){ return document.querySelectorAll('#g-opts .opt, #g-opts .tf-btn'); }
+function isAlivePlayerName(name){ return !G.cfg.hearts || ((G.hearts[name]||0)>0); }
+function alivePlayersNow(){ return G.players.filter(p=>isAlivePlayerName(p.name)); }
+function shouldEndByHearts(){
+  if(!G.cfg.hearts) return false;
+  const alive=alivePlayersNow().length;
+  return G.players.length>1 ? alive<=1 : alive===0;
+}
 function normAnswerValue(q){ const isTF=isTFQuestion(q); return isTF?(q.a?1:0):q.a; }
 function tallyVotes(votes,q){
   const isTF=isTFQuestion(q);
@@ -40957,6 +40988,7 @@ function buildPool(){
   else {
     Object.keys(QB).forEach(cat => QB[cat].forEach(q => raw.push({...q, cat})));
   }
+  raw=dedupeQuestions(raw,G.sub);
 
   // Filter by difficulty
   if (G.sub !== 'truefalse' && G.sub !== 'verse') {
@@ -41205,11 +41237,7 @@ function answerQ(btn,isOk,q,order){
         } else {
           fb.innerHTML += `<br><span style="color:#e08080;">${p.name} has been eliminated!</span>`;
           showElim(p.name);
-          const alivePlayers = G.players.filter(pl => G.hearts[pl.name] > 0);
-          if (G.players.length > 1 && alivePlayers.length <= 1) {
-            setTimeout(endGame, 1500);
-            return;
-          } else if (G.players.length === 1 && alivePlayers.length === 0) {
+          if (shouldEndByHearts()) {
             setTimeout(endGame, 1500);
             return;
           }
@@ -41245,8 +41273,7 @@ function timeOut(q,pfx){
       } else {
         fb.innerHTML += `<br><span style="color:#e08080;">${p.name} has been eliminated!</span>`;
         showElim(p.name);
-        const anyAlive = G.players.some(pl => G.hearts[pl.name] > 0);
-        if(!anyAlive){ setTimeout(endGame, 1500); return; }
+        if(shouldEndByHearts()){ setTimeout(endGame, 1500); return; }
       }
     }
   }
@@ -41265,14 +41292,14 @@ function nextTurn(){
   while (attempts < G.players.length) {
     nextPi = (nextPi + 1) % G.players.length;
     attempts++;
-    if (!G.cfg.hearts || G.hearts[G.players[nextPi].name] > 0) {
+    if (isAlivePlayerName(G.players[nextPi].name)) {
       // Found a player who is still in the game
       break;
     }
   }
 
   // Count remaining alive players
-  const alivePlayers = G.players.filter(p => !G.cfg.hearts || G.hearts[p.name] > 0);
+  const alivePlayers = alivePlayersNow();
 
   if (isMulti && alivePlayers.length <= 1) {
     // Only one (or zero) player left, end the game immediately
@@ -41297,6 +41324,10 @@ function nextTurn(){
 
 /* ── Lightning ── */
 function startLightning(pIdx){
+  if(G.cfg.hearts && G.players[pIdx] && (G.hearts[G.players[pIdx].name]||0)<=0){
+    endLightning();
+    return;
+  }
   G.pi=pIdx; G.lScore=0; G.pool=buildPool().slice(0,ROUND_LIMIT); G.qi=0;
   const p=G.players[pIdx];
   document.getElementById('l-av').textContent=p.avatar;
@@ -41334,12 +41365,24 @@ function renderLQ(){
       document.querySelectorAll('#l-opts .opt').forEach((b,i)=>{ if(order[i]===q2.a)b.classList.add('reveal'); });
       fb.className='fb no'; fb.innerHTML=`<strong>✗</strong> ${q2.e}`;
       sfx.wrong();
+      if(G.cfg.hearts){
+        const cur=G.players[G.pi];
+        G.hearts[cur.name]=Math.max(0,(G.hearts[cur.name]||0)-1);
+        if(G.hearts[cur.name]===0){
+          fb.innerHTML += `<br><span style="color:#e08080;">${cur.name} has been eliminated!</span>`;
+          setTimeout(()=>endLightning(),700);
+          return;
+        }
+      }
     }
     setTimeout(()=>{ G.qi++; renderLQ(); },650);
   });
 }
 function endLightning(){
-  const next=G.pi+1;
+  let next=G.pi+1;
+  while(next<G.players.length && G.cfg.hearts && (G.hearts[G.players[next].name]||0)<=0){
+    next++;
+  }
   if(next<G.players.length){
     showScores(false);
     document.getElementById('scores-cta').onclick=()=>{ sfx.tap(); showSplash(next,()=>startLightning(next)); };
@@ -41358,10 +41401,7 @@ function renderTF(){
   if(G.tfRound>=totalRounds){ showScores(true); return; }
 
   // Check if all players are eliminated (hearts)
-  if(G.cfg.hearts){
-    const alive=G.players.filter(p=>G.hearts[p.name]>0);
-    if(alive.length===0 || (G.players.length>1 && alive.length<=1)){ showScores(true); return; }
-  }
+  if(shouldEndByHearts()){ showScores(true); return; }
 
   const q=G.pool[G.tfRound]; G.seen.add(questionKey(q)); G.tfVotes={}; G.tfVoterIdx=0;
   G.done=false;
@@ -41373,7 +41413,7 @@ function renderTF(){
   document.getElementById('tf-scores').textContent=G.players.map(p=>p.avatar+' '+G.scores[p.name]).join('  ');
   // voter chips — skip eliminated players
   const vt=document.getElementById('tf-voters'); vt.innerHTML='';
-  const activePlayers=G.cfg.hearts?G.players.filter(p=>G.hearts[p.name]>0):G.players;
+  const activePlayers=alivePlayersNow();
   activePlayers.forEach((p, i)=>{
     const d=document.createElement('div'); d.className='voter' + (i===0 ? ' cur-voter' : ''); d.id='voter-'+slug(p.name);
     d.innerHTML=`<span>${p.avatar}</span><span>${p.name}</span><span>—</span>`;
@@ -41469,14 +41509,11 @@ function revealTF(q){
   fb.innerHTML=`<strong>Answer: ${q.a?'TRUE ✅':'FALSE ❌'}</strong> — ${q.e}${elimMsg}`;
 
   // Check if game should end due to eliminations
-  if(G.cfg.hearts){
-    const alive=G.players.filter(p=>G.hearts[p.name]>0);
-    if(alive.length===0 || (G.players.length>1 && alive.length<=1)){
-      const nxt=document.getElementById('tf-next'); nxt.style.display='flex';
-      nxt.textContent='See Results →';
-      nxt.onclick=()=>{ sfx.tap(); haptic('tap'); showScores(true); };
-      return;
-    }
+  if(shouldEndByHearts()){
+    const nxt=document.getElementById('tf-next'); nxt.style.display='flex';
+    nxt.textContent='See Results →';
+    nxt.onclick=()=>{ sfx.tap(); haptic('tap'); showScores(true); };
+    return;
   }
 
   const nxt=document.getElementById('tf-next'); nxt.style.display='flex';
@@ -41855,9 +41892,7 @@ function toOnlineQuestion(q,sub){
 function shouldEndOnlineGame(){
   const winTarget=G.cfg.winScore||10;
   const scoreReached=G.players.some(p=>(G.scores[p.name]||0)>=winTarget);
-  if(!G.cfg.hearts) return scoreReached;
-  const aliveCount=G.players.filter(p=>(G.hearts[p.name]!=null?G.hearts[p.name]:3)>0).length;
-  return scoreReached||aliveCount<=1;
+  return scoreReached||shouldEndByHearts();
 }
 function chQTypeLabel(qtype){
   const qtLabels={classic:'🎯 Classic',truefalse:'✅ True/False',verse:'📖 Fill-in-Verse',fillin:'📖 Fill-in-Verse',lightning:'⚡ Lightning',team:'👥 Team Mode'};
@@ -42289,10 +42324,10 @@ function startDailyChallenge(){
   };
   const classicAll=[];
   Object.keys(QB).forEach(cat=>QB[cat].forEach(q=>classicAll.push({...q,cat})));
-  let classicPool=classicAll.filter(byDiff);
-  if(classicPool.length<7) classicPool=classicAll;
+  let classicPool=dedupeQuestions(classicAll.filter(byDiff),'classic');
+  if(classicPool.length<7) classicPool=dedupeQuestions(classicAll,'classic');
 
-  const tfAsMcq=TF_Q.map((q,idx)=>({
+  const tfAsMcq=dedupeQuestions(TF_Q,'truefalse').map((q,idx)=>({
     _id:`daily-tf-${idx}-${q._id||idx}`,
     q:`[True/False] ${q.q}`,
     o:['True','False','Both','Neither'],
@@ -42301,7 +42336,7 @@ function startDailyChallenge(){
     d:dailyDiff,
     cat:'True/False'
   }));
-  const verseAsMcq=VERSE_Q.map((q,idx)=>{
+  const verseAsMcq=dedupeQuestions(VERSE_Q,'verse').map((q,idx)=>{
     const opts=Array.isArray(q.o)?q.o.slice(0,4):[];
     const blank=(q.blank||'').trim();
     let ai=opts.findIndex(o=>String(o||'').trim().toLowerCase()===blank.toLowerCase());
@@ -42325,7 +42360,7 @@ function startDailyChallenge(){
     ...pickSeeded(tfAsMcq,4,500),
     ...pickSeeded(verseAsMcq,4,900),
   ];
-  const dailyPool=pickSeeded(pool,ROUND_LIMIT,1200);
+  const dailyPool=pickSeeded(dedupeQuestions(pool,'classic'),ROUND_LIMIT,1200);
 
   G.mode = 'daily';
   G.sub = 'classic';

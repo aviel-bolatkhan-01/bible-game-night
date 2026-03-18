@@ -40779,7 +40779,14 @@ function pickSub(el,s){
 function onPlay(){
   sfx.tap();
   if(!G.profile){ go('auth'); buildAvGrid(); return; }
-  if(G.mode==='online'||G.mode==='nearby'){ go('lobby'); return; }
+  if(G.mode==='online'){
+    go('lobby');
+    const nbJoin=document.getElementById('nb-join');
+    if(nbJoin) setNb(nbJoin);
+    setTimeout(()=>createRoom(),0);
+    return;
+  }
+  if(G.mode==='nearby'){ go('lobby'); return; }
   go('setup'); buildSetup();
 }
 

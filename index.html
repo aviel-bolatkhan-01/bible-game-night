@@ -3261,7 +3261,10 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
       <span class="g-nm" id="l-nm">Player</span>
     </div>
     <div class="g-mid">⚡ Lightning</div>
-    <div class="score-num" id="l-score">0</div>
+    <div class="g-right">
+      <div class="hearts" id="l-hearts"></div>
+      <div class="score-num" id="l-score">0</div>
+    </div>
   </div>
   <div class="scroller">
     <div style="text-align:center;padding:14px 0 10px;">
@@ -3281,8 +3284,15 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
 <div class="screen" id="s-tf">
   <div class="g-hdr">
     <button class="g-quit" onclick="quitGame()" aria-label="Quit game">✕</button>
+    <div class="g-player">
+      <span class="g-av" id="tf-av">😊</span>
+      <span class="g-nm" id="tf-nm">Player</span>
+    </div>
     <div class="g-mid" id="tf-round" style="text-align:center;">Round 1</div>
-    <div id="tf-scores" style="font-family:'Cinzel',serif;font-size:11px;color:var(--gold1);flex-shrink:0;-webkit-user-select:none;user-select:none;"></div>
+    <div class="g-right">
+      <div class="hearts" id="tf-hearts"></div>
+      <div class="score-num" id="tf-score">0</div>
+    </div>
   </div>
   <div class="timer-row">
     <div class="timer-track"><div class="timer-bar" id="tf-tbar"></div></div>
@@ -3294,8 +3304,8 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
       <button class="tf-btn tf-t" id="tf-tbtn" onclick="answerTF(true)" disabled>✅ True</button>
       <button class="tf-btn tf-f" id="tf-fbtn" onclick="answerTF(false)" disabled>❌ False</button>
     </div>
+    <div id="tf-scores" style="font-family:'Cinzel',serif;font-size:11px;color:var(--gold1);margin-bottom:8px;-webkit-user-select:none;user-select:none;"></div>
     <div id="tf-voters" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;-webkit-user-select:none;user-select:none;"></div>
-    <div id="tf-hearts-strip" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;-webkit-user-select:none;user-select:none;"></div>
     <div class="fb" id="tf-fb" style="display:none;"></div>
     <button class="btn btn-ghost btn-sm" id="tf-next" style="display:none;margin-top:12px;" onclick="nextTF()">Next Round →</button>
     <div class="pb"></div>
@@ -41333,6 +41343,7 @@ function startLightning(pIdx){
   document.getElementById('l-av').textContent=p.avatar;
   document.getElementById('l-nm').textContent=p.name;
   document.getElementById('l-score').textContent=G.scores[p.name]||0;
+  renderHearts('l-hearts',G.hearts[p.name]||3);
   document.getElementById('l-streak').textContent='0 correct';
   document.getElementById('l-clock').style.color='var(--gold1)';
   go('lightning'); renderLQ();
@@ -41357,6 +41368,7 @@ function renderLQ(){
     if(isOk){
       btn.classList.add('correct'); G.lScore++;
       G.scores[G.players[G.pi].name]++;
+      document.getElementById('l-score').textContent=G.scores[G.players[G.pi].name]||0;
       document.getElementById('l-streak').textContent=G.lScore+' correct';
       fb.className='fb ok'; fb.innerHTML=`<strong>✓</strong> ${q2.e}`;
       sfx.correct();
@@ -41368,6 +41380,7 @@ function renderLQ(){
       if(G.cfg.hearts){
         const cur=G.players[G.pi];
         G.hearts[cur.name]=Math.max(0,(G.hearts[cur.name]||0)-1);
+        renderHearts('l-hearts',G.hearts[cur.name]||0);
         if(G.hearts[cur.name]===0){
           fb.innerHTML += `<br><span style="color:#e08080;">${cur.name} has been eliminated!</span>`;
           setTimeout(()=>endLightning(),700);
@@ -41395,6 +41408,16 @@ function startTF(){
   G.players.forEach(p=>{ G.scores[p.name]=0; });
   go('tf'); renderTF();
 }
+function renderTFHeader(){
+  const activePlayers=G._tfActivePlayers||alivePlayersNow();
+  const idx=Math.min(G.tfVoterIdx||0,Math.max(0,activePlayers.length-1));
+  const p=activePlayers[idx]||G.players[0];
+  if(!p) return;
+  document.getElementById('tf-av').textContent=p.avatar||'😊';
+  document.getElementById('tf-nm').textContent=p.name||'Player';
+  document.getElementById('tf-score').textContent=G.scores[p.name]||0;
+  renderHearts('tf-hearts',G.hearts[p.name]||0);
+}
 function renderTF(){
   if(G.tfRound>=G.pool.length){ showScores(true); return; }
   const totalRounds=Math.min(ROUND_LIMIT,G.pool.length);
@@ -41419,30 +41442,13 @@ function renderTF(){
     d.innerHTML=`<span>${p.avatar}</span><span>${p.name}</span><span>—</span>`;
     vt.appendChild(d);
   });
-  // Render hearts strip
-  renderTFHearts();
   // Set active players reference for voting
   G.tfVoterIdx=0;
   G._tfActivePlayers=activePlayers;
+  renderTFHeader();
   updateTFIndicator();
   setTimeout(()=>{ document.getElementById('tf-tbtn').disabled=false; document.getElementById('tf-fbtn').disabled=false; },200);
   if(G.cfg.timer) startTimer('tf-tbar',null,12,()=>revealTF(q));
-}
-
-function renderTFHearts(){
-  const strip=document.getElementById('tf-hearts-strip');
-  if(!strip)return;
-  if(!G.cfg.hearts){ strip.innerHTML=''; strip.style.display='none'; return; }
-  strip.style.display='flex';
-  strip.innerHTML='';
-  G.players.forEach(p=>{
-    const d=document.createElement('div');
-    d.style.cssText='display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.03);border:1px solid rgba(180,130,50,.1);border-radius:8px;padding:4px 8px;';
-    const hearts=Array.from({length:3},(_,i)=>i<(G.hearts[p.name]||0)?'❤️':'🖤').join('');
-    d.innerHTML=`<span style="font-size:13px;">${p.avatar}</span><span style="font-size:10px;font-weight:600;color:var(--ink3);">${p.name}</span><span style="font-size:11px;">${hearts}</span>`;
-    if(G.hearts[p.name]<=0) d.style.opacity='0.3';
-    strip.appendChild(d);
-  });
 }
 
 function updateTFIndicator(){
@@ -41471,6 +41477,7 @@ function answerTF(ans){
   if(G.tfVoterIdx < activePlayers.length){
     const nextEl = document.getElementById('voter-'+slug(activePlayers[G.tfVoterIdx].name));
     if(nextEl) nextEl.classList.add('cur-voter');
+    renderTFHeader();
     updateTFIndicator();
   } else {
     stopTimers();
@@ -41501,8 +41508,8 @@ function revealTF(q){
     const el=document.getElementById('voter-'+slug(p.name));
     if(el) el.innerHTML=`<span>${p.avatar}</span><span>${p.name}</span><span style="color:${ok?'#6dda9a':ans===undefined?'var(--ink3)':'#e08080'}">${ok?'✓':ans===undefined?'—':'✗'}</span>`;
   });
-  // Update hearts display
-  renderTFHearts();
+  // Update header stats
+  renderTFHeader();
   document.getElementById('tf-scores').textContent=G.players.map(p=>p.avatar+' '+G.scores[p.name]).join('  ');
   const fb=document.getElementById('tf-fb'); fb.style.display='block';
   fb.className='fb ok';

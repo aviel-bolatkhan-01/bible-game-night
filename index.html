@@ -40424,6 +40424,19 @@ function setAuthRedirectPending(v){
 function getAuthRedirectPending(){
   try{ return sessionStorage.getItem('auth_redirect_pending')||''; }catch(e){ return ''; }
 }
+function startGoogleRedirectSignIn(){
+  if(!G.auth){ toast('Firebase not configured'); return; }
+  const provider=new firebase.auth.GoogleAuthProvider();
+  setAuthRedirectPending('google');
+  const cu=G.auth.currentUser;
+  if(cu && cu.isAnonymous){
+    G.auth.signOut()
+      .then(()=>G.auth.signInWithRedirect(provider))
+      .catch(e=>handleAuthError(e,'Google sign-in failed'));
+    return;
+  }
+  G.auth.signInWithRedirect(provider).catch(e=>handleAuthError(e,'Google sign-in failed'));
+}
 
 /* ══════════════════════════════════════════════════
    FIREBASE
@@ -40441,7 +40454,7 @@ function initFB(){
     G.auth.onAuthStateChanged(user=>{
       if(user){
         G.uid=user.uid; G.fbOk=true; fbDot(true);
-        if(getAuthRedirectPending()) setAuthRedirectPending('');
+        if(getAuthRedirectPending() && !user.isAnonymous) setAuthRedirectPending('');
         updateProfileSigninCard();
         // If signed in via social, auto-create profile from display name
         if(!G.profile && user.displayName){
@@ -40471,7 +40484,8 @@ function initFB(){
       }
     });
     G.auth.getRedirectResult().then(result=>{
-      if(getAuthRedirectPending()) setAuthRedirectPending('');
+      const pending=getAuthRedirectPending();
+      if(pending) setAuthRedirectPending('');
       if(result&&result.user){
         updateProfileSigninCard();
         if(result.additionalUserInfo && result.additionalUserInfo.providerId==='google.com'){
@@ -40479,6 +40493,8 @@ function initFB(){
         } else {
           toast('Signed in!');
         }
+      } else if(pending==='google' && G.auth.currentUser && G.auth.currentUser.isAnonymous){
+        toast('Google sign-in did not complete. Please try again.');
       } else if(!G.auth.currentUser){
         G.auth.signInAnonymously()
           .then(c=>{ G.uid=c.user.uid; G.fbOk=true; fbDot(true); if(G.profile)pushProfile(); listenForChallenges(); cleanExpiredChallenges(); })
@@ -43085,10 +43101,7 @@ function showFacebookAuthErrorModal(err){
    SOCIAL AUTH
 ══════════════════════════════════════════════════ */
 function signInWithGoogle(){
-  if(!G.auth){ toast('Firebase not configured'); return; }
-  const provider=new firebase.auth.GoogleAuthProvider();
-  setAuthRedirectPending('google');
-  G.auth.signInWithRedirect(provider).catch(e=>handleAuthError(e,'Google sign-in failed'));
+  startGoogleRedirectSignIn();
 }
 function signInWithFacebook(){
   if(!G.auth){ toast('Firebase not configured'); return; }
@@ -43139,9 +43152,7 @@ function profileSignIn(method){
   }
   if(!G.auth){ toast('Firebase not configured'); return; }
   if(method==='google'){
-    const provider=new firebase.auth.GoogleAuthProvider();
-    setAuthRedirectPending('google');
-    G.auth.signInWithRedirect(provider).catch(e=>handleAuthError(e,'Sign-in failed'));
+    startGoogleRedirectSignIn();
     return;
   }
   let provider;

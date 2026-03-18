@@ -40633,6 +40633,7 @@ function wk(){ const d=new Date(),dt=d.getDate()-d.getDay()+(d.getDay()===0?-6:1
 ══════════════════════════════════════════════════ */
 function loadProfile(){
   try{ G.profile=JSON.parse(localStorage.getItem('bgn3')||'null'); }catch(e){}
+  G.cfg.timer=true;
   if(G.profile){
     document.getElementById('main-nav').style.display='';
     renderHomeBar();
@@ -40960,9 +40961,9 @@ function renderOpts(){
   const isRoom=setupKind==='online'||setupKind==='nearby';
   const opts=[
     {k:'sound',l:'🔔 Sound Effects'},
-    {k:'timer',l:'⏳ Question Timer (20s)'},
     {k:'hearts',l:'❤️ Lives / Hearts'},
   ];
+  G.cfg.timer=true;
   if(!isRoom) opts.push({k:'sudden',l:'💀 Sudden Death'});
   opts.forEach(o=>{
     G.cfg[o.k]=G.cfg[o.k]!==undefined?G.cfg[o.k]:true;
@@ -41724,7 +41725,7 @@ function playAgain(){
         const roomDiff=d.difficulty||G.diff||'easy';
         G.diff=roomDiff;
         G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
-        const upd={status:'waiting',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{sound:!!G.cfg.sound,timer:!!G.cfg.timer,hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:ROUND_LIMIT}};
+        const upd={status:'waiting',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{sound:!!G.cfg.sound,hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:ROUND_LIMIT}};
         Object.keys(d.players||{}).forEach(uid=>{
           upd['players/'+uid+'/ready']=false;
           upd['players/'+uid+'/diff']=roomDiff;
@@ -41799,7 +41800,7 @@ function createRoom(){
   const ref=G.db.ref('rooms/'+code); G.roomRef=ref;
   ref.set({
     code, host:G.uid, status:'waiting', sub:roomSub, qtype:roomSub, difficulty:G.diff, createdAt:Date.now(),
-    cfg:{sound:!!G.cfg.sound,timer:!!G.cfg.timer,hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:ROUND_LIMIT},
+    cfg:{sound:!!G.cfg.sound,hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:ROUND_LIMIT},
     players:{[G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff}}
   }).then(()=>{
     document.getElementById('rc-disp').textContent=code;
@@ -41870,7 +41871,7 @@ function joinRoomByCode(code){
       G.diff=d.difficulty;
       G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
     }
-    if(d.cfg) G.cfg={...G.cfg,...d.cfg,winScore:ROUND_LIMIT};
+    if(d.cfg) G.cfg={...G.cfg,...d.cfg,winScore:ROUND_LIMIT,timer:true};
     ref.child('players/'+G.uid).set({name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:d.difficulty||G.diff});
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
@@ -42004,7 +42005,7 @@ function startOnline(){
     const roomDiff=d.difficulty||G.diff||'easy';
     G.diff=roomDiff;
     G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
-    const upd={status:'playing',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{sound:!!G.cfg.sound,timer:!!G.cfg.timer,hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:ROUND_LIMIT}};
+    const upd={status:'playing',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{sound:!!G.cfg.sound,hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:ROUND_LIMIT}};
     Object.keys(d.players||{}).forEach(uid=>{ upd['players/'+uid+'/diff']=roomDiff; });
     G.roomRef.update(upd);
   }).catch(()=>toast('Unable to start room right now.'));
@@ -42013,7 +42014,7 @@ function joinFromRoom(d){
   // Keep roomRef alive for game sync
   // Set difficulty from room data so buildPool filters correctly
   if(d.difficulty) G.diff=d.difficulty;
-  if(d.cfg) G.cfg={...G.cfg,...d.cfg,winScore:ROUND_LIMIT};
+  if(d.cfg) G.cfg={...G.cfg,...d.cfg,winScore:ROUND_LIMIT,timer:true};
   G.cfg.winScore=ROUND_LIMIT;
   G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
   const playerEntries=Object.entries(d.players||{});
@@ -42338,7 +42339,7 @@ function startNearby(){
   const ref=G.db.ref('rooms/'+code); G.roomRef=ref;
   ref.set({
     code, host:G.uid, status:'waiting', sub:G.sub, difficulty:G.diff, createdAt:Date.now(),
-    cfg:{sound:!!G.cfg.sound,timer:!!G.cfg.timer,hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:ROUND_LIMIT},
+    cfg:{sound:!!G.cfg.sound,hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:ROUND_LIMIT},
     nearby:true,
     players:{[G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff}}
   }).then(()=>{
@@ -42711,7 +42712,7 @@ function buildSettingsList(){
   const el=document.getElementById('settings-list'); if(!el)return; el.innerHTML='';
 
   // Toggles
-  [{k:'sound',l:'🔔 Sound Effects'},{k:'timer',l:'⏳ Question Timer'},{k:'hearts',l:'❤️ Lives System'}].forEach(o=>{
+  [{k:'sound',l:'🔔 Sound Effects'},{k:'hearts',l:'❤️ Lives System'}].forEach(o=>{
     const row=document.createElement('div'); row.className='toggle-row';
     row.innerHTML=`<span class="toggle-lbl">${o.l}</span><button class="toggle-btn ${G.cfg[o.k]?'on':'off'}" id="stog-${o.k}" onclick="togGlobal('${o.k}')">${G.cfg[o.k]?'ON':'OFF'}</button>`;
     el.appendChild(row);
@@ -42737,6 +42738,7 @@ function buildSettingsList(){
   // Translation picker removed - no translations implemented
 }
 function togGlobal(k){
+  if(k==='timer') return;
   G.cfg[k]=!G.cfg[k];
   const b=document.getElementById('stog-'+k);
   if(b){ b.textContent=G.cfg[k]?'ON':'OFF'; b.className='toggle-btn '+(G.cfg[k]?'on':'off'); }
@@ -43744,7 +43746,7 @@ function sendChallenge(){
   ref.set({
     code, host:G.uid, status:'waiting', sub:challengeSub, qtype:challengeSub, createdAt:Date.now(),
     challenge:true, difficulty:_chDiff,
-    cfg:{sound:!!G.cfg.sound,timer:!!G.cfg.timer,hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:ROUND_LIMIT},
+    cfg:{sound:!!G.cfg.sound,hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:ROUND_LIMIT},
     challengeTarget:_chTargetUid,
     players:{
       [G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:_chDiff},

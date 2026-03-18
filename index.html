@@ -40415,6 +40415,15 @@ const G={
   cfg:{sound:true,timer:true,hearts:true,sudden:false,winScore:10},
   donAmt:'$10',
 };
+function setAuthRedirectPending(v){
+  try{
+    if(v) sessionStorage.setItem('auth_redirect_pending', v);
+    else sessionStorage.removeItem('auth_redirect_pending');
+  }catch(e){}
+}
+function getAuthRedirectPending(){
+  try{ return sessionStorage.getItem('auth_redirect_pending')||''; }catch(e){ return ''; }
+}
 
 /* ══════════════════════════════════════════════════
    FIREBASE
@@ -40432,6 +40441,7 @@ function initFB(){
     G.auth.onAuthStateChanged(user=>{
       if(user){
         G.uid=user.uid; G.fbOk=true; fbDot(true);
+        if(getAuthRedirectPending()) setAuthRedirectPending('');
         // If signed in via social, auto-create profile from display name
         if(!G.profile && user.displayName){
           G.profile={
@@ -40452,7 +40462,27 @@ function initFB(){
         listenForChallenges(); cleanExpiredChallenges();
       } else {
         if(G._loggingOut){ G._loggingOut=false; return; }
+        if(getAuthRedirectPending()) return;
         // Fall back to anonymous if no social session
+        G.auth.signInAnonymously()
+          .then(c=>{ G.uid=c.user.uid; G.fbOk=true; fbDot(true); if(G.profile)pushProfile(); listenForChallenges(); cleanExpiredChallenges(); })
+          .catch(()=>fbDot(false));
+      }
+    });
+    G.auth.getRedirectResult().then(result=>{
+      if(getAuthRedirectPending()) setAuthRedirectPending('');
+      if(result&&result.user){
+        updateProfileSigninCard();
+        if(result.additionalUserInfo && result.additionalUserInfo.providerId==='google.com'){
+          toast('Signed in with Google!');
+        } else {
+          toast('Signed in!');
+        }
+      }
+    }).catch(e=>{
+      if(getAuthRedirectPending()) setAuthRedirectPending('');
+      handleAuthError(e,'Sign-in failed');
+      if(!G.auth.currentUser){
         G.auth.signInAnonymously()
           .then(c=>{ G.uid=c.user.uid; G.fbOk=true; fbDot(true); if(G.profile)pushProfile(); listenForChallenges(); cleanExpiredChallenges(); })
           .catch(()=>fbDot(false));
@@ -43052,6 +43082,7 @@ function showFacebookAuthErrorModal(err){
 function signInWithGoogle(){
   if(!G.auth){ toast('Firebase not configured'); return; }
   const provider=new firebase.auth.GoogleAuthProvider();
+  setAuthRedirectPending('google');
   G.auth.signInWithRedirect(provider).catch(e=>handleAuthError(e,'Google sign-in failed'));
 }
 function signInWithFacebook(){
@@ -43110,6 +43141,7 @@ function profileSignIn(method){
   const useRedirect=(method==='google');
   if(currentUser&&currentUser.isAnonymous){
     const credential=provider;
+    if(useRedirect) setAuthRedirectPending(method);
     const linkCall=useRedirect?currentUser.linkWithRedirect(credential):currentUser.linkWithPopup(credential);
     linkCall.then(result=>{
       if(!useRedirect){
@@ -43120,6 +43152,7 @@ function profileSignIn(method){
       if(e.code==='auth/unauthorized-domain'){ showDomainErrorModal(); return; }
       if(e.code==='auth/credential-already-in-use'||e.code==='auth/email-already-in-use'){
         const signInCall=useRedirect?G.auth.signInWithRedirect(provider):G.auth.signInWithPopup(provider);
+        if(useRedirect) setAuthRedirectPending(method);
         signInCall.then(()=>{
           if(!useRedirect){
             toast('Signed in! Progress synced.');
@@ -43132,6 +43165,7 @@ function profileSignIn(method){
     });
   } else {
     const signInCall=useRedirect?G.auth.signInWithRedirect(provider):G.auth.signInWithPopup(provider);
+    if(useRedirect) setAuthRedirectPending(method);
     signInCall.then(()=>{
       if(!useRedirect){
         toast('Signed in!');

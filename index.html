@@ -983,11 +983,27 @@ body::after {
 }
 @keyframes slideDown { from { opacity:0; transform:translateX(-50%) translateY(-30px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
 .challenge-notif-inner {
-  background: var(--bg1);
+  background: var(--card-bg, var(--bg1));
   border: 1.5px solid rgba(196,136,10,.35);
   border-radius: 16px;
   padding: 14px 16px;
   box-shadow: 0 8px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(196,136,10,.1);
+}
+html[data-theme="dark"] .challenge-notif-inner {
+  background: var(--card-bg);
+  border-color: rgba(224,168,96,.35);
+  box-shadow: 0 12px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(224,168,96,.18);
+}
+html[data-theme="dark"] #challenge-notif #cn-name { color: var(--ink) !important; }
+html[data-theme="dark"] #challenge-notif #cn-detail,
+html[data-theme="dark"] #challenge-notif #cn-timer { color: var(--ink2) !important; }
+html[data-theme="green"] .challenge-notif-inner {
+  background: #F8FAF6;
+  border-color: rgba(94,138,94,.35);
+}
+html[data-theme="warmth"] .challenge-notif-inner {
+  background: #FDF9F4;
+  border-color: rgba(176,120,80,.35);
 }
 /* ─── MODALS ─────────────────────────────────────── */
 .ov {

@@ -41530,6 +41530,30 @@ function endGame(){
 
 function playAgain(){
   sfx.tap(); stopTimers(); clearAutoAdvance();
+  if((G.mode==='online'||G.mode==='nearby'||G.onlineGame) && G.roomRef && G.roomId){
+    G.meReady=false;
+    const readyBtn=document.getElementById('ready-btn');
+    if(readyBtn) readyBtn.textContent='✓ Mark Ready';
+    const startBtn=document.getElementById('start-btn');
+    if(startBtn) startBtn.disabled=true;
+    document.getElementById('rc-disp').textContent=G.roomId;
+    document.getElementById('lobby-panel').style.display='block';
+    const qrWrap=document.getElementById('lobby-qr');
+    if(qrWrap) qrWrap.style.display=G.isHost?'block':'none';
+    if(G.isHost) renderQRCode(G.roomId);
+    G.roomRef.child('players/'+G.uid+'/ready').set(false);
+    if(G.isHost) G.roomRef.update({status:'waiting'});
+    G.roomRef.off();
+    G.roomRef.on('value',sn=>{
+      const d=sn.val(); if(!d) return;
+      updateLobbyUI(d);
+      if(d.status==='playing'){ G.roomRef.off(); joinFromRoom(d); }
+    });
+    go('lobby');
+    const nbJoin=document.getElementById('nb-join');
+    if(nbJoin) setNb(nbJoin);
+    return;
+  }
   G.qi=0; G.pi=0; G.seen.clear(); G.done=false;
   G.scores={}; G.hearts={}; G.streaks={};
   G.players.forEach(p=>{ G.scores[p.name]=0; G.hearts[p.name]=3; G.streaks[p.name]=0; });

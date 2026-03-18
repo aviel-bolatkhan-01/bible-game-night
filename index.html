@@ -3076,19 +3076,6 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
       </button>
     </div>
 
-    <div class="auth-divider">or</div>
-
-    <!-- Email toggle -->
-    <button class="btn-social btn-email-auth" onclick="toggleEmailAuth()" style="margin-bottom:10px;">
-      ✉️ Continue with Email
-    </button>
-    <div class="email-auth-form" id="email-auth-form">
-      <input class="inp" id="auth-email" type="email" placeholder="Email address" autocomplete="email">
-      <input class="inp" id="auth-password" type="password" placeholder="Password (min 6 chars)" autocomplete="new-password">
-      <button class="btn btn-primary" onclick="signInWithEmail()">Sign In</button>
-      <button class="btn btn-ghost btn-sm" onclick="createEmailAccount()">Create Account</button>
-    </div>
-
     <div class="auth-divider">or play as guest</div>
 
     <!-- Guest form -->
@@ -3459,17 +3446,6 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
           <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M17.05 20.28c-.98.95-2.05.86-3.08.42-1.07-.46-2.04-.47-3.16 0-1.42.6-2.17.42-3.05-.42C2.2 14.73 3.02 6.42 8.7 6.13c1.35.07 2.29.74 3.08.8 1.17-.22 2.3-.9 3.56-.77 1.51.17 2.65.77 3.38 1.95-3.12 1.87-2.37 5.98.48 7.14-.6 1.53-1.38 3.06-2.15 4.03zM12.03 6.08C11.84 3.78 13.7 1.9 15.84 1.7c.28 2.63-2.39 4.58-3.81 4.38z"/></svg>
           Apple
         </button>
-      </div>
-      <button class="btn-social btn-email-auth" style="padding:11px 14px;font-size:14px;border-radius:12px;margin-bottom:0;" onclick="profileSignIn('email')">
-        ✉️ Email
-      </button>
-      <div class="email-auth-form" id="prof-email-form" style="margin-top:10px;">
-        <input class="inp" id="prof-auth-email" type="email" placeholder="Email address" autocomplete="email">
-        <input class="inp" id="prof-auth-password" type="password" placeholder="Password (min 6 chars)" autocomplete="new-password">
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-primary btn-sm" style="flex:1;" onclick="profileEmailSignIn()">Sign In</button>
-          <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="profileEmailCreate()">Create Account</button>
-        </div>
       </div>
     </div>
 
@@ -43205,11 +43181,7 @@ function updateProfileSigninCard(){
   card.style.display=isGuestUser()?'block':'none';
 }
 function profileSignIn(method){
-  if(method==='email'){
-    const f=document.getElementById('prof-email-form');
-    f.classList.toggle('show');
-    return;
-  }
+  if(method==='email'){ toast('Email sign-in is disabled.'); return; }
   if(!G.auth){ toast('Firebase not configured'); return; }
   if(method==='google'){
     startGoogleRedirectSignIn();
@@ -43246,52 +43218,10 @@ function profileSignIn(method){
   }
 }
 function profileEmailSignIn(){
-  if(!G.auth){ toast('Firebase not configured'); return; }
-  const email=document.getElementById('prof-auth-email').value.trim();
-  const pass=document.getElementById('prof-auth-password').value;
-  if(!email||!pass){ toast('Enter email and password'); return; }
-  const currentUser=G.auth.currentUser;
-  if(currentUser&&currentUser.isAnonymous){
-    const cred=firebase.auth.EmailAuthProvider.credential(email,pass);
-    currentUser.linkWithCredential(cred).then(()=>{
-      toast('Account linked! Progress saved.');
-      updateProfileSigninCard();
-    }).catch(e=>{
-      if(e.code==='auth/unauthorized-domain'){ showDomainErrorModal(); return; }
-      if(e.code==='auth/credential-already-in-use'||e.code==='auth/email-already-in-use'){
-        G.auth.signInWithEmailAndPassword(email,pass).then(()=>{
-          toast('Signed in!');
-          updateProfileSigninCard();
-        }).catch(e2=>handleAuthError(e2,'Sign-in failed'));
-      } else {
-        handleAuthError(e,'Sign-in failed');
-      }
-    });
-  } else {
-    G.auth.signInWithEmailAndPassword(email,pass).then(()=>{
-      toast('Signed in!');
-      updateProfileSigninCard();
-    }).catch(e=>handleAuthError(e,'Sign-in failed'));
-  }
+  toast('Email sign-in is disabled.');
 }
 function profileEmailCreate(){
-  if(!G.auth){ toast('Firebase not configured'); return; }
-  const email=document.getElementById('prof-auth-email').value.trim();
-  const pass=document.getElementById('prof-auth-password').value;
-  if(!email||pass.length<6){ toast('Valid email + 6-char password required'); return; }
-  const currentUser=G.auth.currentUser;
-  if(currentUser&&currentUser.isAnonymous){
-    const cred=firebase.auth.EmailAuthProvider.credential(email,pass);
-    currentUser.linkWithCredential(cred).then(()=>{
-      toast('Account created & linked! Progress saved.');
-      updateProfileSigninCard();
-    }).catch(e=>handleAuthError(e,'Account creation failed'));
-  } else {
-    G.auth.createUserWithEmailAndPassword(email,pass).then(()=>{
-      toast('Account created!');
-      updateProfileSigninCard();
-    }).catch(e=>handleAuthError(e,'Account creation failed'));
-  }
+  toast('Email sign-in is disabled.');
 }
 
 /* ══════════════════════════════════════════════════

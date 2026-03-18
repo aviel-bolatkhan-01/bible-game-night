@@ -3220,7 +3220,7 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
     <div style="text-align:center;padding:18px 0;">
       <div class="nearby-ring">📡</div>
       <div class="eyebrow" style="margin-bottom:6px;">Same WiFi Play</div>
-      <p style="font-size:13px;color:var(--ink3);line-height:1.6;margin-bottom:14px;">Connect on the same WiFi or hotspot — no internet required for this mode.</p>
+      <p style="font-size:13px;color:var(--ink3);line-height:1.6;margin-bottom:14px;">Best for players on the same WiFi or hotspot. Share code or QR to join instantly.</p>
       <button class="btn btn-green btn-sm" style="max-width:200px;margin:0 auto;" onclick="startNearby()"><span class="btn-icon">📡</span>Start Nearby</button>
     </div>
     <div class="pb"></div>
@@ -42009,45 +42009,23 @@ function copyCode(){
 }
 function startNearby(){
   if(!G.profile){ go('auth'); return; }
+  if(!G.fbOk){ toast('Configure Firebase to use Same WiFi Play.'); return; }
   sfx.tap();
-  if(!('BroadcastChannel' in window)){
-    toast('Nearby play requires a modern browser. Use Online Room for cross-device play.');
-    return;
-  }
-  // BroadcastChannel works within the same browser on the same device.
-  // For cross-device LAN play, use Online Room with a shared code.
-  const code = mkCode();
-  try {
-    if(G.nearbyChannel) G.nearbyChannel.close();
-    G.nearbyChannel = new BroadcastChannel('lamp-nearby-' + code);
-    G.roomId = code; G.isHost = true;
-    const hostPlayers = { [G.uid||'host']: { name: G.profile.name, avatar: G.profile.avatar, ready: false, score: 0, hearts: 3 } };
-    document.getElementById('rc-disp').textContent = code;
-    document.getElementById('lobby-panel').style.display = 'block';
-    document.getElementById('start-btn').disabled = false;
-    const qrWrap = document.getElementById('lobby-qr'); if(qrWrap) qrWrap.style.display = 'none';
-    G.nearbyChannel.onmessage = e => {
-      if(e.data.type === 'join') {
-        hostPlayers[e.data.uid] = { name: e.data.name, avatar: e.data.avatar, ready: false, score: 0, hearts: 3 };
-        updateLobbyUI({ host: G.uid||'host', players: hostPlayers });
-        G.nearbyChannel.postMessage({ type: 'roster', players: hostPlayers, host: G.uid||'host' });
-      }
-    };
-    document.getElementById('start-btn').onclick = () => {
-      sfx.tap();
-      G.nearbyChannel.postMessage({ type: 'start', players: hostPlayers });
-      G.players = Object.values(hostPlayers).map(p => ({ name: p.name, avatar: p.avatar }));
-      G.pool = buildPool(); G.qi = 0; G.pi = 0;
-      G.scores = {}; G.hearts = {}; G.streaks = {};
-      G.players.forEach(p => { G.scores[p.name] = 0; G.hearts[p.name] = 3; G.streaks[p.name] = 0; });
-      G.nearbyChannel.close(); G.nearbyChannel = null;
-      showSplash(0, () => { go('game'); renderQ(); });
-    };
-    updateLobbyUI({ host: G.uid||'host', players: hostPlayers });
-    toast('Nearby room ' + code + ' open — share with others on this device.');
-  } catch(e) {
-    toast('Nearby play unavailable. Use Online Room instead.');
-  }
+  const code=mkCode(); G.roomId=code; G.isHost=true;
+  const ref=G.db.ref('rooms/'+code); G.roomRef=ref;
+  ref.set({
+    code, host:G.uid, status:'waiting', sub:G.sub, createdAt:Date.now(),
+    nearby:true,
+    players:{[G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff}}
+  }).then(()=>{
+    document.getElementById('rc-disp').textContent=code;
+    document.getElementById('lobby-panel').style.display='block';
+    updateLobbyModeNote({sub:G.sub,difficulty:G.diff});
+    document.getElementById('start-btn').disabled=false;
+    renderQRCode(code);
+    ref.on('value',sn=>{ const d=sn.val(); if(!d)return; updateLobbyUI(d); if(d.status==='playing'){ ref.off(); joinFromRoom(d); } });
+    toast('Same WiFi room '+code+' created! Share code or QR.');
+  }).catch(e=>toast('Error: '+e.message));
 }
 function startDailyChallenge(){
   if(!G.profile){ go('auth'); return; }

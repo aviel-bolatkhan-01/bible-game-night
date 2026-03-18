@@ -40575,7 +40575,7 @@ const G={
   // friends
   _incomingRequests:{}, _frReqRef:null, _friendsRef:null,
   // cfg
-  cfg:{sound:true,timer:true,hearts:true,sudden:false,winScore:ROUND_LIMIT},
+  cfg:{sound:true,timer:true,hearts:true,winScore:ROUND_LIMIT},
   donAmt:'$10',
 };
 function setAuthRedirectPending(v){
@@ -41086,13 +41086,10 @@ function removeP(i){
 function renderOpts(){
   const el=document.getElementById('opt-list'); el.innerHTML='';
   const setupKind=_setupAction||'local';
-  const isRoom=setupKind==='online'||setupKind==='nearby';
-  if(isRoom) G.cfg.sudden=false;
   const opts=[
     {k:'hearts',l:'❤️ Lives / Hearts'},
   ];
   G.cfg.timer=true;
-  if(!isRoom) opts.push({k:'sudden',l:'💀 Sudden Death'});
   opts.forEach(o=>{
     G.cfg[o.k]=G.cfg[o.k]!==undefined?G.cfg[o.k]:true;
     const row=document.createElement('div'); row.className='toggle-row';
@@ -41411,16 +41408,11 @@ function answerQ(btn,isOk,q,order){
       G.hearts[p.name]=Math.max(0,(G.hearts[p.name]||0)-1);
       renderHearts('g-hearts',G.hearts[p.name]);
       if(G.hearts[p.name]===0){
-        if(G.cfg.sudden){
-          fb.innerHTML += `<br><span style="color:#e08080;">${p.name} lost their last heart! Game Over (Sudden Death).</span>`;
-          setTimeout(endGame,1500); return;
-        } else {
-          fb.innerHTML += `<br><span style="color:#e08080;">${p.name} has been eliminated!</span>`;
-          showElim(p.name);
-          if (shouldEndByHearts()) {
-            setTimeout(endGame, 1500);
-            return;
-          }
+        fb.innerHTML += `<br><span style="color:#e08080;">${p.name} has been eliminated!</span>`;
+        showElim(p.name);
+        if (shouldEndByHearts()) {
+          setTimeout(endGame, 1500);
+          return;
         }
       }
     }
@@ -41452,14 +41444,9 @@ function timeOut(q,pfx){
     G.hearts[p.name]=Math.max(0,(G.hearts[p.name]||0)-1);
     renderHearts(`${pfx}-hearts`,G.hearts[p.name]);
     if(G.hearts[p.name]===0){
-      if(G.cfg.sudden){
-        fb.innerHTML += `<br><span style="color:#e08080;">${p.name} lost their last heart! Game Over (Sudden Death).</span>`;
-        setTimeout(endGame,1500); return;
-      } else {
-        fb.innerHTML += `<br><span style="color:#e08080;">${p.name} has been eliminated!</span>`;
-        showElim(p.name);
-        if(shouldEndByHearts()){ setTimeout(endGame, 1500); return; }
-      }
+      fb.innerHTML += `<br><span style="color:#e08080;">${p.name} has been eliminated!</span>`;
+      showElim(p.name);
+      if(shouldEndByHearts()){ setTimeout(endGame, 1500); return; }
     }
   }
   if(G.mode==='practice' && G.players.length===1){
@@ -41937,7 +41924,7 @@ function playAgain(){
         const roomDiff=d.difficulty||G.diff||'easy';
         G.diff=roomDiff;
         G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
-        const upd={status:'waiting',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:clampRounds(G.cfg.winScore)}};
+        const upd={status:'waiting',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)}};
         Object.keys(d.players||{}).forEach(uid=>{
           upd['players/'+uid+'/ready']=false;
           upd['players/'+uid+'/diff']=roomDiff;
@@ -42015,12 +42002,12 @@ function createRoom(){
   const ref=G.db.ref('rooms/'+code); G.roomRef=ref;
   ref.set({
     code, host:G.uid, status:'waiting', sub:roomSub, qtype:roomSub, difficulty:G.diff, createdAt:Date.now(),
-    cfg:{hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:clampRounds(G.cfg.winScore)},
+    cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)},
     players:{[G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff}}
   }).then(()=>{
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
-    updateLobbyModeNote({sub:roomSub,qtype:roomSub,difficulty:G.diff,cfg:{hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:clampRounds(G.cfg.winScore)}});
+    updateLobbyModeNote({sub:roomSub,qtype:roomSub,difficulty:G.diff,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)}});
     document.getElementById('start-btn').disabled=false;
     renderQRCode(code);
     ref.on('value',sn=>{ const d=sn.val(); if(!d)return; updateLobbyUI(d); if(d.status==='playing'){ ref.off(); joinFromRoom(d); } });
@@ -42230,7 +42217,7 @@ function startOnline(){
     const roomDiff=d.difficulty||G.diff||'easy';
     G.diff=roomDiff;
     G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
-    const upd={status:'playing',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:clampRounds(G.cfg.winScore)}};
+    const upd={status:'playing',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)}};
     Object.keys(d.players||{}).forEach(uid=>{ upd['players/'+uid+'/diff']=roomDiff; });
     G.roomRef.update(upd);
   }).catch(()=>toast('Unable to start room right now.'));
@@ -42575,13 +42562,13 @@ function startNearby(){
   const ref=G.db.ref('rooms/'+code); G.roomRef=ref;
   ref.set({
     code, host:G.uid, status:'waiting', sub:G.sub, difficulty:G.diff, createdAt:Date.now(),
-    cfg:{hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:clampRounds(G.cfg.winScore)},
+    cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)},
     nearby:true,
     players:{[G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff}}
   }).then(()=>{
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
-    updateLobbyModeNote({sub:G.sub,difficulty:G.diff,cfg:{hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:clampRounds(G.cfg.winScore)}});
+    updateLobbyModeNote({sub:G.sub,difficulty:G.diff,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)}});
     document.getElementById('start-btn').disabled=false;
     renderQRCode(code);
     ref.on('value',sn=>{ const d=sn.val(); if(!d)return; updateLobbyUI(d); if(d.status==='playing'){ ref.off(); joinFromRoom(d); } });
@@ -44182,7 +44169,7 @@ function sendChallenge(){
     mode:'online',
     difficulty:_chDiff,
     qtype:challengeSub,
-    cfg:{hearts:!!_chCfg.hearts,sudden:false,winScore:clampRounds(_chCfg.winScore)},
+    cfg:{hearts:!!_chCfg.hearts,winScore:clampRounds(_chCfg.winScore)},
     timestamp:Date.now(),
     status:'pending'
   };
@@ -44194,7 +44181,7 @@ function sendChallenge(){
   ref.set({
     code, host:G.uid, status:'waiting', sub:challengeSub, qtype:challengeSub, createdAt:Date.now(),
     challenge:true, difficulty:_chDiff,
-    cfg:{hearts:!!_chCfg.hearts,sudden:false,winScore:clampRounds(_chCfg.winScore)},
+    cfg:{hearts:!!_chCfg.hearts,winScore:clampRounds(_chCfg.winScore)},
     challengeTarget:_chTargetUid,
     players:{
       [G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:_chDiff},
@@ -44222,7 +44209,7 @@ function sendChallenge(){
       // Navigate to lobby and show the room
       document.getElementById('rc-disp').textContent=challengeData.roomCode;
       document.getElementById('lobby-panel').style.display='block';
-      updateLobbyModeNote({qtype:challengeSub,difficulty:_chDiff,cfg:{hearts:!!_chCfg.hearts,sudden:false,winScore:clampRounds(_chCfg.winScore)}});
+      updateLobbyModeNote({qtype:challengeSub,difficulty:_chDiff,cfg:{hearts:!!_chCfg.hearts,winScore:clampRounds(_chCfg.winScore)}});
       document.getElementById('start-btn').disabled=false;
       renderQRCode(challengeData.roomCode);
       go('lobby');
@@ -44330,7 +44317,7 @@ function joinChallengeRoom(code,chMeta){
     ref.child('players/'+G.uid).update({name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff});
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
-    updateLobbyModeNote({qtype:(chMeta&&chMeta.qtype)||d.qtype||d.sub,difficulty:(chMeta&&chMeta.difficulty)||d.difficulty,cfg:(chMeta&&chMeta.cfg)||d.cfg||{hearts:!!G.cfg.hearts,sudden:!!G.cfg.sudden,winScore:clampRounds(G.cfg.winScore)}});
+    updateLobbyModeNote({qtype:(chMeta&&chMeta.qtype)||d.qtype||d.sub,difficulty:(chMeta&&chMeta.difficulty)||d.difficulty,cfg:(chMeta&&chMeta.cfg)||d.cfg||{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)}});
     document.getElementById('start-btn').disabled=true;
     const qrWrap=document.getElementById('lobby-qr'); if(qrWrap) qrWrap.style.display='none';
     ref.on('value',sn2=>{ const d2=sn2.val(); if(!d2)return; updateLobbyUI(d2); if(d2.status==='playing'){ ref.off(); joinFromRoom(d2); } });

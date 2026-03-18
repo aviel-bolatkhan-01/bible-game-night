@@ -678,7 +678,9 @@ body::after {
 .lb-info { flex: 1; min-width: 0; }
 .lb-nm   { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .lb-sub  { font-family: 'Nunito', sans-serif; font-size: 10px; color: var(--ink3); display: flex; align-items: center; gap: 4px; }
-.lb-sub .clan-emoji { width: 12px; text-align: center; flex-shrink: 0; opacity: .85; }
+.lb-sub.lb-clan-sub { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; line-height: 1.05; }
+.lb-sub.lb-clan-sub .clan-emoji { width: 12px; text-align: center; flex-shrink: 0; opacity: .85; }
+.lb-sub.lb-clan-sub .clan-name { white-space: nowrap; }
 .lb-xpv  { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 700; color: var(--gold1); }
 .lb-lvl  { font-family: 'Nunito', sans-serif; font-size: 9px; color: var(--ink3); display: block; text-align: right; }
 
@@ -42274,7 +42276,7 @@ function displayLBRows(list, rows, tab) {
     }else{
       const clanName=(p.clan&&String(p.clan).trim())?String(p.clan):'No clan';
       const clanEmoji=clanName==='No clan'?'•':'⛪';
-      row.innerHTML=`<div class="lb-rank">${medal}</div><div class="lb-av">${p.avatar||'😊'}</div><div class="lb-info"><div class="lb-nm">${escHtml(p.name||'Player')}${isMe?' ✦':''}</div><div class="lb-sub"><span class="clan-emoji">${clanEmoji}</span><span>${escHtml(clanName)}</span></div></div><div style="text-align:right;"><div class="lb-xpv">${p.xp||0} XP</div><span class="lb-lvl">${l.name}</span></div>`;
+      row.innerHTML=`<div class="lb-rank">${medal}</div><div class="lb-av">${p.avatar||'😊'}</div><div class="lb-info"><div class="lb-nm">${escHtml(p.name||'Player')}${isMe?' ✦':''}</div><div class="lb-sub lb-clan-sub"><span class="clan-emoji">${clanEmoji}</span><span class="clan-name">${escHtml(clanName)}</span></div></div><div style="text-align:right;"><div class="lb-xpv">${p.xp||0} XP</div><span class="lb-lvl">${l.name}</span></div>`;
     }
     list.appendChild(row);
   });

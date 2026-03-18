@@ -1644,6 +1644,16 @@ body { background: var(--bg); color: var(--ink); }
   border-color: rgba(88,204,2,.28) !important;
 }
 .opt.reveal .opt-key { color: var(--green1); border-color: rgba(88,204,2,.35); }
+.opt.selected-vote {
+  background: rgba(201,145,13,.16) !important;
+  border-color: rgba(201,145,13,.7) !important;
+  border-bottom-color: rgba(201,145,13,.95) !important;
+}
+.opt.selected-vote .opt-key {
+  color: #8a6400;
+  border-color: rgba(201,145,13,.6);
+  background: rgba(201,145,13,.18);
+}
 
 /* ── True / False ───────────────────────── */
 .tf-t {
@@ -2122,6 +2132,8 @@ html[data-theme="dark"] .opt.wrong { background: rgba(200,50,50,.15); border-col
 html[data-theme="dark"] .opt.wrong .opt-key { color: #FF6B6B; background: rgba(200,50,50,.1); border-color: #C83232; }
 html[data-theme="dark"] .opt.reveal { background: rgba(224,168,96,.12); border-color: #E0A860; }
 html[data-theme="dark"] .opt.reveal .opt-key { color: #E0A860; border-color: #E0A860; }
+html[data-theme="dark"] .opt.selected-vote { background: rgba(224,168,96,.16); border-color: #E0A860; }
+html[data-theme="dark"] .opt.selected-vote .opt-key { color: #E0A860; border-color: #E0A860; background: rgba(224,168,96,.12); }
 /* True/False buttons */
 html[data-theme="dark"] .tf-t { background: rgba(94,138,94,.2); border-color: #5E8A5E; color: #7DD9A4; }
 html[data-theme="dark"] .tf-f { background: rgba(200,50,50,.2); border-color: #C83232; color: #FF8B8B; }
@@ -2684,6 +2696,8 @@ html[data-theme="green"] .opt { background: #F8FAF6; border-color: #C4CFC0; colo
 html[data-theme="green"] .opt-key { background: #E4EAE0; border-color: #C4CFC0; color: var(--ink3); }
 html[data-theme="green"] .opt.correct { background: rgba(94,138,94,.12) !important; border-color: #5E8A5E !important; }
 html[data-theme="green"] .opt.wrong { background: rgba(200,50,50,.1) !important; border-color: #C04040 !important; }
+html[data-theme="green"] .opt.selected-vote { background: rgba(94,138,94,.14) !important; border-color: #5E8A5E !important; }
+html[data-theme="green"] .opt.selected-vote .opt-key { color: #4A6F4A; border-color: #5E8A5E; background: rgba(94,138,94,.14); }
 html[data-theme="green"] .sc-row { background: #F8FAF6; border-color: #C4CFC0; }
 html[data-theme="green"] .sc-row.top { background: rgba(94,138,94,.08); border-color: rgba(94,138,94,.3); }
 html[data-theme="green"] .sc-pts { color: #5E8A5E; }
@@ -2772,6 +2786,8 @@ html[data-theme="warmth"] .opt { background: #FDF9F4; border-color: #D8CCBC; col
 html[data-theme="warmth"] .opt-key { background: #F3EBE0; border-color: #D8CCBC; color: var(--ink3); }
 html[data-theme="warmth"] .opt.correct { background: rgba(94,138,94,.12) !important; border-color: #5E8A5E !important; }
 html[data-theme="warmth"] .opt.wrong { background: rgba(200,50,50,.1) !important; border-color: #C04040 !important; }
+html[data-theme="warmth"] .opt.selected-vote { background: rgba(176,120,80,.14) !important; border-color: #B07850 !important; }
+html[data-theme="warmth"] .opt.selected-vote .opt-key { color: #8F6040; border-color: #B07850; background: rgba(176,120,80,.14); }
 html[data-theme="warmth"] .sc-row { background: #FDF9F4; border-color: #D8CCBC; }
 html[data-theme="warmth"] .sc-row.top { background: rgba(176,120,80,.08); border-color: rgba(176,120,80,.3); }
 html[data-theme="warmth"] .sc-pts { color: #B07850; }
@@ -3170,6 +3186,7 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
       <div class="room-code-box">
         <span class="room-code" id="rc-disp">------</span>
         <div class="room-code-lbl">Share this code with friends</div>
+        <div id="lobby-mode-note" style="display:none;margin-top:8px;font-size:12px;color:var(--ink2);font-weight:700;"></div>
         <div style="display:flex;gap:8px;justify-content:center;margin-top:10px;">
           <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="copyCode()">📋 Code</button>
           <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="copyInviteLink()">🔗 Link</button>
@@ -41504,6 +41521,7 @@ function createRoom(){
   }).then(()=>{
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
+    updateLobbyModeNote({sub:G.sub,difficulty:G.diff});
     document.getElementById('start-btn').disabled=false;
     renderQRCode(code);
     ref.on('value',sn=>{ const d=sn.val(); if(!d)return; updateLobbyUI(d); if(d.status==='playing'){ ref.off(); joinFromRoom(d); } });
@@ -41565,6 +41583,7 @@ function joinRoomByCode(code){
     ref.child('players/'+G.uid).set({name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff});
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
+    updateLobbyModeNote(d);
     document.getElementById('start-btn').disabled=true;
     // Hide QR for joiners
     const qrWrap = document.getElementById('lobby-qr'); if(qrWrap) qrWrap.style.display='none';
@@ -41580,9 +41599,30 @@ function joinRoom(){
   closeOv('ov-join');
   joinRoomByCode(code);
 }
+function chQTypeLabel(qtype){
+  const qtLabels={classic:'🎯 Classic',truefalse:'✅ True/False',fillin:'📖 Fill-in-Verse',lightning:'⚡ Lightning',team:'👥 Team Mode'};
+  return qtLabels[qtype]||'🎯 Classic';
+}
+function chDiffLabel(diff){
+  return diff==='easy'?'Easy':diff==='medium'?'Medium':'Hard';
+}
+function updateLobbyModeNote(d){
+  const note=document.getElementById('lobby-mode-note');
+  if(!note)return;
+  const qtype=(d&& (d.qtype||d.sub)) || null;
+  const diff=(d&&d.difficulty) || null;
+  if(!qtype && !diff){
+    note.style.display='none';
+    note.textContent='';
+    return;
+  }
+  note.textContent='Mode: '+chQTypeLabel(qtype||'classic')+' · Difficulty: '+chDiffLabel(diff||'easy');
+  note.style.display='block';
+}
 function updateLobbyUI(d){
   const ps=d.players||{};
   const list=document.getElementById('lobby-list'); list.innerHTML='';
+  updateLobbyModeNote(d);
   Object.entries(ps).forEach(([uid,p])=>{
     const row=document.createElement('div'); row.className='lobby-row';
     const isHost=uid===d.host, isMe=uid===G.uid;
@@ -43360,6 +43400,7 @@ function sendChallenge(){
       // Navigate to lobby and show the room
       document.getElementById('rc-disp').textContent=challengeData.roomCode;
       document.getElementById('lobby-panel').style.display='block';
+      updateLobbyModeNote({qtype:_chQType,difficulty:_chDiff});
       document.getElementById('start-btn').disabled=false;
       renderQRCode(challengeData.roomCode);
       go('lobby');
@@ -43401,10 +43442,7 @@ function showChallengeNotif(ch){
   document.getElementById('cn-av').textContent=ch.senderAvatar||'😊';
   document.getElementById('cn-name').textContent=(ch.senderName||'Someone')+' challenged you!';
 
-  const diffLabel=ch.difficulty==='easy'?'Easy':ch.difficulty==='medium'?'Medium':'Hard';
-  const qtLabels={classic:'🎯 Classic',truefalse:'✅ True/False',fillin:'📖 Fill-in-Verse',lightning:'⚡ Lightning',team:'👥 Team Mode'};
-  const qtLabel=qtLabels[ch.qtype]||'🎯 Classic';
-  document.getElementById('cn-detail').textContent=qtLabel+' · '+diffLabel;
+  document.getElementById('cn-detail').textContent='Mode: '+chQTypeLabel(ch.qtype||'classic')+' · Difficulty: '+chDiffLabel(ch.difficulty||'easy');
 
   el.style.display='block';
   el.style.animation='none';
@@ -43447,7 +43485,7 @@ function acceptChallenge(){
     hideChallengeNotif();
     ch.ref.remove();
     _pendingChallenge=null;
-    joinChallengeRoom(ch.roomCode);
+    joinChallengeRoom(ch.roomCode,ch);
   } else {
     hideChallengeNotif();
     ch.ref.remove();
@@ -43456,7 +43494,7 @@ function acceptChallenge(){
   }
 }
 
-function joinChallengeRoom(code){
+function joinChallengeRoom(code,chMeta){
   if(!G.fbOk){ toast('Online features not available'); return; }
   sfx.tap();
   const ref=G.db.ref('rooms/'+code); G.roomRef=ref; G.roomId=code; G.isHost=false;
@@ -43468,6 +43506,7 @@ function joinChallengeRoom(code){
     ref.child('players/'+G.uid).update({name:G.profile.name,avatar:G.profile.avatar,ready:true,score:0,hearts:3,diff:G.diff});
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
+    updateLobbyModeNote({qtype:(chMeta&&chMeta.qtype)||d.qtype||d.sub,difficulty:(chMeta&&chMeta.difficulty)||d.difficulty});
     document.getElementById('start-btn').disabled=true;
     const qrWrap=document.getElementById('lobby-qr'); if(qrWrap) qrWrap.style.display='none';
     ref.on('value',sn2=>{ const d2=sn2.val(); if(!d2)return; updateLobbyUI(d2); if(d2.status==='playing'){ ref.off(); joinFromRoom(d2); } });

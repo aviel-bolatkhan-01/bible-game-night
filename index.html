@@ -41701,6 +41701,61 @@ function normalizeOnlineSub(mode){
   if(mode==='fillin') return 'verse';
   return mode||'classic';
 }
+function toOnlineQuestion(q,sub){
+  const mode=normalizeOnlineSub(sub);
+  if(mode==='truefalse'){
+    return {
+      kind:'truefalse',
+      q:q.q||'',
+      o:[],
+      a:(q.a===true||q.a===1)?1:0,
+      d:q.d||'',
+      cat:q.cat||q.r||'',
+      e:q.e||'',
+      r:q.r||''
+    };
+  }
+  if(mode==='verse'){
+    const opts=Array.isArray(q.o)?q.o.slice(0,4):[];
+    const correctWord=(q.blank||'').trim();
+    let correctIdx=opts.findIndex(opt=>String(opt||'').trim().toLowerCase()===correctWord.toLowerCase());
+    if(correctIdx===-1&&correctWord){
+      opts.unshift(correctWord);
+      while(opts.length>4) opts.pop();
+      correctIdx=0;
+    }
+    return {
+      kind:'verse',
+      q:'Complete the verse:',
+      b:q.b||'',
+      aSuffix:q.a||'',
+      o:opts,
+      a:correctIdx>-1?correctIdx:0,
+      d:q.d||'',
+      cat:q.cat||q.r||'',
+      e:q.r?`${q.r} — "${(q.b||'')}${correctWord}${q.a||''}"`:'',
+      r:q.r||'',
+      blank:correctWord
+    };
+  }
+  return {
+    kind:'mcq',
+    q:q.q||'',
+    o:Array.isArray(q.o)?q.o.slice(0,4):[],
+    a:typeof q.a==='number'?q.a:parseInt(q.a,10)||0,
+    d:q.d||'',
+    cat:q.cat||q.r||'',
+    e:q.e||'',
+    r:q.r||''
+  };
+}
+function shouldEndOnlineGame(){
+  const winTarget=G.cfg.winScore||10;
+  const scoreReached=G.players.some(p=>(G.scores[p.name]||0)>=winTarget);
+  if(!G.cfg.hearts) return scoreReached;
+  const aliveCount=G.players.filter(p=>(G.hearts[p.name]!=null?G.hearts[p.name]:3)>0).length;
+  return scoreReached||aliveCount<=1;
+}
 function chQTypeLabel(qtype){
   const qtLabels={classic:'🎯 Classic',truefalse:'✅ True/False',verse:'📖 Fill-in-Verse',fillin:'📖 Fill-in-Verse',lightning:'⚡ Lightning',team:'👥 Team Mode'};
   return qtLabels[normalizeOnlineSub(qtype)]||'🎯 Classic';
@@ -41798,16 +41853,12 @@ function joinFromRoom(d){
         if(G._resultTimeout){clearTimeout(G._resultTimeout);G._resultTimeout=null;}
         stopTimers();
         const q=G.roomPool[G.qi];
-        G.players.forEach(p=>{
-          const pVote=votes[p.uid];
-          if(pVote===q.a){G.scores[p.name]=(G.scores[p.name]||0)+1;}
-          else if(G.cfg.hearts){G.hearts[p.name]=Math.max(0,(G.hearts[p.name]!=null?G.hearts[p.name]:3)-1);}
-        });
-        const anyGameOver=G.players.some(p=>G.scores[p.name]>=(G.cfg.winScore||10)||(G.cfg.hearts&&G.hearts[p.name]<=0));
+        const correctA=tallyVotes(votes,q);
+        const anyGameOver=shouldEndOnlineGame();
         let nqi=G.qi+1;
         if(nqi>=(G.roomPool?G.roomPool.length:40))nqi=0;
         G.roomRef.child('gameState').update({
-          phase:'result',votes,correctA:q.a,scores:G.scores,hearts:G.hearts,
+          phase:'result',votes,correctA:correctA,scores:G.scores,hearts:G.hearts,
           nextQi:nqi,gameOver:anyGameOver||false,t:Date.now()
         }).catch(err=>console.error('Update gameState failed:', err));
         return;
@@ -41830,7 +41881,8 @@ function joinFromRoom(d){
 
   if(G.isHost){
     G.pool=buildPool();
-    const poolData=G.pool.slice(0,40).map(q=>({q:q.q||'',o:q.o||[],a:q.a!=null?q.a:0,d:q.d||'',cat:q.cat||q.r||'',e:q.e||'',r:q.r||'',b:q.b||'',blank:q.blank||''}));
+    const roomSub=normalizeOnlineSub(G.sub);
+    const poolData=G.pool.slice(0,40).map(q=>toOnlineQuestion(q,roomSub));
     const ordersData=poolData.map(()=>shuf([0,1,2,3]));
     G.roomRef.child('gameState').set({pool:poolData,orders:ordersData,qi:0,pi:0,scores:{},hearts:{},phase:'question',t:Date.now()})
       .catch(err=>{console.error('Failed to set gameState:', err);toast('Game sync failed');});
@@ -41873,9 +41925,24 @@ function renderOnlineQ(){
   document.getElementById('g-auto-bar').style.display='none';
   const sb=document.getElementById('g-streak-badge');if(sb){sb.style.display='none';sb.classList.remove('streak-pulse');}
   document.getElementById('g-team-scores').style.display='none';
-  document.getElementById('g-txt').textContent=q.q;
+  document.getElementById('g-txt').textContent=q.kind==='verse'?'Complete the verse:':(q.q||'');
   const wrap=document.getElementById('g-opts');wrap.innerHTML='';
-  if(!q.o||!q.o.length){
+  if(q.kind==='verse'){
+    const vb=document.createElement('div'); vb.className='verse-cloze';
+    vb.innerHTML=`${q.b||''} <span class="vblank">__________</span> ${q.aSuffix||''}`;
+    wrap.appendChild(vb);
+    const od=document.createElement('div'); od.className='opts'; od.style.marginTop='0';
+    const keys=['A','B','C','D'];
+    (q.o||[]).forEach((opt,orig)=>{
+      const btn=document.createElement('button');btn.className='opt';
+      btn.style.cssText=`animation:scrIn .3s ${orig*.06}s both`;
+      btn.innerHTML=`<span class="opt-key">${keys[orig]||'•'}</span><span>${opt}</span>`;
+      btn.dataset.origIdx=orig;
+      btn.onclick=()=>answerOnline(btn,orig===q.a,q);
+      od.appendChild(btn);
+    });
+    wrap.appendChild(od);
+  } else if(!q.o||!q.o.length){
     // True/False question — render T/F buttons
     const grid=document.createElement('div');grid.className='tf-grid';grid.style.marginBottom='12px';
     const tBtn=document.createElement('button');tBtn.className='tf-btn tf-t';tBtn.textContent='✅ True';
@@ -41921,7 +41988,7 @@ function renderOnlineQ(){
       if(G._resultTimeout){clearTimeout(G._resultTimeout);G._resultTimeout=null;}
       stopTimers();
       const correctA=tallyVotes(votes,q);
-      const anyGameOver=G.players.some(p=>G.scores[p.name]>=(G.cfg.winScore||10)||(G.cfg.hearts&&G.hearts[p.name]<=0));
+      const anyGameOver=shouldEndOnlineGame();
       let nqi=G.qi+1;
       if(nqi>=(G.roomPool?G.roomPool.length:40))nqi=0;
       G.roomRef.child('gameState').update({
@@ -41951,7 +42018,7 @@ function renderOnlineQ(){
         const correctA2=tallyVotes(v,tq);
         let nqi=G.qi+1;
         if(nqi>=(G.roomPool?G.roomPool.length:40))nqi=0;
-        const anyGameOver=G.players.some(p=>G.scores[p.name]>=(G.cfg.winScore||10)||(G.cfg.hearts&&G.hearts[p.name]<=0));
+        const anyGameOver=shouldEndOnlineGame();
         G.roomRef.child('gameState').update({
           phase:'result',votes:v,correctA:correctA2,scores:G.scores,hearts:G.hearts,
           nextQi:nqi,gameOver:anyGameOver||false,t:Date.now()
@@ -42014,7 +42081,7 @@ function showOnlineResult(gs){
   document.getElementById('g-score').textContent=me?(G.scores[me.name]||0):0;
   renderHearts('g-hearts',me&&G.hearts[me.name]!=null?G.hearts[me.name]:3);
   // Highlight correct and this player's wrong answer
-  const isTF=isTFQuestion(q);
+  const isTF=(q.kind==='truefalse')||isTFQuestion(q)||(!q.o||!q.o.length);
   getOptionButtons().forEach(b=>{
     const orig=parseInt(b.dataset.origIdx);
     if(isTF){
@@ -42039,7 +42106,7 @@ function showOnlineResult(gs){
     }
   }catch(e){}
   // Build result summary
-  const correctName=isTF?(gs.correctA===true||gs.correctA===1?'TRUE':'FALSE'):(q.o[gs.correctA]||'');
+  const correctName=isTF?(gs.correctA===true||gs.correctA===1?'TRUE':'FALSE'):(q.o&&q.o[gs.correctA]?q.o[gs.correctA]:'');
   let html=`<strong>✓ ${correctName}</strong> — ${q.e||''}<br><div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">`;
   G.players.forEach(p=>{
     const pVote=votes[p.uid];

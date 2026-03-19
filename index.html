@@ -42463,8 +42463,34 @@ function playAgain(){
       const nbJoin=document.getElementById('nb-join');
       if(nbJoin) setNb(nbJoin);
     } else {
-      G.roomRef=null; G.roomId=null; G.isHost=false; G.meReady=false; G.onlineGame=false;
-      joinRoomByCode(savedRoomId);
+      G.isHost=false; G.meReady=false; G.onlineGame=false;
+      document.getElementById('ready-btn').textContent='✓ Mark Ready';
+      const ref=G.db.ref('rooms/'+savedRoomId);
+      G.roomRef=ref; G.roomId=savedRoomId;
+      let attempts=0;
+      const waitForWaiting=()=>{
+        attempts++;
+        ref.once('value').then(sn=>{
+          const d=sn.val();
+          if(!d){ toast('Room not found'); return; }
+          if(d.status==='playing' && attempts<12){
+            setTimeout(waitForWaiting,500);
+            return;
+          }
+          G.sub=normalizeOnlineSub((d&&(d.qtype||d.sub))||G.sub);
+          if(d.difficulty){ G.diff=d.difficulty; G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20; }
+          if(d.cfg){ const rcfg={...d.cfg}; delete rcfg.sound; G.cfg={...G.cfg,...rcfg,winScore:clampRounds(d.cfg.winScore),timer:true}; }
+          ref.child('players/'+G.uid).set({name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:d.difficulty||G.diff,connected:true});
+          document.getElementById('rc-disp').textContent=savedRoomId;
+          document.getElementById('lobby-panel').style.display='block';
+          updateLobbyModeNote(d);
+          document.getElementById('start-btn').disabled=true;
+          const qrWrap=document.getElementById('lobby-qr'); if(qrWrap) qrWrap.style.display='none';
+          ref.on('value',sn2=>{ const d2=sn2.val(); if(!d2)return; updateLobbyUI(d2); if(d2.status==='playing'){ ref.off(); joinFromRoom(d2); } });
+          go('lobby');
+        }).catch(e=>toast('Error rejoining: '+e.message));
+      };
+      waitForWaiting();
     }
     return;
   }

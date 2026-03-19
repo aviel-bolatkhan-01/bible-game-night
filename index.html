@@ -3230,6 +3230,7 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
         <button class="btn btn-ghost btn-sm" style="flex:1;" id="ready-btn" onclick="toggleReady()">✓ Ready</button>
         <button class="btn btn-gold btn-sm" style="flex:1;" id="start-btn" onclick="startOnline()" disabled>▶ Start</button>
       </div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:8px;width:100%;" onclick="leaveCurrentRoom()">🚪 Leave Room</button>
     </div>
     <div class="divider"><span>or</span></div>
     <div style="text-align:center;padding:18px 0;">
@@ -3820,6 +3821,7 @@ const CLAN_ICONS=['⛪','🕍','🔔','✝️','🌿','🕊️','🏛️','📖'
 const LEVELS=['Seeker','Believer','Disciple','Apostle','Elder','Deacon','Prophet','Bishop','Patriarch','Sage of Faith'];
 const XP_PER_LEVEL=120;
 const XP_RESET_VERSION=1;
+const REMATCH_RESPONSE_MS=20000;
 const WIN_VERSES=[
   {t:'Well done, good and faithful servant! You have been faithful with a few things; I will put you in charge of many things.',r:'Matthew 25:21'},
   {t:'The LORD your God is with you, the Mighty Warrior who saves.',r:'Zephaniah 3:17'},
@@ -40571,6 +40573,7 @@ const G={
   lScore:0, lTimId:null,
   // friends
   _incomingRequests:{}, _frReqRef:null, _friendsRef:null,
+  _rematchPruneTimer:null,
   // cfg
   cfg:{sound:true,timer:true,hearts:true,winScore:ROUND_LIMIT},
   donAmt:'$10',
@@ -40926,6 +40929,7 @@ function haptic(type){
 function quitGame(){
   stopTimers();
   if(confirm('Quit this game?')){
+    clearTimeout(G._rematchPruneTimer); G._rematchPruneTimer=null;
     if(G._votesRef){G._votesRef.off();G._votesRef=null;}
     if(G._resultTimeout){clearTimeout(G._resultTimeout);G._resultTimeout=null;}
     if(G.roomRef){G.roomRef.child('gameState').off();G.roomRef.off();G.roomRef=null;}
@@ -42036,22 +42040,26 @@ function playAgain(){
         const roomDiff=d.difficulty||G.diff||'easy';
         G.diff=roomDiff;
         G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
-        const upd={status:'waiting',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)}};
+        const upd={status:'waiting',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)},rematchStartedAt:Date.now(),rematchRequestedBy:{[G.uid]:true}};
         Object.keys(d.players||{}).forEach(uid=>{
           upd['players/'+uid+'/ready']=false;
           upd['players/'+uid+'/diff']=roomDiff;
         });
         G.roomRef.update(upd);
       }).catch(()=>{
-        G.roomRef.update({status:'waiting'});
+        G.roomRef.update({status:'waiting',rematchStartedAt:Date.now(),rematchRequestedBy:{[G.uid]:true}});
       });
     } else {
-      G.roomRef.child('players/'+G.uid+'/ready').set(false);
+      G.roomRef.update({
+        ['players/'+G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff},
+        ['rematchRequestedBy/'+G.uid]:true
+      });
     }
     G.roomRef.off();
     G.roomRef.on('value',sn=>{
       const d=sn.val(); if(!d) return;
       if(d.status==='waiting') G._awaitingRematchStart=false;
+      scheduleRematchPrune(d);
       updateLobbyUI(d);
       if(d.status==='playing' && !G._awaitingRematchStart){ G.roomRef.off(); joinFromRoom(d); }
     });
@@ -42097,6 +42105,66 @@ function stopTimers(){ clearInterval(G.timId); clearInterval(G.lTimId); }
 function renderLobby(){
   if(!G.profile){ go('auth'); buildAvGrid(); return; }
   fbDot(G.fbOk);
+}
+function leaveCurrentRoom(){
+  if(!G.roomRef||!G.roomId){
+    G.onlineGame=false;
+    go('home');
+    return;
+  }
+  sfx.tap();
+  const ref=G.roomRef;
+  const roomId=G.roomId;
+  const uid=G.uid;
+  const wasHost=!!G.isHost;
+  clearTimeout(G._rematchPruneTimer); G._rematchPruneTimer=null;
+  Promise.resolve(ref.child('players/'+uid).remove()).then(()=>ref.once('value')).then(sn=>{
+    const d=sn.val()||{};
+    const ps=d.players||{};
+    const uids=Object.keys(ps);
+    if(!uids.length){
+      return ref.remove();
+    }
+    if(wasHost&&d.host===uid){
+      return ref.update({host:uids[0],status:'waiting'});
+    }
+  }).catch(()=>{}).finally(()=>{
+    try{ ref.off(); ref.child('gameState').off(); }catch(e){}
+    G.roomRef=null; G.roomId=null; G.isHost=false; G.meReady=false; G.onlineGame=false;
+    G._awaitingRematchStart=false;
+    go('home');
+    toast('Left room '+roomId+'.');
+  });
+}
+function pruneRematchNonResponders(){
+  if(!G.roomRef||!G.roomId) return;
+  G.roomRef.once('value').then(sn=>{
+    const d=sn.val()||{};
+    if(d.status!=='waiting'||!d.rematchStartedAt) return;
+    if(Date.now()-d.rematchStartedAt<REMATCH_RESPONSE_MS) return;
+    const ps=d.players||{};
+    const requested=d.rematchRequestedBy||{};
+    const updates={};
+    let kept=[];
+    Object.keys(ps).forEach(uid=>{
+      if(!requested[uid]) updates['players/'+uid]=null;
+      else { updates['players/'+uid+'/ready']=false; kept.push(uid); }
+    });
+    if(kept.length===0){
+      G.roomRef.remove().catch(()=>{});
+      return;
+    }
+    if(!kept.includes(d.host)) updates.host=kept[0];
+    updates.rematchRequestedBy=null;
+    updates.rematchStartedAt=null;
+    G.roomRef.update(updates).then(()=>toast('Players who did not press Play Again were removed.')).catch(()=>{});
+  }).catch(()=>{});
+}
+function scheduleRematchPrune(d){
+  if(!G.roomRef||!d||d.status!=='waiting'||!d.rematchStartedAt) return;
+  clearTimeout(G._rematchPruneTimer); G._rematchPruneTimer=null;
+  const wait=Math.max(0,REMATCH_RESPONSE_MS-(Date.now()-d.rematchStartedAt));
+  G._rematchPruneTimer=setTimeout(pruneRematchNonResponders,wait+120);
 }
 function mkCode(){
   const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -42298,7 +42366,8 @@ function updateLobbyUI(d){
   const ps=d.players||{};
   const list=document.getElementById('lobby-list'); list.innerHTML='';
   updateLobbyModeNote(d);
-  Object.entries(ps).forEach(([uid,p])=>{
+  const activeEntries=Object.entries(ps).filter(([,p])=>p&&p.connected!==false);
+  activeEntries.forEach(([uid,p])=>{
     const row=document.createElement('div'); row.className='lobby-row';
     const isHost=uid===d.host, isMe=uid===G.uid;
     row.innerHTML=`<span style="font-size:20px;">${p.avatar}</span><span style="font-family:'Playfair Display',serif;font-size:14px;flex:1;">${p.name}${isMe?' (You)':''}</span><span class="l-badge ${isHost?'host':p.ready?'ready':'wait'}">${isHost?'Host':p.ready?'Ready':'Waiting'}</span>`;
@@ -42306,8 +42375,8 @@ function updateLobbyUI(d){
   });
   const startBtn=document.getElementById('start-btn');
   if(startBtn){
-    const vals=Object.values(ps);
-    const allReady=vals.length>=2 && vals.every(p=>!!p.ready);
+    const nonHost=activeEntries.filter(([uid])=>uid!==d.host).map(([,p])=>p);
+    const allReady=activeEntries.length>=2 && nonHost.length>=1 && nonHost.every(p=>!!p.ready);
     startBtn.disabled=!(G.isHost && allReady);
   }
 }
@@ -42323,15 +42392,16 @@ function startOnline(){
   G.cfg.winScore=clampRounds(G.cfg.winScore);
   G.roomRef.once('value').then(sn=>{
     const d=sn.val()||{};
-    const ps=Object.values(d.players||{});
-    const allReady=ps.length>=2 && ps.every(p=>!!p.ready);
-    if(!allReady){ toast('Both players must press Ready first.'); return; }
+    const activeEntries=Object.entries(d.players||{}).filter(([,p])=>p&&p.connected!==false);
+    const nonHost=activeEntries.filter(([uid])=>uid!==d.host).map(([,p])=>p);
+    const allReady=activeEntries.length>=2 && nonHost.length>=1 && nonHost.every(p=>!!p.ready);
+    if(!allReady){ toast('All joined players must press Ready first.'); return; }
     const roomSub=normalizeOnlineSub((d&& (d.qtype||d.sub)) || G.sub);
     G.sub=roomSub;
     const roomDiff=d.difficulty||G.diff||'easy';
     G.diff=roomDiff;
     G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
-    const upd={status:'playing',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)}};
+    const upd={status:'playing',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)},rematchStartedAt:null,rematchRequestedBy:null};
     Object.keys(d.players||{}).forEach(uid=>{ upd['players/'+uid+'/diff']=roomDiff; });
     G.roomRef.update(upd);
   }).catch(()=>toast('Unable to start room right now.'));

@@ -2987,10 +2987,10 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
 
     <!-- Daily Challenge -->
     <div class="card" style="margin-bottom:16px;padding:16px;display:flex;align-items:center;gap:15px;cursor:pointer;" onclick="startDailyChallenge()">
-      <div style="font-size:32px;">🔥</div>
+        <div style="font-size:32px;">🔥</div>
       <div style="flex:1;">
         <div class="eyebrow" style="color:var(--gold1);">Daily Challenge</div>
-        <div style="font-family:'Playfair Display',serif;font-size:16px;color:var(--ink);">15 Tasks · Time Attack</div>
+        <div style="font-family:'Playfair Display',serif;font-size:16px;color:var(--ink);">12 Trials · Ember Run</div>
         <div id="daily-streak-info" style="font-size:11px;color:var(--ink3);margin-top:2px;">Streak: 0 days</div>
       </div>
       <div class="btn btn-gold btn-sm" style="width:auto;padding:8px 16px;">Play</div>
@@ -40424,7 +40424,7 @@ const VERSE_Q=[
     ]
   }
 ];
-const DEFAULT_ROUNDS=15;
+const DEFAULT_ROUNDS=12;
 const MIN_ROUNDS=10;
 const MAX_ROUNDS=33;
 const ROUND_LIMIT=DEFAULT_ROUNDS;
@@ -44353,7 +44353,7 @@ function addFriendFromFriends(){
 /* ══════════════════════════════════════════════════
    CHALLENGE SYSTEM
 ══════════════════════════════════════════════════ */
-let _chTargetUid=null, _chDiff='easy', _chQType='classic', _chCfg={hearts:true,winScore:15};
+let _chTargetUid=null, _chDiff='easy', _chQType='classic', _chCfg={hearts:true,winScore:DEFAULT_ROUNDS};
 let _chListener=null, _chNotifTimer=null, _pendingChallenge=null;
 const CH_EXPIRY_MS=30*60*1000; // 30 minutes
 

@@ -43956,21 +43956,24 @@ async function shareProfileProgress(){
   ctx.fillText('Lamp - Bible Trivia Online',110,1794);
 
   try{
-    const blob=await canvasToBlob(c);
-    const file=new File([blob],`lamp-progress-${Date.now()}.png`,{type:'image/png'});
+    const caption=`My progress on Lamp - Bible Trivia Online ✨ #LampBibleTrivia`;
+    const blob=await canvasToBlob(c,'image/jpeg',0.94);
+    const file=new File([blob],`lamp-story-${Date.now()}.jpg`,{type:'image/jpeg'});
     if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
-      await navigator.share({title:'Lamp - Bible Trivia Online',text:'My Bible trivia progress',files:[file]});
+      await navigator.share({title:'Lamp - Bible Trivia Online',text:caption,files:[file]});
+      toast('Choose Instagram/Facebook Stories in the share sheet ✦');
       return;
     }
+    try{ if(navigator.clipboard) await navigator.clipboard.writeText(caption); }catch(e){}
     const url=URL.createObjectURL(blob);
     const a=document.createElement('a');
     a.href=url;
-    a.download=`lamp-progress-${Date.now()}.png`;
+    a.download=`lamp-story-${Date.now()}.jpg`;
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),1200);
-    toast('Progress image downloaded ✦');
+    toast('Story image downloaded + caption copied ✦');
   }catch(e){
     toast('Unable to share image right now');
   }

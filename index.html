@@ -43461,7 +43461,7 @@ function loadClanMembers(){
           ${avatarMarkup(m.avatar||'😊',m.photo||'','sm')}
           <span style="flex:1;font-size:13px;color:var(--ink);">${escHtml(m.name||'Player')}</span>
           <span style="font-size:11px;color:var(--gold1);margin-right:4px;">${m.xp||0} XP</span>
-          <button class="btn btn-ghost btn-sm" onclick="kickMember('${m.uid}','${escHtml(m.name||'Player')}')" style="color:var(--ink3);font-size:10px;padding:3px 8px;">Remove</button>
+          <button class="btn btn-ghost btn-sm" onclick="kickMember('${m.uid}','${escHtml(m.name||'Player')}')" style="color:var(--ink3);font-size:10px;padding:3px 8px;min-width:0;width:52px;">Remove</button>
         </div>`).join('');
     });
   });
@@ -43730,16 +43730,24 @@ function renderClans(){
   const clb=document.getElementById('clan-lb');
   if(!G.fbOk){ clb.innerHTML='<div class="empty">Firebase required for congregation rankings.</div>'; return; }
   clb.innerHTML='<div class="loading"><span class="spin">⟳</span> Loading…</div>';
-  G.db.ref('clans').once('value').then(sn=>{
-    const rows=[]; sn.forEach(s=>rows.push({...s.val()}));
-    rows.sort((a,b)=>(b.totalXp||0)-(a.totalXp||0));
+  Promise.all([G.db.ref('clans').once('value'), G.db.ref('leaderboard').once('value')]).then(([clanSn, lbSn])=>{
+    const lbMap={};
+    lbSn.forEach(c=>{ lbMap[c.key]=(c.val()?.xp)||0; });
+    const rows=[];
+    clanSn.forEach(s=>{
+      const c=s.val()||{};
+      const members=c.members||{};
+      const totalXp=Object.keys(members).reduce((sum,uid)=>sum+(lbMap[uid]||0),0);
+      rows.push({...c,totalXp,memberCount:Object.keys(members).length});
+    });
+    rows.sort((a,b)=>b.totalXp-a.totalXp);
     clb.innerHTML='';
     if(!rows.length){ clb.innerHTML='<div class="empty">No congregations yet. Be the first!</div>'; return; }
     rows.forEach((c,i)=>{
       const isMe=c.code===G.profile?.clanCode;
       const row=document.createElement('div'); row.className='lb-row'+(isMe?' me':'');
       const medal=i===0?'👑':i===1?'🥈':i===2?'🥉':'#'+(i+1);
-      row.innerHTML=`<div class="lb-rank">${medal}</div><div class="lb-av">${clanBadgeMarkup(c.icon||'⛪',c.photo||'','sm')}</div><div class="lb-info"><div class="lb-nm">${c.name}</div><div class="lb-sub">${Object.keys(c.members||{}).length} members</div></div><div class="lb-xpv">${c.totalXp||0} XP</div>`;
+      row.innerHTML=`<div class="lb-rank">${medal}</div><div class="lb-av">${clanBadgeMarkup(c.icon||'⛪',c.photo||'','sm')}</div><div class="lb-info"><div class="lb-nm">${escHtml(c.name||'')}</div><div class="lb-sub">${c.memberCount} member${c.memberCount!==1?'s':''}</div></div><div class="lb-xpv">${c.totalXp} XP</div>`;
       clb.appendChild(row);
     });
   }).catch(()=>{ clb.innerHTML='<div class="empty">Error loading clans.</div>'; });

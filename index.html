@@ -675,8 +675,12 @@ body::after {
 .lb-row.top { border-color: rgba(196,136,10,.2); }
 .lb-rank { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 700; color: var(--ink3); width: 26px; text-align: center; }
 .lb-av   { font-size: 40px; width: 48px; text-align: center; line-height: 1; flex-shrink: 0; }
-.lb-av .avatar-inline { width: 48px; height: 48px; }
-.lb-av .clan-inline { width: 40px; height: 40px; }
+.lb-av .avatar-inline,
+.lb-av .avatar-inline.sm,
+.lb-av .avatar-inline.md { width: 48px !important; height: 48px !important; }
+.lb-av .clan-inline,
+.lb-av .clan-inline.sm,
+.lb-av .clan-inline.md { width: 40px !important; height: 40px !important; }
 .lb-info { flex: 1; min-width: 0; }
 .lb-nm   { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .lb-sub  { font-family: 'Nunito', sans-serif; font-size: 10px; color: var(--ink3); display: flex; align-items: center; gap: 4px; }

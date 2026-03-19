@@ -41263,6 +41263,7 @@ function beginGame(){
 }
 function startPracticeGame(){
   if(!G.profile){ go('auth'); buildAvGrid(); return; }
+  G.mode='practice';
   if(G.sub==='team') G.sub='classic';
   G.cfg.winScore=clampRounds(G.cfg.winScore);
   syncSubChipSelection();
@@ -41906,10 +41907,16 @@ function endGame(){
   }
 
   if(G.profile){
+    let xpEarned=0;
     G.profile.played=(G.profile.played||0)+1;
     const xpAllowed=G.mode!=='practice';
-    if(iWon){ G.profile.wins=(G.profile.wins||0)+1; if(xpAllowed) addXP(50); }
-    else if(xpAllowed) addXP(20);
+    if(iWon){
+      G.profile.wins=(G.profile.wins||0)+1;
+      if(xpAllowed){ addXP(50); xpEarned+=50; }
+    }else if(xpAllowed){
+      addXP(20);
+      xpEarned+=20;
+    }
 
     if (G.mode === 'daily') {
       const today = new Date().toISOString().split('T')[0];
@@ -41921,6 +41928,7 @@ function endGame(){
       }
       G.profile.lastDaily = today;
       addXP(100); // Daily bonus
+      xpEarned+=100;
       toast(`☀️ Daily Challenge Complete! +100 XP`);
     }
 
@@ -41931,6 +41939,8 @@ function endGame(){
     }
 
     saveProfile(); if(G.fbOk)pushProfile();
+    if(G.mode==='practice') document.getElementById('w-xp-txt').textContent='✦ Practice mode · XP disabled';
+    else document.getElementById('w-xp-txt').textContent=`✦ +${xpEarned} XP earned`;
   }
   saveMatchResult(win, G.players);
   const v=nextWinVerse();
@@ -41949,8 +41959,10 @@ function endGame(){
     wName.textContent=win.name;
     wPts.textContent=(G.sub==='team' ? G.teamScores[win.name] : G.scores[win.name])+' points';
   }
-  if(G.mode==='practice') wXp.textContent='✦ Practice mode · XP disabled';
-  else wXp.textContent=iWon?'✦ +50 XP earned':'✦ +20 XP earned';
+  if(!G.profile){
+    if(G.mode==='practice') wXp.textContent='✦ Practice mode · XP disabled';
+    else wXp.textContent='✦ +0 XP earned';
+  }
   document.getElementById('w-verse').innerHTML=`"${v.t}"<br><span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.2em;color:var(--gold);display:block;margin-top:8px;">— ${v.r}</span>`;
   const oth=document.getElementById('w-others'); oth.innerHTML='';
   

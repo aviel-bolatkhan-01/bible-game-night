@@ -3379,7 +3379,7 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
     </div>
     <div id="w-verse" style="background:rgba(201,145,13,.06);border:1px solid rgba(201,145,13,.18);border-radius:var(--r2);padding:16px 18px;margin-bottom:14px;font-style:italic;font-family:'Cormorant Garamond',serif;font-size:16px;line-height:1.8;text-align:center;color:var(--ink2);"></div>
     <div id="w-others" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:16px;"></div>
-    <button class="btn btn-gold" onclick="playAgain()" style="margin-bottom:8px;">🔄 Play Again</button>
+    <button class="btn btn-gold" id="w-play-again" onclick="playAgain()" style="margin-bottom:8px;">🔄 Play Again</button>
     <button class="btn btn-share btn-sm" onclick="postMatchShareResult()" style="margin-bottom:8px;">↗ Share Result</button>
     <button class="btn btn-ghost btn-sm" style="margin-bottom:8px;" onclick="postMatchGoHome()">Home</button>
     <button class="btn btn-ghost btn-sm" onclick="postMatchGoDonation()">❤️ Support This Ministry</button>
@@ -40594,6 +40594,7 @@ const G={
   _correctAtGameStart:0,
   _rematchRequestAt:0,
   _forceRematchLobby:false,
+  _dailyPrevHearts:null,
 };
 function setAuthRedirectPending(v){
   try{
@@ -40952,6 +40953,10 @@ function requestQuitGame(){
 function quitGame(){
   closeOv('ov-quit');
   stopTimers();
+  if(G.mode==='daily' && G._dailyPrevHearts!==null){
+    G.cfg.hearts=!!G._dailyPrevHearts;
+    G._dailyPrevHearts=null;
+  }
   clearTimeout(G._rematchPruneTimer); G._rematchPruneTimer=null;
   if(G._votesRef){G._votesRef.off();G._votesRef=null;}
   if(G._resultTimeout){clearTimeout(G._resultTimeout);G._resultTimeout=null;}
@@ -41562,7 +41567,8 @@ function answerQ(btn,isOk,q,order){
     sb.style.display='';
     sb.classList.add('streak-pulse');
   }
-  if(G.mode==='practice' && G.players.length===1){
+  const autoSolo=(G.players.length===1)&&(G.mode==='practice'||G.mode==='daily');
+  if(autoSolo){
     showAutoAdvance('g-auto-bar','g-auto-fill',1100,()=>nextTurn());
     return;
   }
@@ -41587,7 +41593,8 @@ function timeOut(q,pfx){
       if(shouldEndByHearts()){ setTimeout(endGame, 1500); return; }
     }
   }
-  if(G.mode==='practice' && G.players.length===1){
+  const autoSolo=(G.players.length===1)&&(G.mode==='practice'||G.mode==='daily');
+  if(autoSolo){
     showAutoAdvance('g-auto-bar','g-auto-fill',1100,()=>nextTurn());
     return;
   }
@@ -42051,7 +42058,19 @@ function endGame(){
     d.innerHTML=`<span style="font-size:18px;display:block;">${isTopTie?'👑 ':''}${p.avatar}</span><span style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:.07em;color:var(--ink3);text-transform:uppercase;">${p.name}</span><span style="font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--gold1);display:block;">${G.scores[p.name]}</span>`;
     oth.appendChild(d);
   });
+  const playAgainBtn=document.getElementById('w-play-again');
+  if(playAgainBtn) playAgainBtn.style.display=G.mode==='daily'?'none':'';
+  if(G.mode==='daily' && G._dailyPrevHearts!==null){
+    G.cfg.hearts=!!G._dailyPrevHearts;
+    G._dailyPrevHearts=null;
+  }
   go('winner'); sfx.win(); haptic('win'); confetti(); checkAchs();
+  if(G.mode==='daily'){
+    setTimeout(()=>{
+      const sw=document.getElementById('s-winner');
+      if(sw&&sw.classList.contains('active')) go('home');
+    },2200);
+  }
 }
 
 function playAgain(){
@@ -43003,6 +43022,8 @@ function startDailyChallenge(){
   G.hearts = {[G.profile.name]: 3};
   G.streaks = {[G.profile.name]: 0};
   G.cfg.winScore = ROUND_LIMIT;
+  G._dailyPrevHearts=(G.cfg&&typeof G.cfg.hearts==='boolean')?G.cfg.hearts:true;
+  G.cfg.hearts = false;
   G.cfg.timer = true;
   G.TIM = dailyDiff==='hard'?12:dailyDiff==='medium'?16:20;
 

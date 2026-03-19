@@ -2203,7 +2203,7 @@ html[data-theme="dark"] .conv-row { background: var(--card-bg); color: var(--ink
 /* Dark theme buttons */
 html[data-theme="dark"] .btn-primary { background: #E0A860; border-bottom-color: #C49050; color: #1A1A20; font-weight: 800; }
 html[data-theme="dark"] .btn-gold { background: #E0A860; color: #1A1A20; font-weight: 800; }
-html[data-theme="dark"] .btn-ghost { background: var(--card-bg); border-color: var(--inp-border); color: var(--ink); }
+html[data-theme="dark"] .btn-ghost { background: var(--inp-bg); border-color: var(--inp-border); color: var(--ink); }
 html[data-theme="dark"] .btn-ghost:active { background: var(--bg3); color: var(--ink); }
 html[data-theme="dark"] .btn-ghost.active { background: rgba(224,168,96,.12); color: #E0A860; border-color: rgba(224,168,96,.35); }
 html[data-theme="dark"] .nb.on, html[data-theme="dark"] .nb.on svg { color: #E0A860; fill: #E0A860; }
@@ -43673,7 +43673,7 @@ function renderClanInvites(){
 function renderClanPhotoPreview(){
   const el=document.getElementById('clan-photo-preview');
   if(!el) return;
-  el.innerHTML=clanBadgeMarkup('⛪',_pendingClanPhoto,'lg');
+  el.innerHTML=_pendingClanPhoto?clanBadgeMarkup('⛪',_pendingClanPhoto,'lg'):'';
 }
 function uploadClanPhoto(ctx){
   _clanPhotoCtx=ctx||'create';

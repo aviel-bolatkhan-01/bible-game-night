@@ -771,6 +771,31 @@ body::after {
   justify-content: center;
   border: 1.5px solid var(--line);
 }
+.avatar-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+.profile-bar .av.has-photo {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0;
+}
+.prof-avatar.has-photo { font-size: 0; }
+.profile-avatar-tools {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 4px 0 0;
+}
 .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
 .stat-box {
   background: rgba(255,255,255,.032);
@@ -3440,6 +3465,11 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
   <div class="scroller">
     <div style="text-align:center;padding:18px 0 14px;">
       <div class="prof-avatar" id="prof-av" onclick="openOv('ov-avatars','prof')">😊</div>
+      <div class="profile-avatar-tools">
+        <button class="btn btn-ghost btn-sm" onclick="uploadProfilePhoto()">📷 Upload Photo</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearProfilePhoto()">🗑 Remove</button>
+      </div>
+      <input id="profile-photo-input" type="file" accept="image/*" style="display:none;" onchange="onProfilePhotoPicked(event)">
       <div class="h2" id="prof-name">Your Name</div>
       <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-top:4px;" id="prof-level"></div>
       <div class="xp-wrap" style="max-width:200px;margin:10px auto 0;">
@@ -40670,6 +40700,7 @@ function initFB(){
           G.profile={
             name: user.displayName.split(' ')[0].slice(0,20),
             avatar: user.photoURL ? '🧑' : '😊',
+            photo: user.photoURL||'',
             church:'', xp:0, correct:0, bestStreak:0,
             theme:'light',
             weeklyXP:0, weeklyReset: wk(),
@@ -40748,6 +40779,71 @@ function normalizeSocialProfile(){
   else G.profile.friends=[];
 }
 function saveProfile(){ try{ localStorage.setItem('bgn3',JSON.stringify(G.profile)); }catch(e){} }
+function setAvatarEl(el,emoji,photo){
+  if(!el) return;
+  const hasPhoto=typeof photo==='string' && photo.trim().length>0;
+  el.classList.toggle('has-photo',hasPhoto);
+  el.innerHTML='';
+  if(hasPhoto){
+    const img=document.createElement('img');
+    img.className='avatar-photo';
+    img.alt='Profile photo';
+    img.src=photo;
+    el.appendChild(img);
+  }else{
+    el.textContent=emoji||'😊';
+  }
+}
+function uploadProfilePhoto(){
+  if(!G.profile) return;
+  const inp=document.getElementById('profile-photo-input');
+  if(!inp) return;
+  inp.value='';
+  inp.click();
+}
+function onProfilePhotoPicked(e){
+  if(!G.profile) return;
+  const file=e&&e.target&&e.target.files&&e.target.files[0];
+  if(!file) return;
+  if(!file.type || !file.type.startsWith('image/')){
+    toast('Please choose an image file');
+    return;
+  }
+  const rd=new FileReader();
+  rd.onload=()=>{
+    const img=new Image();
+    img.onload=()=>{
+      const side=320;
+      const cnv=document.createElement('canvas');
+      cnv.width=side; cnv.height=side;
+      const ctx=cnv.getContext('2d');
+      if(!ctx){ toast('Could not process image'); return; }
+      const srcW=img.width, srcH=img.height;
+      const srcSide=Math.min(srcW,srcH);
+      const sx=(srcW-srcSide)/2;
+      const sy=(srcH-srcSide)/2;
+      ctx.drawImage(img,sx,sy,srcSide,srcSide,0,0,side,side);
+      G.profile.photo=cnv.toDataURL('image/jpeg',0.84);
+      saveProfile();
+      renderHomeBar();
+      if(document.getElementById('s-profile')?.classList.contains('active')) renderProfile();
+      toast('Profile photo updated');
+    };
+    img.onerror=()=>toast('Could not read this image');
+    img.src=String(rd.result||'');
+  };
+  rd.onerror=()=>toast('Unable to load image');
+  rd.readAsDataURL(file);
+}
+function clearProfilePhoto(){
+  if(!G.profile) return;
+  if(!G.profile.photo){ toast('No profile photo to remove'); return; }
+  delete G.profile.photo;
+  saveProfile();
+  renderHomeBar();
+  if(document.getElementById('s-profile')?.classList.contains('active')) renderProfile();
+  toast('Profile photo removed');
+}
 function pushProfile(){
   if(!G.fbOk||!G.uid||!G.profile)return;
   try{
@@ -40816,6 +40912,7 @@ function createProfile(){
   G.profile={name,avatar:av,church,xp:0,wins:0,played:0,correct:0,bestStreak:0,achs:[],createdAt:Date.now(),
     tier: 'free', gamesToday: 0, lastGameDate: new Date().toISOString().split('T')[0],
     friends: [], friendCode: mkCode(),
+    photo:'',
     theme: 'light',
     weeklyXP: 0, weeklyReset: wk(), xpResetVersion: XP_RESET_VERSION
   };
@@ -40861,7 +40958,7 @@ function renderHomeBar(){
   const p=G.profile, l=lvl(p.xp||0);
   const el=document.getElementById('home-profile-bar');
   el.innerHTML=`<div class="profile-bar" onclick="go('profile');setNb(document.getElementById('nb-profile'))">
-    <div class="av">${p.avatar}</div>
+    <div class="av" id="home-bar-av">${p.avatar}</div>
     <div class="info">
       <div class="pname">${p.name}</div>
       <div class="plvl">${l.name} · Lv ${l.lv}</div>
@@ -40872,6 +40969,7 @@ function renderHomeBar(){
       <span class="wins-lbl">wins</span>
     </div>
   </div>`;
+  setAvatarEl(document.getElementById('home-bar-av'),p.avatar,p.photo);
   el.style.display='block';
 }
 
@@ -43281,7 +43379,7 @@ function checkAchs(){
 function renderProfile(){
   if(!G.profile){ go('auth'); buildAvGrid(); return; }
   const p=G.profile, l=lvl(p.xp||0);
-  document.getElementById('prof-av').textContent=p.avatar;
+  setAvatarEl(document.getElementById('prof-av'),p.avatar,p.photo);
   document.getElementById('prof-name').textContent=p.name;
   document.getElementById('prof-level').textContent=l.name+' · Level '+l.lv;
   const fill=document.getElementById('prof-xp-fill');
@@ -43461,7 +43559,13 @@ function buildAvGrid(ctx){
     btn.textContent=av;
     btn.onclick=()=>{
       sfx.tap();
-      if(_avCtx==='prof'&&G.profile){ G.profile.avatar=av; saveProfile(); document.getElementById('prof-av').textContent=av; renderHomeBar(); }
+      if(_avCtx==='prof'&&G.profile){
+        G.profile.avatar=av;
+        delete G.profile.photo;
+        saveProfile();
+        setAvatarEl(document.getElementById('prof-av'),G.profile.avatar,G.profile.photo);
+        renderHomeBar();
+      }
       else document.getElementById('auth-av').textContent=av;
       closeOv('ov-avatars');
     };

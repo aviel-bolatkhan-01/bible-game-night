@@ -42473,21 +42473,8 @@ function playAgain(){
         ref.once('value').then(sn=>{
           const d=sn.val();
           if(!d){ toast('Room not found'); return; }
-          if(d.status==='playing' && attempts<12){
-            setTimeout(waitForWaiting,500);
-            return;
-          }
-          G.sub=normalizeOnlineSub((d&&(d.qtype||d.sub))||G.sub);
-          if(d.difficulty){ G.diff=d.difficulty; G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20; }
-          if(d.cfg){ const rcfg={...d.cfg}; delete rcfg.sound; G.cfg={...G.cfg,...rcfg,winScore:clampRounds(d.cfg.winScore),timer:true}; }
-          ref.child('players/'+G.uid).set({name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:d.difficulty||G.diff,connected:true});
-          document.getElementById('rc-disp').textContent=savedRoomId;
-          document.getElementById('lobby-panel').style.display='block';
-          updateLobbyModeNote(d);
-          document.getElementById('start-btn').disabled=true;
-          const qrWrap=document.getElementById('lobby-qr'); if(qrWrap) qrWrap.style.display='none';
-          ref.on('value',sn2=>{ const d2=sn2.val(); if(!d2)return; updateLobbyUI(d2); if(d2.status==='playing'){ ref.off(); joinFromRoom(d2); } });
-          go('lobby');
+          if(d.status==='playing' && attempts<12){ setTimeout(waitForWaiting,500); return; }
+          enterRoomAsJoiner(d,savedRoomId,ref);
         }).catch(e=>toast('Error rejoining: '+e.message));
       };
       waitForWaiting();
@@ -42699,6 +42686,19 @@ function checkURLParams(){
   }
 }
 
+function enterRoomAsJoiner(d,code,ref){
+  G.sub=normalizeOnlineSub((d&&(d.qtype||d.sub))||G.sub);
+  if(d.difficulty){ G.diff=d.difficulty; G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20; }
+  if(d.cfg){ const rcfg={...d.cfg}; delete rcfg.sound; G.cfg={...G.cfg,...rcfg,winScore:clampRounds(d.cfg.winScore),timer:true}; }
+  ref.child('players/'+G.uid).set({name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:d.difficulty||G.diff,connected:true});
+  document.getElementById('rc-disp').textContent=code;
+  document.getElementById('lobby-panel').style.display='block';
+  updateLobbyModeNote(d);
+  document.getElementById('start-btn').disabled=true;
+  const qrWrap=document.getElementById('lobby-qr'); if(qrWrap) qrWrap.style.display='none';
+  ref.on('value',sn2=>{ const d2=sn2.val(); if(!d2)return; updateLobbyUI(d2); if(d2.status==='playing'){ ref.off(); joinFromRoom(d2); } });
+  go('lobby');
+}
 function joinRoomByCode(code){
   if(!G.fbOk){ toast('Configure Firebase first.'); return; }
   sfx.tap();
@@ -42709,24 +42709,7 @@ function joinRoomByCode(code){
     const d=sn.val();
     if(!d){ toast('Room not found'); return; }
     if(d.status==='playing'){ toast('Game already in progress'); return; }
-    G.sub=normalizeOnlineSub((d&& (d.qtype||d.sub)) || G.sub);
-    if(d.difficulty){
-      G.diff=d.difficulty;
-      G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
-    }
-    if(d.cfg){
-      const rcfg={...d.cfg}; delete rcfg.sound;
-      G.cfg={...G.cfg,...rcfg,winScore:clampRounds(d.cfg.winScore),timer:true};
-    }
-    ref.child('players/'+G.uid).set({name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:d.difficulty||G.diff,connected:true});
-    document.getElementById('rc-disp').textContent=code;
-    document.getElementById('lobby-panel').style.display='block';
-    updateLobbyModeNote(d);
-    document.getElementById('start-btn').disabled=true;
-    // Hide QR for joiners
-    const qrWrap = document.getElementById('lobby-qr'); if(qrWrap) qrWrap.style.display='none';
-    ref.on('value',sn2=>{ const d2=sn2.val(); if(!d2)return; updateLobbyUI(d2); if(d2.status==='playing'){ ref.off(); joinFromRoom(d2); } });
-    go('lobby');
+    enterRoomAsJoiner(d,code,ref);
     toast('Joined room '+code+'!');
   }).catch(e=>toast('Error: '+e.message));
 }

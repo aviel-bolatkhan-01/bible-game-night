@@ -42328,90 +42328,49 @@ function playAgain(){
     return;
   }
   if((G.mode==='online'||G.mode==='nearby'||G.onlineGame) && G.roomId && G.fbOk && G.db){
-    if(!G.roomRef) G.roomRef=G.db.ref('rooms/'+G.roomId);
-    G._awaitingRematchStart=true;
-    G._rematchRequestAt=Date.now();
-    G._forceRematchLobby=true;
-    G.meReady=false;
-    const readyBtn=document.getElementById('ready-btn');
-    if(readyBtn) readyBtn.textContent='✓ Mark Ready';
-    const startBtn=document.getElementById('start-btn');
-    if(startBtn) startBtn.disabled=true;
-    document.getElementById('rc-disp').textContent=G.roomId;
-    document.getElementById('lobby-panel').style.display='block';
-    const qrWrap=document.getElementById('lobby-qr');
-    if(qrWrap) qrWrap.style.display=G.isHost?'block':'none';
-    if(G.isHost) renderQRCode(G.roomId);
-    if(G.isHost){
-      G.roomRef.once('value').then(sn=>{
-        const d=sn.val()||{};
-        const roomSub=normalizeOnlineSub((d&& (d.qtype||d.sub)) || G.sub);
-        G.sub=roomSub;
-        const roomDiff=d.difficulty||G.diff||'easy';
-        G.diff=roomDiff;
-        G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
-        const startedAt=(d&&d.status==='waiting'&&d.rematchStartedAt)?d.rematchStartedAt:Date.now();
-        const upd={status:'waiting',host:G.uid,difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)},rematchStartedAt:startedAt};
-        upd['rematchRequestedBy/'+G.uid]=true;
-        upd['players/'+G.uid]={name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:roomDiff,connected:true};
-        Object.keys(d.players||{}).forEach(uid=>{
-          if(uid===G.uid) return;
-          upd['players/'+uid+'/ready']=false;
-          upd['players/'+uid+'/diff']=roomDiff;
-        });
-        G.roomRef.update(upd).catch(err=>console.error('playAgain host update failed:',err));
-      }).catch(()=>{
-        G.roomRef.update({
-          status:'waiting',
-          host:G.uid,
-          rematchStartedAt:Date.now(),
-          rematchRequestedBy:{[G.uid]:true},
-          ['players/'+G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:G.diff,connected:true}
-        });
-      });
+    clearTimeout(G._rematchPruneTimer); G._rematchPruneTimer=null;
+    const savedRoomId=G.roomId;
+    const wasHost=!!G.isHost;
+    if(G.roomRef){ try{ G.roomRef.off(); G.roomRef.child('gameState').off(); }catch(e){} }
+
+    if(wasHost){
+      if(!G.roomRef) G.roomRef=G.db.ref('rooms/'+savedRoomId);
+      const ref=G.roomRef;
+      G.isHost=true;
+      G.meReady=false;
+      const roomSub=normalizeOnlineSub(G.sub);
+      G.sub=roomSub;
+      const roomDiff=G.diff||'easy';
+      G.TIM=roomDiff==='easy'?25:roomDiff==='hard'?12:20;
+      ref.update({
+        status:'waiting',
+        host:G.uid,
+        difficulty:roomDiff,
+        sub:roomSub,
+        qtype:roomSub,
+        cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)},
+        gameState:null,
+        rematchRequestedBy:null,
+        rematchStartedAt:null,
+        players:{[G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:roomDiff,connected:true}}
+      }).then(()=>{
+        document.getElementById('rc-disp').textContent=savedRoomId;
+        document.getElementById('lobby-panel').style.display='block';
+        updateLobbyModeNote({sub:roomSub,qtype:roomSub,difficulty:roomDiff,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)}});
+        document.getElementById('start-btn').disabled=false;
+        document.getElementById('ready-btn').textContent='✓ Mark Ready';
+        renderQRCode(savedRoomId);
+        const qrWrap=document.getElementById('lobby-qr');
+        if(qrWrap) qrWrap.style.display='block';
+        ref.on('value',sn=>{ const d=sn.val(); if(!d)return; updateLobbyUI(d); if(d.status==='playing'){ ref.off(); joinFromRoom(d); } });
+      }).catch(e=>{ console.error('playAgain host reset failed:',e); toast('Error resetting room.'); });
+      go('lobby');
+      const nbJoin=document.getElementById('nb-join');
+      if(nbJoin) setNb(nbJoin);
     } else {
-      G.roomRef.once('value').then(sn=>{
-        const d=sn.val()||{};
-        const roomDiff=d.difficulty||G.diff||'easy';
-        G.diff=roomDiff;
-        G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
-        const startedAt=(d&&d.status==='waiting'&&d.rematchStartedAt)?d.rematchStartedAt:Date.now();
-        G.roomRef.update({
-          status:'waiting',
-          rematchStartedAt:startedAt,
-          ['players/'+G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:roomDiff,connected:true},
-          ['rematchRequestedBy/'+G.uid]:true
-        });
-      }).catch(()=>{
-        G.roomRef.update({
-          status:'waiting',
-          rematchStartedAt:Date.now(),
-          ['players/'+G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:G.diff,connected:true},
-          ['rematchRequestedBy/'+G.uid]:true
-        });
-      });
+      G.roomRef=null; G.roomId=null; G.isHost=false; G.meReady=false; G.onlineGame=false;
+      joinRoomByCode(savedRoomId);
     }
-    G.roomRef.off();
-    G.roomRef.on('value',sn=>{
-      const d=sn.val(); if(!d) return;
-      if(G._forceRematchLobby){
-        if(d.status!=='waiting') return;
-        G._forceRematchLobby=false;
-      }
-      if(d.status==='waiting') G._awaitingRematchStart=false;
-      scheduleRematchPrune(d);
-      updateLobbyUI(d);
-      if(d.status==='playing'){
-        const gsTs=(d.gameState&&d.gameState.t)||0;
-        if(gsTs && gsTs<G._rematchRequestAt) return;
-        G._awaitingRematchStart=false;
-        G.roomRef.off();
-        joinFromRoom(d);
-      }
-    });
-    go('lobby');
-    const nbJoin=document.getElementById('nb-join');
-    if(nbJoin) setNb(nbJoin);
     return;
   }
   if(G.mode==='local'){
@@ -42765,7 +42724,7 @@ function updateLobbyUI(d){
   const st=lobbyStartState(d);
   const activeEntries=st.activeEntries;
   const hostUid=st.hostUid;
-  if(st.amHost) G.isHost=true;
+  G.isHost=st.amHost;
   activeEntries.forEach(([uid,p])=>{
     const row=document.createElement('div'); row.className='lobby-row';
     const isHost=uid===hostUid, isMe=uid===G.uid;
@@ -42792,7 +42751,7 @@ function startOnline(){
     const d=sn.val()||{};
     if(!d.host&&G.isHost&&G.uid){ d.host=G.uid; G.roomRef.update({host:G.uid}); }
     const st=lobbyStartState(d);
-    if(st.amHost) G.isHost=true;
+    G.isHost=st.amHost;
     if(!st.canStart){ toast('All joined players must press Ready first.'); return; }
     const roomSub=normalizeOnlineSub((d&& (d.qtype||d.sub)) || G.sub);
     G.sub=roomSub;

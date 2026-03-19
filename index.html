@@ -809,57 +809,6 @@ body::after {
 .clan-inline.md { width: 26px; height: 26px; border-radius: 7px; }
 .clan-inline.lg { width: 54px; height: 54px; border-radius: 12px; }
 .clan-inline .avatar-photo { width: 100%; height: 100%; border-radius: 0; }
-.clan-pic-menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  background: #1e1509;
-  border: 1px solid rgba(200,158,72,.3);
-  border-radius: 12px;
-  padding: 8px;
-  z-index: 300;
-  min-width: 200px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.7);
-}
-.clan-menu-btn {
-  display: block;
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  color: var(--ink);
-  font-size: 15px;
-  padding: 9px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: inherit;
-}
-.clan-menu-btn:hover { background: rgba(200,158,72,.12); }
-.clan-menu-label {
-  font-size: 10px;
-  color: var(--ink3);
-  padding: 6px 10px 3px;
-  text-transform: uppercase;
-  letter-spacing: .07em;
-  border-top: 1px solid rgba(200,158,72,.1);
-  margin-top: 4px;
-}
-.clan-emoji-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 4px 6px 6px;
-}
-.clan-emoji-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 8px;
-  line-height: 1;
-}
-.clan-emoji-btn:hover { background: rgba(200,158,72,.15); }
 .clan-invite-row {
   display: flex;
   gap: 6px;
@@ -3819,6 +3768,21 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
     <input id="profile-photo-input" type="file" accept="image/*" style="display:none;" onchange="onProfilePhotoPicked(event)">
     <div class="av-grid" id="av-grid"></div>
     <button class="btn btn-ghost btn-sm" onclick="closeOv('ov-avatars')">Cancel</button>
+  </div>
+</div>
+
+<!-- ── MODAL: Congregation icon picker ── -->
+<div class="ov" id="ov-clan-icon" onclick="bgClose(event,'ov-clan-icon')">
+  <div class="mbox">
+    <div class="mhandle"></div>
+    <div class="mtitle">Choose Icon</div>
+    <div class="profile-avatar-tools" style="margin-bottom:12px;">
+      <button class="btn btn-ghost btn-sm" onclick="uploadClanPhoto('existing')">📷 Upload</button>
+      <button class="btn btn-ghost btn-sm" id="clan-icon-remove-btn" onclick="clearClanPhoto('existing');closeOv('ov-clan-icon')">🗑 Remove</button>
+    </div>
+    <input id="clan-photo-input-existing" type="file" accept="image/*" style="display:none;" onchange="onClanPhotoPicked(event)">
+    <div class="av-grid" id="clan-icon-picker-grid"></div>
+    <button class="btn btn-ghost btn-sm" onclick="closeOv('ov-clan-icon')">Cancel</button>
   </div>
 </div>
 
@@ -43448,24 +43412,30 @@ function autoCreateClan(name,icon){
 let _pendingClanPhoto='';
 let _clanPhotoCtx='create';
 const CLAN_ICON_EMOJIS=['⛪','🕍','🏛️','🙏','✝️','🕊️','📖','🌟','🫶','🎺','🎹','🌿','🕯️','👑','⚡','🎵','🌈','🦁','🐑','🌊'];
-function toggleClanPicMenu(e){
-  e.stopPropagation();
-  const m=document.getElementById('clan-pic-menu');
-  if(!m) return;
-  const open=m.style.display==='block';
-  m.style.display=open?'none':'block';
-  if(!open){
-    const close=ev=>{if(!m.contains(ev.target)){m.style.display='none';document.removeEventListener('click',close);}};
-    setTimeout(()=>document.addEventListener('click',close),0);
-  }
+function openClanIconPicker(){
+  const removeBtn=document.getElementById('clan-icon-remove-btn');
+  if(removeBtn) removeBtn.style.display=G.profile?.clanPhoto?'':'none';
+  buildClanIconPickerGrid();
+  openOv('ov-clan-icon');
+}
+function buildClanIconPickerGrid(){
+  const grid=document.getElementById('clan-icon-picker-grid'); if(!grid) return;
+  grid.innerHTML='';
+  const cur=G.profile?.clanIcon||'⛪';
+  CLAN_ICON_EMOJIS.forEach(em=>{
+    const btn=document.createElement('div');
+    btn.className='av-item'+(em===cur?' sel':'');
+    btn.textContent=em;
+    btn.onclick=()=>{ sfx.tap(); setClanIcon(em); };
+    grid.appendChild(btn);
+  });
 }
 function setClanIcon(emoji){
   if(!G.profile||!G.profile.clanCode){toast('No congregation');return;}
   G.profile.clanIcon=emoji;
   saveProfile();
   if(G.fbOk) G.db.ref('clans/'+G.profile.clanCode+'/icon').set(emoji);
-  const m=document.getElementById('clan-pic-menu');
-  if(m) m.style.display='none';
+  closeOv('ov-clan-icon');
   renderClans();
   toast('Congregation icon updated');
 }
@@ -43557,7 +43527,8 @@ function renderClanPhotoPreview(){
 }
 function uploadClanPhoto(ctx){
   _clanPhotoCtx=ctx||'create';
-  const inp=document.getElementById('clan-photo-input');
+  const id=ctx==='existing'?'clan-photo-input-existing':'clan-photo-input';
+  const inp=document.getElementById(id);
   if(!inp) return;
   inp.value='';
   inp.click();
@@ -43696,15 +43667,9 @@ function renderClans(){
   if(G.profile?.clanName){
     mc.innerHTML=`<div class="clan-card" style="border-color:rgba(201,145,13,.32);">
       <div style="display:flex;align-items:center;gap:12px;">
-        <div style="position:relative;display:inline-block;cursor:pointer;flex-shrink:0;" onclick="toggleClanPicMenu(event)">
+        <div style="position:relative;display:inline-block;cursor:pointer;flex-shrink:0;" onclick="openClanIconPicker()">
           <span style="font-size:32px;display:block;">${clanBadgeMarkup(G.profile.clanIcon||'⛪',G.profile.clanPhoto||'','lg')}</span>
           <span style="position:absolute;bottom:-2px;right:-2px;background:var(--gold1);border-radius:50%;width:17px;height:17px;display:flex;align-items:center;justify-content:center;font-size:9px;line-height:1;">✏️</span>
-          <div id="clan-pic-menu" class="clan-pic-menu" style="display:none;" onclick="event.stopPropagation()">
-            <button class="clan-menu-btn" onclick="uploadClanPhoto('existing')">📷 Upload</button>
-            ${G.profile.clanPhoto?`<button class="clan-menu-btn" onclick="clearClanPhoto('existing')">🗑 Remove photo</button>`:''}
-            <div class="clan-menu-label">Pick an emoji</div>
-            <div class="clan-emoji-grid">${CLAN_ICON_EMOJIS.map(em=>`<button class="clan-emoji-btn" onclick="setClanIcon('${em}')" title="${em}">${em}</button>`).join('')}</div>
-          </div>
         </div>
         <div style="flex:1;min-width:0;">
           <div class="h2">${G.profile.clanName}</div>
@@ -43714,12 +43679,10 @@ function renderClans(){
             <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.07em;color:var(--ink3);text-transform:uppercase;margin-bottom:4px;">Invite by friend code</div>
             <div style="font-size:11px;color:var(--ink3);margin-bottom:6px;">Share your friend code (found on the Friends tab) with someone and enter theirs here to invite them.</div>
             <div class="clan-invite-row">
-              <input id="clan-invite-inp" class="inp" placeholder="Friend code…" style="flex:1;font-size:13px;padding:7px 10px;" maxlength="10" oninput="this.value=this.value.toUpperCase()">
-              <button class="btn btn-gold btn-sm" onclick="inviteToClan()" style="white-space:nowrap;">Invite</button>
+              <input id="clan-invite-inp" class="inp" placeholder="Friend code…" style="flex:1;font-size:12px;padding:6px 9px;" maxlength="10" oninput="this.value=this.value.toUpperCase()">
+              <button class="btn btn-gold" onclick="inviteToClan()" style="font-size:11px;padding:6px 11px;white-space:nowrap;">Invite</button>
+              <button class="btn btn-ghost" onclick="requestRemoveCongregation()" style="font-size:11px;padding:6px 10px;white-space:nowrap;color:var(--ink3);">🧹 Leave</button>
             </div>
-          </div>
-          <div style="margin-top:10px;text-align:right;">
-            <button onclick="requestRemoveCongregation()" style="background:none;border:none;color:var(--ink3);font-size:11px;cursor:pointer;font-family:inherit;padding:2px 0;text-decoration:underline;">🧹 Leave congregation</button>
           </div>
         </div>
       </div>

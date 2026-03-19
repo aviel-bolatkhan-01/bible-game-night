@@ -41286,6 +41286,28 @@ function renderMCQ(q,txtId,optsId,cb){
   });
 }
 
+function renderTFQ(q){
+  document.getElementById('g-txt').textContent=q.q||'';
+  const wrap=document.getElementById('g-opts');
+  wrap.innerHTML='';
+  const grid=document.createElement('div');
+  grid.className='tf-grid';
+  grid.style.marginBottom='12px';
+  const tBtn=document.createElement('button');
+  tBtn.className='tf-btn tf-t';
+  tBtn.textContent='✅ True';
+  tBtn.dataset.tfVal='1';
+  tBtn.onclick=()=>answerQ(tBtn,!!q.a,q,null);
+  const fBtn=document.createElement('button');
+  fBtn.className='tf-btn tf-f';
+  fBtn.textContent='❌ False';
+  fBtn.dataset.tfVal='0';
+  fBtn.onclick=()=>answerQ(fBtn,!q.a,q,null);
+  grid.appendChild(tBtn);
+  grid.appendChild(fBtn);
+  wrap.appendChild(grid);
+}
+
 /* ── Classic / Verse ── */
 function renderQ(){
   G.done=false; stopTimers(); clearAutoAdvance();
@@ -41335,7 +41357,10 @@ function renderQ(){
     tsEl.style.display = 'none';
   }
 
-  if(G.sub==='verse') renderVerseQ(q);
+  const isVerseQuestion=G.sub==='verse'||q.kind==='verse'||(q&&q.b&&Array.isArray(q.o)&&q.blank!=null);
+  const isTrueFalseQuestion=isTFQuestion(q)||q.kind==='truefalse';
+  if(isVerseQuestion) renderVerseQ(q);
+  else if(isTrueFalseQuestion) renderTFQ(q);
   else renderMCQ(q,'g-txt','g-opts',answerQ);
   updateProgress();
 
@@ -41378,7 +41403,7 @@ function renderVerseQ(q){
 
 function answerQ(btn,isOk,q,order){
   if(G.done)return; G.done=true; stopTimers();
-  document.querySelectorAll('#g-opts .opt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('#g-opts .opt, #g-opts .tf-btn').forEach(b=>b.disabled=true);
   const p=G.players[G.pi];
   const fb=document.getElementById('g-fb'); fb.style.display='block';
   if(isOk){
@@ -41412,7 +41437,14 @@ function answerQ(btn,isOk,q,order){
   }else{
     btn.classList.add('wrong');
     const opts=document.querySelectorAll('#g-opts .opt');
-    opts.forEach((b,i)=>{ if(order[i]===q.a) b.classList.add('reveal'); });
+    if(order&&opts.length){
+      opts.forEach((b,i)=>{ if(order[i]===q.a) b.classList.add('reveal'); });
+    }else{
+      document.querySelectorAll('#g-opts .tf-btn').forEach(b=>{
+        const val=b.dataset.tfVal==='1';
+        if(val===!!q.a) b.classList.add('correct');
+      });
+    }
     G.streaks[p.name]=0;
     resetComboUIForPlayer(p.name);
     fb.className='fb no'; fb.innerHTML=`<strong>Not quite.</strong> ${q.e}`;
@@ -42613,40 +42645,89 @@ function startDailyChallenge(){
   let classicPool=dedupeQuestions(classicAll.filter(byDiff),'classic');
   if(classicPool.length<7) classicPool=dedupeQuestions(classicAll,'classic');
 
-  const tfAsMcq=dedupeQuestions(TF_Q,'truefalse').map((q,idx)=>({
+  let tfPool=dedupeQuestions(TF_Q,'truefalse').map((q,idx)=>ensureQuestionDifficulty({
     _id:`daily-tf-${idx}-${q._id||idx}`,
-    q:`[True/False] ${q.q}`,
-    o:['True','False','Both','Neither'],
-    a:q.a?0:1,
+    kind:'truefalse',
+    q:q.q,
+    a:!!q.a,
     e:q.e||'',
-    d:dailyDiff,
     cat:'True/False'
-  }));
-  const verseAsMcq=dedupeQuestions(VERSE_Q,'verse').map((q,idx)=>{
-    const opts=Array.isArray(q.o)?q.o.slice(0,4):[];
-    const blank=(q.blank||'').trim();
-    let ai=opts.findIndex(o=>String(o||'').trim().toLowerCase()===blank.toLowerCase());
-    if(ai===-1&&blank){
-      opts.unshift(blank);
-      while(opts.length>4) opts.pop();
-      ai=0;
-    }
-    return {
+  },'truefalse')).filter(byDiff);
+  if(tfPool.length<Math.max(3,Math.floor(ROUND_LIMIT*0.2))){
+    tfPool=dedupeQuestions(TF_Q,'truefalse').map((q,idx)=>ensureQuestionDifficulty({
+      _id:`daily-tf-${idx}-${q._id||idx}`,
+      kind:'truefalse',
+      q:q.q,
+      a:!!q.a,
+      e:q.e||'',
+      cat:'True/False'
+    },'truefalse'));
+  }
+
+  let versePool=dedupeQuestions(VERSE_Q,'verse').map((q,idx)=>{
+    const blank=String(q.blank||'').trim();
+    const uniqOpts=[];
+    (Array.isArray(q.o)?q.o:[]).forEach(opt=>{
+      const t=String(opt||'').trim();
+      if(!t) return;
+      if(!uniqOpts.some(o=>o.toLowerCase()===t.toLowerCase())) uniqOpts.push(t);
+    });
+    if(blank&&!uniqOpts.some(o=>o.toLowerCase()===blank.toLowerCase())) uniqOpts.unshift(blank);
+    const wrongs=uniqOpts.filter(o=>o.toLowerCase()!==blank.toLowerCase()).slice(0,3);
+    const opts=[blank,...wrongs].filter(Boolean);
+    while(opts.length<4) opts.push('—');
+    return ensureQuestionDifficulty({
       _id:`daily-verse-${idx}-${q._id||idx}`,
-      q:`[Fill Verse] ${q.b||''} ________ ${q.a||''}`,
-      o:opts,
-      a:ai>-1?ai:0,
-      e:q.r?`${q.r} — "${(q.b||'')}${blank}${q.a||''}"`:'',
-      d:dailyDiff,
+      kind:'verse',
+      b:q.b||'',
+      blank:blank,
+      a:q.a||'',
+      r:q.r||'',
+      o:opts.slice(0,4),
       cat:'Fill Verse'
-    };
-  });
-  const pool=[
-    ...pickSeeded(classicPool,7,100),
-    ...pickSeeded(tfAsMcq,4,500),
-    ...pickSeeded(verseAsMcq,4,900),
+    },'verse');
+  }).filter(byDiff);
+  if(versePool.length<Math.max(3,Math.floor(ROUND_LIMIT*0.2))){
+    versePool=dedupeQuestions(VERSE_Q,'verse').map((q,idx)=>{
+      const blank=String(q.blank||'').trim();
+      const uniqOpts=[];
+      (Array.isArray(q.o)?q.o:[]).forEach(opt=>{
+        const t=String(opt||'').trim();
+        if(!t) return;
+        if(!uniqOpts.some(o=>o.toLowerCase()===t.toLowerCase())) uniqOpts.push(t);
+      });
+      if(blank&&!uniqOpts.some(o=>o.toLowerCase()===blank.toLowerCase())) uniqOpts.unshift(blank);
+      const wrongs=uniqOpts.filter(o=>o.toLowerCase()!==blank.toLowerCase()).slice(0,3);
+      const opts=[blank,...wrongs].filter(Boolean);
+      while(opts.length<4) opts.push('—');
+      return ensureQuestionDifficulty({
+      _id:`daily-verse-${idx}-${q._id||idx}`,
+      kind:'verse',
+      b:q.b||'',
+      blank:blank,
+      a:q.a||'',
+      r:q.r||'',
+      o:opts.slice(0,4),
+      cat:'Fill Verse'
+      },'verse');
+    });
+  }
+
+  const rounds=currentRounds();
+  const tfCount=Math.max(3,Math.round(rounds*0.27));
+  const verseCount=Math.max(3,Math.round(rounds*0.27));
+  const classicCount=Math.max(1,rounds-tfCount-verseCount);
+  const mixedSeeded=[
+    ...pickSeeded(classicPool,classicCount,100),
+    ...pickSeeded(tfPool,tfCount,500),
+    ...pickSeeded(versePool,verseCount,900)
   ];
-  const dailyPool=pickSeeded(dedupeQuestions(pool,'classic'),ROUND_LIMIT,1200);
+  const fallbackPool=[...classicPool,...tfPool,...versePool];
+  let dailyPool=pickSeeded(mixedSeeded,rounds,1200);
+  if(dailyPool.length<rounds){
+    dailyPool=dailyPool.concat(pickSeeded(fallbackPool.filter(q=>!dailyPool.includes(q)),rounds-dailyPool.length,1600));
+  }
+  dailyPool=pickSeeded(dailyPool,rounds,1700);
 
   G.mode = 'daily';
   G.sub = 'classic';

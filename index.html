@@ -42351,7 +42351,7 @@ function playAgain(){
         G.diff=roomDiff;
         G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
         const startedAt=(d&&d.status==='waiting'&&d.rematchStartedAt)?d.rematchStartedAt:Date.now();
-        const upd={status:'waiting',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)},rematchStartedAt:startedAt};
+        const upd={status:'waiting',host:G.uid,difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)},rematchStartedAt:startedAt};
         upd['rematchRequestedBy/'+G.uid]=true;
         upd['players/'+G.uid]={name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:roomDiff,connected:true};
         Object.keys(d.players||{}).forEach(uid=>{
@@ -42363,6 +42363,7 @@ function playAgain(){
       }).catch(()=>{
         G.roomRef.update({
           status:'waiting',
+          host:G.uid,
           rematchStartedAt:Date.now(),
           rematchRequestedBy:{[G.uid]:true},
           ['players/'+G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:G.diff,connected:true}
@@ -42752,7 +42753,7 @@ function getActiveLobbyEntries(d){
 }
 function lobbyStartState(d){
   const activeEntries=getActiveLobbyEntries(d);
-  const hostUid=d&&d.host?d.host:(activeEntries[0]?activeEntries[0][0]:null);
+  const hostUid=d&&d.host?d.host:(G.isHost&&G.uid?G.uid:(activeEntries[0]?activeEntries[0][0]:null));
   const amHost=!!(hostUid&&G.uid&&hostUid===G.uid);
   const nonHost=activeEntries.filter(([uid])=>uid!==hostUid).map(([,p])=>p);
   const allReady=activeEntries.length>=2 && nonHost.length>=1 && nonHost.every(p=>!!p.ready);
@@ -42764,7 +42765,7 @@ function updateLobbyUI(d){
   const st=lobbyStartState(d);
   const activeEntries=st.activeEntries;
   const hostUid=st.hostUid;
-  G.isHost=st.amHost;
+  if(st.amHost) G.isHost=true;
   activeEntries.forEach(([uid,p])=>{
     const row=document.createElement('div'); row.className='lobby-row';
     const isHost=uid===hostUid, isMe=uid===G.uid;
@@ -42783,13 +42784,15 @@ function toggleReady(){
   document.getElementById('ready-btn').textContent=G.meReady?'✓ Ready (click to undo)':'✓ Mark Ready';
 }
 function startOnline(){
-  if(!G.roomRef)return;
+  if(!G.roomRef&&G.roomId&&G.db) G.roomRef=G.db.ref('rooms/'+G.roomId);
+  if(!G.roomRef){ toast('Room connection lost. Try leaving and creating a new room.'); return; }
   sfx.tap();
   G.cfg.winScore=clampRounds(G.cfg.winScore);
   G.roomRef.once('value').then(sn=>{
     const d=sn.val()||{};
+    if(!d.host&&G.isHost&&G.uid){ d.host=G.uid; G.roomRef.update({host:G.uid}); }
     const st=lobbyStartState(d);
-    G.isHost=st.amHost;
+    if(st.amHost) G.isHost=true;
     if(!st.canStart){ toast('All joined players must press Ready first.'); return; }
     const roomSub=normalizeOnlineSub((d&& (d.qtype||d.sub)) || G.sub);
     G.sub=roomSub;
@@ -45359,15 +45362,14 @@ function sendChallenge(){
     cfg:{hearts:!!_chCfg.hearts,winScore:clampRounds(_chCfg.winScore)},
     challengeTarget:_chTargetUid,
     players:{
-      [G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:_chDiff},
-      [_chTargetUid]:{name:targetF.name||'Friend',avatar:targetF.avatar||'😊',photo:targetF.photo||'',ready:false,score:0,hearts:3,diff:_chDiff}
+      [G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:_chDiff}
     }
   }).then(()=>{
     // Store room ref so host can listen
     G.roomId=code; G.isHost=true; G.roomRef=ref;
     ref.on('value',sn=>{
       const d=sn.val(); if(!d) return;
-      if(d.status==='playing'){ ref.off(); joinFromRoom(d); }
+      if(d.status==='playing'){ ref.off(); joinFromRoom(d); return; }
       // Update lobby if we're viewing it
       const panel=document.getElementById('lobby-panel');
       if(panel&&panel.style.display!=='none') updateLobbyUI(d);
@@ -45488,8 +45490,8 @@ function joinChallengeRoom(code,chMeta){
     const d=sn.val();
     if(!d){ toast('Room not found or expired'); return; }
     if(d.status==='playing'){ toast('Game already in progress'); return; }
-    // Update existing player entry to mark as ready (sender already added us)
-    ref.child('players/'+G.uid).update({name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:G.diff});
+    // Add player entry when they actually join (not pre-populated)
+    ref.child('players/'+G.uid).set({name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:G.diff,connected:true});
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
     updateLobbyModeNote({qtype:(chMeta&&chMeta.qtype)||d.qtype||d.sub,difficulty:(chMeta&&chMeta.difficulty)||d.difficulty,cfg:(chMeta&&chMeta.cfg)||d.cfg||{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)}});

@@ -3836,10 +3836,10 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
   <div class="mbox">
     <div class="mhandle"></div>
     <div class="mtitle">Remove Congregation?</div>
-    <div style="font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:14px;">Are you sure you want to leave this congregation?</div>
+    <div class="cong-remove-body" style="font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:14px;">Are you sure you want to leave this congregation?</div>
     <div style="display:flex;gap:8px;">
       <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="closeOv('ov-cong-remove')">Cancel</button>
-      <button class="btn btn-ruby btn-sm" style="flex:1;" onclick="removeCongregationConfirmed()">Remove</button>
+      <button class="btn btn-ruby btn-sm cong-remove-confirm" style="flex:1;" onclick="removeCongregationConfirmed()">Remove</button>
     </div>
   </div>
 </div>
@@ -43439,6 +43439,28 @@ function setClanIcon(emoji){
   renderClans();
   toast('Congregation icon updated');
 }
+function kickMember(uid,name){
+  if(!G.profile?.clanCode){toast('No congregation');return;}
+  if(!G.fbOk){toast('Online required');return;}
+  G.db.ref('clans/'+G.profile.clanCode+'/members/'+uid).remove().then(()=>{
+    toast((name||'Member')+' removed');
+    renderClans();
+  }).catch(()=>toast('Could not remove member'));
+}
+function loadClanMembers(){
+  const el=document.getElementById('clan-members-list');
+  if(!el||!G.fbOk||!G.profile?.clanCode) return;
+  G.db.ref('clans/'+G.profile.clanCode+'/members').once('value').then(sn=>{
+    const others=[];
+    sn.forEach(c=>{ if(c.key!==G.uid) others.push({uid:c.key,...c.val()}); });
+    if(!others.length){el.innerHTML='';return;}
+    el.innerHTML='<div style="font-family:\'Cinzel\',serif;font-size:9px;letter-spacing:.07em;color:var(--ink3);text-transform:uppercase;margin:10px 0 6px;">Members</div>'+
+      others.map(m=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(200,158,72,.08);">
+        <span style="flex:1;font-size:13px;color:var(--ink);">${escHtml(m.name||'Player')}</span>
+        <button class="btn btn-ghost btn-sm" onclick="kickMember('${m.uid}','${escHtml(m.name||'Player')}')" style="color:var(--ink3);font-size:11px;">Kick</button>
+      </div>`).join('');
+  });
+}
 function inviteToClan(){
   if(!G.profile||!G.profile.clanCode){toast('You need a congregation first');return;}
   if(!G.fbOk){toast('Online required');return;}
@@ -43600,38 +43622,43 @@ function updateCurrentClanPhoto(photoData){
   }
 }
 function requestRemoveCongregation(){
-  if(!G.profile||!G.profile.clanCode){
-    toast('You are not in a congregation');
-    return;
-  }
+  if(!G.profile||!G.profile.clanCode){ toast('You are not in a congregation'); return; }
+  const isOwner=!G.profile.clanOwner||(G.uid&&G.uid===G.profile.clanOwner);
+  const title=document.querySelector('#ov-cong-remove .mtitle');
+  const body=document.querySelector('#ov-cong-remove .cong-remove-body');
+  const confirmBtn=document.querySelector('#ov-cong-remove .cong-remove-confirm');
+  if(title) title.textContent=isOwner?'Delete Congregation?':'Leave Congregation?';
+  if(body) body.textContent=isOwner?'This will permanently delete the congregation and remove all members.':'Are you sure you want to leave this congregation?';
+  if(confirmBtn) confirmBtn.textContent=isOwner?'Delete':'Leave';
   openOv('ov-cong-remove');
 }
 function removeCongregationConfirmed(){
   closeOv('ov-cong-remove');
-  if(!G.profile||!G.profile.clanCode){
-    toast('You are not in a congregation');
-    return;
-  }
+  if(!G.profile||!G.profile.clanCode){ toast('You are not in a congregation'); return; }
   const code=G.profile.clanCode;
+  const isOwner=!G.profile.clanOwner||(G.uid&&G.uid===G.profile.clanOwner);
   const clearLocal=()=>{
     delete G.profile.clanName;
     delete G.profile.clanCode;
     delete G.profile.clanIcon;
     delete G.profile.clanPhoto;
+    delete G.profile.clanOwner;
     saveProfile();
     if(G.fbOk) pushProfile();
     renderClans();
     if(document.getElementById('s-profile')?.classList.contains('active')) renderProfile();
-    toast('Congregation removed');
+    toast(isOwner?'Congregation deleted':'Left congregation');
   };
   if(!G.fbOk||!G.db||!G.uid){ clearLocal(); return; }
+  if(isOwner){
+    G.db.ref('clans/'+code).remove().then(clearLocal).catch(()=>toast('Could not delete congregation'));
+    return;
+  }
   const membersRef=G.db.ref('clans/'+code+'/members');
   membersRef.child(G.uid).remove()
     .then(()=>membersRef.once('value'))
     .then(sn=>{
-      if(!sn.exists()){
-        return G.db.ref('clans/'+code).remove();
-      }
+      if(!sn.exists()) return G.db.ref('clans/'+code).remove();
       return null;
     })
     .then(clearLocal)
@@ -43687,9 +43714,11 @@ function renderClans(){
       <div style="display:flex;gap:8px;">
         <button class="btn btn-gold" onclick="inviteToClan()" style="flex:1;">Invite</button>
         <button class="btn btn-ghost" onclick="requestRemoveCongregation()" style="flex:1;color:var(--ink3);">🧹 Delete</button>
-      </div>`
+      </div>
+      <div id="clan-members-list"></div>`
       :`<button class="btn btn-ghost btn-sm" onclick="requestRemoveCongregation()" style="color:var(--ink3);width:100%;">🧹 Leave congregation</button>`}
     </div>`;
+    if(isOwner) loadClanMembers();
   }else{
     mc.innerHTML='<div class="empty">You\'re not in a congregation. Create or join one below.</div>';
   }

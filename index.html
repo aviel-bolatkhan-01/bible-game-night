@@ -42893,27 +42893,23 @@ function renderLB(tab){
     return;
   }
 
-  const mergeById=(baseRows,extraRows)=>{
-    const map=new Map();
-    (extraRows||[]).forEach(r=>{ if(r&&r.id) map.set(r.id,{...r}); });
-    (baseRows||[]).forEach(r=>{ if(r&&r.id) map.set(r.id,{...(map.get(r.id)||{}),...r}); });
-    return Array.from(map.values());
-  };
-
-  const primaryRef=tab==='weekly'?G.db.ref('weekly/'+wk()):G.db.ref('leaderboard');
-  Promise.all([primaryRef.once('value'), G.db.ref('players').once('value')]).then(([primarySnap,playersSnap])=>{
-    const primaryRows=[]; primarySnap.forEach(s=>primaryRows.push({...s.val(),id:s.key}));
-    const playerRows=[]; playersSnap.forEach(s=>playerRows.push({...s.val(),id:s.key}));
-    let rows=mergeById(primaryRows,playerRows);
+  G.db.ref('players').once('value').then(playersSnap=>{
+    const thisWeek=wk();
+    let rows=[];
+    playersSnap.forEach(s=>{
+      const v=s.val()||{};
+      const weekly=(v.weeklyReset===thisWeek)?(v.weeklyXP||0):0;
+      rows.push({...v,id:s.key,weeklyXP:weekly});
+    });
     if(G.profile&&G.uid){
       const meIdx=rows.findIndex(r=>r.id===G.uid);
-      const meData={id:G.uid,name:G.profile.name,avatar:G.profile.avatar,xp:G.profile.xp||0,weeklyXP:G.profile.weeklyXP||0,clan:G.profile.clanName||''};
+      const meData={id:G.uid,name:G.profile.name,avatar:G.profile.avatar,xp:G.profile.xp||0,weeklyXP:(G.profile.weeklyReset===thisWeek?(G.profile.weeklyXP||0):0),clan:G.profile.clanName||''};
       if(meIdx>=0) rows[meIdx]={...rows[meIdx],...meData};
       else rows.push(meData);
     }
     if(tab==='weekly') rows.sort((a,b)=>(b.weeklyXP||0)-(a.weeklyXP||0));
     else rows.sort((a,b)=>(b.xp||0)-(a.xp||0));
-    displayLBRows(list, rows.slice(0,50), tab);
+    displayLBRows(list, rows, tab);
   }).catch(()=>{ list.innerHTML='<div class="empty">Error loading ranks.</div>'; });
 }
 

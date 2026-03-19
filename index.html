@@ -42740,10 +42740,6 @@ function getActiveLobbyEntries(d){
   if(d&&d.status==='playing'){
     entries=entries.filter(([,p])=>p.connected!==false);
   }
-  const requested=(d&&d.rematchRequestedBy)||null;
-  if(requested && Object.keys(requested).length){
-    entries=entries.filter(([uid])=>!!requested[uid]);
-  }
   return entries;
 }
 function lobbyStartState(d){

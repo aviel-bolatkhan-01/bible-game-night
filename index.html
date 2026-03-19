@@ -40793,6 +40793,7 @@ function signInWithGoogle(){
   const handleLink=(res)=>{
     toast('Account linked! Your progress is saved.');
     updateProfileSigninCard();
+    if(document.getElementById('s-auth')?.classList.contains('active')) go('home');
   };
 
   if(cu && cu.isAnonymous){
@@ -40815,6 +40816,7 @@ function signInWithGoogle(){
                 toast('Welcome back! Your progress has been merged.');
                 updateProfileSigninCard();
                 renderHomeBar();
+                if(document.getElementById('s-auth')?.classList.contains('active')) go('home');
               });
             })
             .catch(err=>handleAuthError(err,'Google sign-in failed'));
@@ -40878,7 +40880,7 @@ function initFB(){
               pushProfile();
               document.getElementById('main-nav').style.display='';
               renderHomeBar();
-              if(!document.querySelector('.screen.active')) go('home');
+              if(document.getElementById('s-auth')?.classList.contains('active')) go('home');
             }
           }).catch(()=>{
             if(G.profile) pushProfile();

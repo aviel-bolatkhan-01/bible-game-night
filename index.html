@@ -41438,7 +41438,6 @@ function renderQ(){
   const totalRounds=Math.max(1,G.pool.length||currentRounds());
   document.getElementById('g-round').textContent=`Round ${Math.min(G.qi+1,totalRounds)}/${totalRounds}`;
   renderHearts('g-hearts',G.hearts[p.name]);
-  setCategoryBadge('g-cat',q.cat||q.r||'');
   document.getElementById('g-fb').style.display='none';
   document.getElementById('g-next-row').style.display='none';
   document.getElementById('g-auto-bar').style.display='none';
@@ -41457,6 +41456,8 @@ function renderQ(){
 
   const isVerseQuestion=G.sub==='verse'||q.kind==='verse'||(q&&q.b&&Array.isArray(q.o)&&q.blank!=null);
   const isTrueFalseQuestion=isTFQuestion(q)||q.kind==='truefalse';
+  const badgeLabel=isTrueFalseQuestion?'True / False':(q.cat||q.r||'');
+  setCategoryBadge('g-cat',badgeLabel);
   document.getElementById('g-txt').style.marginTop=isTrueFalseQuestion?'12px':'';
   if(isVerseQuestion) renderVerseQ(q);
   else if(isTrueFalseQuestion) renderTFQ(q);
@@ -41773,7 +41774,7 @@ function renderTF(){
   G.done=false;
   document.getElementById('tf-round').textContent=`Round ${G.tfRound+1}/${totalRounds}`;
   document.getElementById('tf-txt').textContent=q.q;
-  setCategoryBadge('tf-cat',q.cat||q.r||'');
+  setCategoryBadge('tf-cat',q.cat||q.r||'True / False');
   document.getElementById('tf-fb').style.display='none';
   document.getElementById('tf-next').style.display='none';
   const tfScores=document.getElementById('tf-scores');
@@ -42661,7 +42662,7 @@ function renderOnlineQ(){
   const totalOnline=Math.max(1,(G.roomPool&&G.roomPool.length)||currentRounds());
   document.getElementById('g-round').textContent=`Round ${Math.min(G.qi+1,totalOnline)}/${totalOnline}`;
   renderHearts('g-hearts',me&&G.hearts[me.name]!=null?G.hearts[me.name]:3);
-  setCategoryBadge('g-cat',q.cat||q.r||'');
+  setCategoryBadge('g-cat',q.kind==='truefalse'?'True / False':(q.cat||q.r||''));
   const fb=document.getElementById('g-fb');
   fb.style.display='block';fb.className='fb ok';
   fb.style.background='rgba(100,80,20,0.15)';fb.style.color='var(--gold)';

@@ -40592,6 +40592,7 @@ const G={
   donAmt:'$10',
   _xpAtGameStart:0,
   _correctAtGameStart:0,
+  _rematchRequestAt:0,
 };
 function setAuthRedirectPending(v){
   try{
@@ -42065,6 +42066,7 @@ function playAgain(){
   if((G.mode==='online'||G.mode==='nearby'||G.onlineGame) && G.roomId && G.fbOk && G.db){
     if(!G.roomRef) G.roomRef=G.db.ref('rooms/'+G.roomId);
     G._awaitingRematchStart=true;
+    G._rematchRequestAt=Date.now();
     G.meReady=false;
     const readyBtn=document.getElementById('ready-btn');
     if(readyBtn) readyBtn.textContent='✓ Mark Ready';
@@ -42129,6 +42131,8 @@ function playAgain(){
       scheduleRematchPrune(d);
       updateLobbyUI(d);
       if(d.status==='playing'){
+        const gsTs=(d.gameState&&d.gameState.t)||0;
+        if(gsTs && gsTs<G._rematchRequestAt) return;
         G._awaitingRematchStart=false;
         G.roomRef.off();
         joinFromRoom(d);

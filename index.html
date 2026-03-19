@@ -3809,7 +3809,7 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
     <label class="label" style="margin-bottom:7px;">Congregation Icon</label>
     <div id="clan-photo-preview" style="display:flex;align-items:center;justify-content:center;margin-bottom:10px;"></div>
     <div class="profile-avatar-tools" style="margin:0 0 10px;">
-      <button class="btn btn-ghost btn-sm" onclick="uploadClanPhoto('create')">📷 Upload Congregation Pic</button>
+      <button class="btn btn-ghost btn-sm" onclick="uploadClanPhoto('create')">📷 Upload</button>
       <button class="btn btn-ghost btn-sm" onclick="clearClanPhoto('create')">🗑 Remove</button>
     </div>
     <input id="clan-photo-input" type="file" accept="image/*" style="display:none;" onchange="onClanPhotoPicked(event)">
@@ -43679,15 +43679,15 @@ function renderClans(){
         <div style="flex:1;min-width:0;">
           <div class="h2">${G.profile.clanName}</div>
           <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin-top:2px;">Your Congregation</div>
-          ${G.profile.clanCode?`<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(201,145,13,.1);border:1px solid rgba(201,145,13,.22);border-radius:20px;padding:2px 9px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--gold1);margin-top:6px;">Code: ${G.profile.clanCode}</div>`:''}
           ${isOwner?`<div style="margin-top:10px;">
             <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.07em;color:var(--ink3);text-transform:uppercase;margin-bottom:4px;">Invite by friend code</div>
-            <div style="font-size:11px;color:var(--ink3);margin-bottom:6px;">Share your friend code (found on the Friends tab) with someone and enter theirs here to invite them.</div>
+            <div style="font-size:11px;color:var(--ink3);margin-bottom:4px;">Your code: <span style="color:var(--gold1);font-weight:600;letter-spacing:.08em;">${G.profile.friendCode||'—'}</span> — enter a friend's code below to invite them.</div>
             <div class="clan-invite-row">
               <input id="clan-invite-inp" class="inp" placeholder="Friend code…" style="flex:1;font-size:12px;padding:6px 9px;" maxlength="10" oninput="this.value=this.value.toUpperCase()">
               <button class="btn btn-gold" onclick="inviteToClan()" style="font-size:11px;padding:6px 11px;white-space:nowrap;">Invite</button>
             </div>
           </div>`:''}
+          ${G.profile.clanCode?`<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(201,145,13,.1);border:1px solid rgba(201,145,13,.22);border-radius:20px;padding:2px 9px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.1em;color:var(--gold1);margin-top:6px;">Code: ${G.profile.clanCode}</div>`:''}
           <div style="margin-top:8px;">
             <button class="btn btn-ghost" onclick="requestRemoveCongregation()" style="font-size:11px;padding:6px 10px;white-space:nowrap;color:var(--ink3);">🧹 ${isOwner?'Delete':'Leave'} congregation</button>
           </div>

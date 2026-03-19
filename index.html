@@ -42365,11 +42365,19 @@ function updateLobbyModeNote(d){
     '<br>Rules: '+roomSettingsLine(d);
   note.style.display='block';
 }
+function getActiveLobbyEntries(d){
+  const ps=(d&&d.players)||{};
+  let entries=Object.entries(ps).filter(([,p])=>p&&p.connected!==false);
+  const requested=(d&&d.rematchRequestedBy)||null;
+  if(requested && Object.keys(requested).length){
+    entries=entries.filter(([uid])=>!!requested[uid]);
+  }
+  return entries;
+}
 function updateLobbyUI(d){
-  const ps=d.players||{};
   const list=document.getElementById('lobby-list'); list.innerHTML='';
   updateLobbyModeNote(d);
-  const activeEntries=Object.entries(ps).filter(([,p])=>p&&p.connected!==false);
+  const activeEntries=getActiveLobbyEntries(d);
   activeEntries.forEach(([uid,p])=>{
     const row=document.createElement('div'); row.className='lobby-row';
     const isHost=uid===d.host, isMe=uid===G.uid;
@@ -42395,7 +42403,7 @@ function startOnline(){
   G.cfg.winScore=clampRounds(G.cfg.winScore);
   G.roomRef.once('value').then(sn=>{
     const d=sn.val()||{};
-    const activeEntries=Object.entries(d.players||{}).filter(([,p])=>p&&p.connected!==false);
+    const activeEntries=getActiveLobbyEntries(d);
     const nonHost=activeEntries.filter(([uid])=>uid!==d.host).map(([,p])=>p);
     const allReady=activeEntries.length>=2 && nonHost.length>=1 && nonHost.every(p=>!!p.ready);
     if(!allReady){ toast('All joined players must press Ready first.'); return; }

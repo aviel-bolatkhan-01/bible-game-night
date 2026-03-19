@@ -778,6 +778,21 @@ body::after {
   object-fit: cover;
   display: block;
 }
+.avatar-inline {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1;
+}
+.avatar-inline.sm { width: 20px; height: 20px; }
+.avatar-inline.md { width: 28px; height: 28px; }
+.avatar-inline.lg { width: 72px; height: 72px; }
+.avatar-inline .avatar-photo { width: 100%; height: 100%; }
 .profile-bar .av.has-photo {
   width: 34px;
   height: 34px;
@@ -3465,11 +3480,6 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
   <div class="scroller">
     <div style="text-align:center;padding:18px 0 14px;">
       <div class="prof-avatar" id="prof-av" onclick="openOv('ov-avatars','prof')">😊</div>
-      <div class="profile-avatar-tools">
-        <button class="btn btn-ghost btn-sm" onclick="uploadProfilePhoto()">📷 Upload Photo</button>
-        <button class="btn btn-ghost btn-sm" onclick="clearProfilePhoto()">🗑 Remove</button>
-      </div>
-      <input id="profile-photo-input" type="file" accept="image/*" style="display:none;" onchange="onProfilePhotoPicked(event)">
       <div class="h2" id="prof-name">Your Name</div>
       <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-top:4px;" id="prof-level"></div>
       <div class="xp-wrap" style="max-width:200px;margin:10px auto 0;">
@@ -3712,6 +3722,11 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
   <div class="mbox">
     <div class="mhandle"></div>
     <div class="mtitle">Choose Avatar</div>
+    <div id="av-photo-tools" class="profile-avatar-tools" style="display:none;margin-bottom:10px;">
+      <button class="btn btn-ghost btn-sm" onclick="uploadProfilePhoto()">📷 Upload Photo</button>
+      <button class="btn btn-ghost btn-sm" onclick="clearProfilePhoto()">🗑 Remove</button>
+    </div>
+    <input id="profile-photo-input" type="file" accept="image/*" style="display:none;" onchange="onProfilePhotoPicked(event)">
     <div class="av-grid" id="av-grid"></div>
     <button class="btn btn-ghost btn-sm" onclick="closeOv('ov-avatars')">Cancel</button>
   </div>
@@ -40794,6 +40809,21 @@ function setAvatarEl(el,emoji,photo){
     el.textContent=emoji||'😊';
   }
 }
+function escAttr(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+function resolvePlayerPhoto(player){
+  if(player&&player.photo) return player.photo;
+  if(player&&G.profile&&player.name===G.profile.name) return G.profile.photo||'';
+  return '';
+}
+function avatarMarkup(emoji,photo,sizeCls){
+  const hasPhoto=typeof photo==='string' && photo.trim().length>0;
+  if(hasPhoto){
+    return `<span class="avatar-inline ${sizeCls||'md'}"><img class="avatar-photo" src="${escAttr(photo)}" alt="avatar"></span>`;
+  }
+  return `<span>${emoji||'😊'}</span>`;
+}
 function uploadProfilePhoto(){
   if(!G.profile) return;
   const inp=document.getElementById('profile-photo-input');
@@ -41159,7 +41189,7 @@ function buildSetup(seedPlayers){
     }));
   }else{
     setupPs=[
-      {name:G.profile.name,avatar:G.profile.avatar},
+      {name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||''},
       {name:'Player 2',avatar:AVATARS[1]||'🙂'}
     ];
   }
@@ -41449,7 +41479,7 @@ function startPracticeGame(){
   if(G.sub==='team') G.sub='classic';
   G.cfg.winScore=clampRounds(G.cfg.winScore);
   syncSubChipSelection();
-  G.players=[{name:G.profile.name,avatar:G.profile.avatar}];
+  G.players=[{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||''}];
   G._xpAtGameStart=G.profile?(G.profile.xp||0):0;
   G._correctAtGameStart=G.profile?(G.profile.correct||0):0;
   G.pool=buildPool().slice(0,currentRounds());
@@ -41530,7 +41560,7 @@ function renderQ(){
   }
   G.seen.add(questionKey(q));
 
-  document.getElementById('g-av').textContent=p.avatar;
+  document.getElementById('g-av').innerHTML=avatarMarkup(p.avatar,resolvePlayerPhoto(p),'sm');
   document.getElementById('g-nm').textContent=p.name + (p.team ? ` (${p.team})` : '');
   const scoreEl=document.getElementById('g-score');
   scoreEl.textContent=G.scores[p.name];
@@ -41755,7 +41785,7 @@ function startLightning(pIdx){
   }
   G.pi=pIdx; G.lScore=0; G.pool=buildPool().slice(0,currentRounds()); G.qi=0;
   const p=G.players[pIdx];
-  document.getElementById('l-av').textContent=p.avatar;
+  document.getElementById('l-av').innerHTML=avatarMarkup(p.avatar,resolvePlayerPhoto(p),'sm');
   document.getElementById('l-nm').textContent=p.name;
   const lTotal=Math.max(1,G.pool.length||currentRounds());
   document.getElementById('l-round').textContent=`Round ${Math.min(G.qi+1,lTotal)}/${lTotal}`;
@@ -41845,7 +41875,7 @@ function renderTFHeader(){
   const idx=Math.min(G.tfVoterIdx||0,Math.max(0,activePlayers.length-1));
   const p=activePlayers[idx]||G.players[0];
   if(!p) return;
-  document.getElementById('tf-av').textContent=p.avatar||'😊';
+  document.getElementById('tf-av').innerHTML=avatarMarkup(p.avatar||'😊',resolvePlayerPhoto(p),'sm');
   document.getElementById('tf-nm').textContent=p.name||'Player';
   document.getElementById('tf-score').textContent=G.scores[p.name]||0;
   renderHearts('tf-hearts',G.hearts[p.name]||0);
@@ -41886,7 +41916,7 @@ function renderTF(){
   const activePlayers=alivePlayersNow();
   activePlayers.forEach((p, i)=>{
     const d=document.createElement('div'); d.className='voter' + (i===0 ? ' cur-voter' : ''); d.id='voter-'+slug(p.name);
-    d.innerHTML=`<span>${p.avatar}</span><span>${p.name}</span><span>—</span>`;
+    d.innerHTML=`<span>${avatarMarkup(p.avatar,resolvePlayerPhoto(p),'sm')}</span><span>${p.name}</span><span>—</span>`;
     vt.appendChild(d);
   });
   // Set active players reference for voting
@@ -41911,7 +41941,7 @@ function updateTFIndicator(){
   const fb = document.getElementById('tf-fb');
   fb.style.display = 'block';
   fb.className = 'fb ok';
-  fb.innerHTML = `<strong>${p.avatar} ${p.name}'s turn</strong> — Pick True or False`;
+  fb.innerHTML = `<strong>${avatarMarkup(p.avatar,resolvePlayerPhoto(p),'sm')} ${p.name}'s turn</strong> — Pick True or False`;
 }
 
 function answerTF(ans){
@@ -41922,7 +41952,7 @@ function answerTF(ans){
   G.tfVotes[voter.name] = ans;
   const el = document.getElementById('voter-'+slug(voter.name));
   if(el) {
-    el.innerHTML=`<span>${voter.avatar}</span><span>${voter.name}</span><span style="color:${ans?'#6dda9a':'#e08080'}">${ans?'✅':'❌'}</span>`;
+    el.innerHTML=`<span>${avatarMarkup(voter.avatar,resolvePlayerPhoto(voter),'sm')}</span><span>${voter.name}</span><span style="color:${ans?'#6dda9a':'#e08080'}">${ans?'✅':'❌'}</span>`;
     el.classList.add('voted');
     el.classList.remove('cur-voter');
   }
@@ -41969,7 +41999,7 @@ function revealTF(q){
       }
     }
     const el=document.getElementById('voter-'+slug(p.name));
-    if(el) el.innerHTML=`<span>${p.avatar}</span><span>${p.name}</span><span style="color:${ok?'#6dda9a':ans===undefined?'var(--ink3)':'#e08080'}">${ok?'✓':ans===undefined?'—':'✗'}</span>`;
+    if(el) el.innerHTML=`<span>${avatarMarkup(p.avatar,resolvePlayerPhoto(p),'sm')}</span><span>${p.name}</span><span style="color:${ok?'#6dda9a':ans===undefined?'var(--ink3)':'#e08080'}">${ok?'✓':ans===undefined?'—':'✗'}</span>`;
   });
   if(myStreak===0) resetComboUIForPlayer(G.profile&&G.profile.name);
   else if(myStreak!=null) updateComboUI(myStreak);
@@ -42021,7 +42051,7 @@ function showScores(isFinal){
     const h=G.cfg.hearts?Array.from({length:3},(_,j)=>j<(G.hearts[p.name]||0)?'❤️':'🖤').join(''):'';
     div.innerHTML=`
       <div class="sc-rank ${i===0?'g':''}">${i===0?'👑':i+1}</div>
-      <div class="sc-av">${p.avatar}</div>
+      <div class="sc-av">${avatarMarkup(p.avatar,resolvePlayerPhoto(p),'md')}</div>
       <div class="sc-nm">${p.name}</div>
       <div style="display:flex;align-items:center;gap:9px;margin-left:auto;">
         <div>${h}</div>
@@ -42039,8 +42069,8 @@ function saveMatchResult(winner, players){
     let history = JSON.parse(localStorage.getItem('bgn_history') || '[]');
     const match = {
       date: new Date().toLocaleDateString(),
-      winner: { name: winner.name, avatar: winner.avatar },
-      scores: players.map(p => ({ name: p.name, score: G.scores[p.name], avatar: p.avatar })),
+      winner: { name: winner.name, avatar: winner.avatar, photo: resolvePlayerPhoto(winner) },
+      scores: players.map(p => ({ name: p.name, score: G.scores[p.name], avatar: p.avatar, photo: resolvePlayerPhoto(p) })),
       id: Date.now()
     };
     history.unshift(match);
@@ -42059,7 +42089,7 @@ function renderMatchHistory(){
     }
     el.innerHTML = history.map(m => `
       <div class="card-sm" style="margin-bottom:8px; display:flex; align-items:center; gap:10px;">
-        <span style="font-size:20px;">${m.winner.avatar}</span>
+        <span style="font-size:20px;display:flex;align-items:center;">${avatarMarkup(m.winner.avatar||'😊',m.winner.photo||'','md')}</span>
         <div style="flex:1;">
           <div style="font-size:13px; font-weight:700;">${m.winner.name} won</div>
           <div style="font-size:10px; color:var(--ink3);">${m.date}</div>
@@ -42144,11 +42174,11 @@ function endGame(){
   const wXp=document.getElementById('w-xp-txt');
   if(isTie){
     const topScore=G.scores[topWinners[0].name]||0;
-    wAv.textContent=topWinners.map(p=>p.avatar).join(' ');
+    wAv.innerHTML=topWinners.map(p=>avatarMarkup(p.avatar,resolvePlayerPhoto(p),'md')).join(' ');
     wName.textContent=topWinners.map(p=>p.name).join(' & ');
     wPts.textContent=`${topScore} points each (Tie)`;
   }else{
-    wAv.textContent=win.avatar;
+    wAv.innerHTML=avatarMarkup(win.avatar,resolvePlayerPhoto(win),'lg');
     wName.textContent=win.name;
     wPts.textContent=(G.sub==='team' ? G.teamScores[win.name] : G.scores[win.name])+' points';
   }
@@ -42164,7 +42194,7 @@ function endGame(){
     const isTopTie=isTie&&topWinners.some(w=>w.name===p.name);
     const d=document.createElement('div');
     d.style.cssText='background:rgba(255,255,255,.035);border:1px solid rgba(180,140,60,.1);border-radius:var(--r1);padding:8px 11px;text-align:center;min-width:60px;';
-    d.innerHTML=`<span style="font-size:18px;display:block;">${isTopTie?'👑 ':''}${p.avatar}</span><span style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:.07em;color:var(--ink3);text-transform:uppercase;">${p.name}</span><span style="font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--gold1);display:block;">${G.scores[p.name]}</span>`;
+    d.innerHTML=`<span style="font-size:18px;display:flex;justify-content:center;align-items:center;gap:4px;">${isTopTie?'<span>👑</span>':''}${avatarMarkup(p.avatar,resolvePlayerPhoto(p),'md')}</span><span style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:.07em;color:var(--ink3);text-transform:uppercase;">${p.name}</span><span style="font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--gold1);display:block;">${G.scores[p.name]}</span>`;
     oth.appendChild(d);
   });
   const playAgainBtn=document.getElementById('w-play-again');
@@ -42218,7 +42248,7 @@ function playAgain(){
         const existingRequests=(d&&d.rematchRequestedBy&&typeof d.rematchRequestedBy==='object')?d.rematchRequestedBy:{};
         const startedAt=(d&&d.status==='waiting'&&d.rematchStartedAt)?d.rematchStartedAt:Date.now();
         const upd={status:'waiting',difficulty:roomDiff,sub:roomSub,qtype:roomSub,cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)},rematchStartedAt:startedAt,rematchRequestedBy:{...existingRequests,[G.uid]:true}};
-        upd['players/'+G.uid]={name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:roomDiff,connected:true};
+        upd['players/'+G.uid]={name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:roomDiff,connected:true};
         Object.keys(d.players||{}).forEach(uid=>{
           upd['players/'+uid+'/ready']=false;
           upd['players/'+uid+'/diff']=roomDiff;
@@ -42229,7 +42259,7 @@ function playAgain(){
           status:'waiting',
           rematchStartedAt:Date.now(),
           rematchRequestedBy:{[G.uid]:true},
-          ['players/'+G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff,connected:true}
+          ['players/'+G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:G.diff,connected:true}
         });
       });
     } else {
@@ -42242,14 +42272,14 @@ function playAgain(){
         G.roomRef.update({
           status:'waiting',
           rematchStartedAt:startedAt,
-          ['players/'+G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:roomDiff,connected:true},
+          ['players/'+G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:roomDiff,connected:true},
           ['rematchRequestedBy/'+G.uid]:true
         });
       }).catch(()=>{
         G.roomRef.update({
           status:'waiting',
           rematchStartedAt:Date.now(),
-          ['players/'+G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff,connected:true},
+          ['players/'+G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:G.diff,connected:true},
           ['rematchRequestedBy/'+G.uid]:true
         });
       });
@@ -42422,7 +42452,7 @@ function createRoom(){
   ref.set({
     code, host:G.uid, status:'waiting', sub:roomSub, qtype:roomSub, difficulty:G.diff, createdAt:Date.now(),
     cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)},
-    players:{[G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff,connected:true}}
+    players:{[G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:G.diff,connected:true}}
   }).then(()=>{
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
@@ -42496,7 +42526,7 @@ function joinRoomByCode(code){
       const rcfg={...d.cfg}; delete rcfg.sound;
       G.cfg={...G.cfg,...rcfg,winScore:clampRounds(d.cfg.winScore),timer:true};
     }
-    ref.child('players/'+G.uid).set({name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:d.difficulty||G.diff,connected:true});
+    ref.child('players/'+G.uid).set({name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:d.difficulty||G.diff,connected:true});
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
     updateLobbyModeNote(d);
@@ -42631,7 +42661,7 @@ function updateLobbyUI(d){
   activeEntries.forEach(([uid,p])=>{
     const row=document.createElement('div'); row.className='lobby-row';
     const isHost=uid===hostUid, isMe=uid===G.uid;
-    row.innerHTML=`<span style="font-size:20px;">${p.avatar}</span><span style="font-family:'Playfair Display',serif;font-size:14px;flex:1;">${p.name}${isMe?' (You)':''}</span><span class="l-badge ${isHost?'host':p.ready?'ready':'wait'}">${isHost?'Host':p.ready?'Ready':'Waiting'}</span>`;
+    row.innerHTML=`<span style="font-size:20px;display:flex;align-items:center;">${avatarMarkup(p.avatar,resolvePlayerPhoto(p),'sm')}</span><span style="font-family:'Playfair Display',serif;font-size:14px;flex:1;">${p.name}${isMe?' (You)':''}</span><span class="l-badge ${isHost?'host':p.ready?'ready':'wait'}">${isHost?'Host':p.ready?'Ready':'Waiting'}</span>`;
     list.appendChild(row);
   });
   const startBtn=document.getElementById('start-btn');
@@ -42675,7 +42705,7 @@ function joinFromRoom(d){
   G.cfg.winScore=clampRounds(G.cfg.winScore);
   G.TIM=G.diff==='easy'?25:G.diff==='hard'?12:20;
   const playerEntries=Object.entries(d.players||{});
-  let players=playerEntries.map(([uid,p])=>({name:p.name,avatar:p.avatar,diff:p.diff||'easy',uid}));
+  let players=playerEntries.map(([uid,p])=>({name:p.name,avatar:p.avatar,photo:p.photo||'',diff:p.diff||'easy',uid}));
   const usedNames=new Set();
   players=players.map(p=>{let n=p.name,c=2;while(usedNames.has(n)){n=p.name+' '+c;c++;}usedNames.add(n);return{...p,name:n};});
   G.players=players;
@@ -42758,7 +42788,7 @@ function renderOnlineQ(){
   if(!gameEl||!gameEl.classList.contains('active')) go('game');
   // Show this player's own info
   const me=G.players.find(p=>p.uid===G.uid)||G.players[0];
-  document.getElementById('g-av').textContent=me?me.avatar:'';
+  document.getElementById('g-av').innerHTML=avatarMarkup(me?me.avatar:'',resolvePlayerPhoto(me),'sm');
   document.getElementById('g-nm').textContent=me?me.name+' (You)':'';
   document.getElementById('g-score').textContent=me?(G.scores[me.name]||0):0;
   const totalOnline=Math.max(1,(G.roomPool&&G.roomPool.length)||currentRounds());
@@ -43006,7 +43036,7 @@ function startNearby(){
     code, host:G.uid, status:'waiting', sub:G.sub, difficulty:G.diff, createdAt:Date.now(),
     cfg:{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)},
     nearby:true,
-    players:{[G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff,connected:true}}
+    players:{[G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:G.diff,connected:true}}
   }).then(()=>{
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
@@ -43136,7 +43166,7 @@ function startDailyChallenge(){
   G.sub = 'classic';
   G._xpAtGameStart=G.profile?(G.profile.xp||0):0;
   G._correctAtGameStart=G.profile?(G.profile.correct||0):0;
-  G.players = [{name: G.profile.name, avatar: G.profile.avatar}];
+  G.players = [{name: G.profile.name, avatar: G.profile.avatar, photo: G.profile.photo||''}];
   G.pool = dailyPool;
   G.qi = 0; G.pi = 0;
   G.scores = {[G.profile.name]: 0};
@@ -43177,7 +43207,7 @@ function startSeasonalEvent(){
   G.sub = 'classic';
   G._xpAtGameStart=G.profile?(G.profile.xp||0):0;
   G._correctAtGameStart=G.profile?(G.profile.correct||0):0;
-  G.players = [{name: G.profile?.name || 'Player', avatar: G.profile?.avatar || '😊'}];
+  G.players = [{name: G.profile?.name || 'Player', avatar: G.profile?.avatar || '😊', photo: G.profile?.photo || ''}];
   G.pool = shuf([...currentActiveEvent.questions]).slice(0,ROUND_LIMIT);
   G.qi = 0; G.pi = 0;
   G.scores = {[G.players[0].name]: 0};
@@ -43227,7 +43257,7 @@ function renderLB(tab){
       const rows = snapshots.filter(s => s.exists()).map(s => ({...s.val(), id: s.key}));
       if(G.profile&&G.uid){
         const meIdx=rows.findIndex(r=>r.id===G.uid);
-        const meData={id:G.uid,name:G.profile.name,avatar:G.profile.avatar,xp:G.profile.xp||0,weeklyXP:G.profile.weeklyXP||0,clan:G.profile.clanName||''};
+        const meData={id:G.uid,name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',xp:G.profile.xp||0,weeklyXP:G.profile.weeklyXP||0,clan:G.profile.clanName||''};
         if(meIdx>=0) rows[meIdx]={...rows[meIdx],...meData};
         else rows.push(meData);
       }
@@ -43255,7 +43285,7 @@ function renderLB(tab){
     });
     if(G.profile&&G.uid){
       const meIdx=rows.findIndex(r=>r.id===G.uid);
-      const meData={id:G.uid,name:G.profile.name,avatar:G.profile.avatar,xp:G.profile.xp||0,weeklyXP:(G.profile.weeklyReset===thisWeek?(G.profile.weeklyXP||0):0),clan:G.profile.clanName||''};
+      const meData={id:G.uid,name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',xp:G.profile.xp||0,weeklyXP:(G.profile.weeklyReset===thisWeek?(G.profile.weeklyXP||0):0),clan:G.profile.clanName||''};
       if(meIdx>=0) rows[meIdx]={...rows[meIdx],...meData};
       else rows.push(meData);
     }
@@ -43280,7 +43310,7 @@ function displayLBRows(list, rows, tab) {
       const clanName=(p.clan&&String(p.clan).trim())?String(p.clan):'No clan';
       const clanEmoji=(p.clanIcon&&String(p.clanIcon).trim())?String(p.clanIcon):'⛪';
       const shownXp=tab==='weekly'?(p.weeklyXP||0):(p.xp||0);
-      row.innerHTML=`<div class="lb-rank">${medal}</div><div class="lb-av">${p.avatar||'😊'}</div><div class="lb-info"><div class="lb-nm">${escHtml(p.name||'Player')}${isMe?' ✦':''}</div><div class="lb-sub lb-clan-sub"><span class="clan-emoji">${clanEmoji}</span><span class="clan-name">${escHtml(clanName)}</span></div></div><div style="text-align:right;"><div class="lb-xpv">${shownXp} XP</div><span class="lb-lvl">${l.name}</span></div>`;
+      row.innerHTML=`<div class="lb-rank">${medal}</div><div class="lb-av">${avatarMarkup(p.avatar||'😊',p.photo||'','sm')}</div><div class="lb-info"><div class="lb-nm">${escHtml(p.name||'Player')}${isMe?' ✦':''}</div><div class="lb-sub lb-clan-sub"><span class="clan-emoji">${clanEmoji}</span><span class="clan-name">${escHtml(clanName)}</span></div></div><div style="text-align:right;"><div class="lb-xpv">${shownXp} XP</div><span class="lb-lvl">${l.name}</span></div>`;
     }
     list.appendChild(row);
   });
@@ -43489,7 +43519,7 @@ function showSplash(idx,cb){
     return;
   }
   const p=G.players[idx];
-  document.getElementById('sp-av').textContent=p.avatar;
+  document.getElementById('sp-av').innerHTML=avatarMarkup(p.avatar,resolvePlayerPhoto(p),'lg');
   document.getElementById('sp-nm').textContent=p.name;
   const h=G.cfg.hearts?Array.from({length:3},(_,i)=>i<(G.hearts[p.name]||0)?'❤️':'🖤').join(''):'Ready to play!';
   document.getElementById('sp-sub').textContent=h||'Your turn!';
@@ -43552,6 +43582,8 @@ function buildAvGrid(ctx){
   _avCtx=ctx||'auth';
   const grid=document.getElementById('av-grid'); if(!grid)return;
   grid.innerHTML='';
+  const tools=document.getElementById('av-photo-tools');
+  if(tools) tools.style.display=(_avCtx==='prof'&&!!G.profile)?'flex':'none';
   const curAv=ctx==='prof'?G.profile?.avatar:document.getElementById('auth-av')?.textContent;
   AVATARS.forEach(av=>{
     const btn=document.createElement('div');
@@ -44872,7 +44904,7 @@ function sendChallenge(){
     cfg:{hearts:!!_chCfg.hearts,winScore:clampRounds(_chCfg.winScore)},
     challengeTarget:_chTargetUid,
     players:{
-      [G.uid]:{name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:_chDiff},
+      [G.uid]:{name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:_chDiff},
       [_chTargetUid]:{name:targetF.name||'Friend',avatar:targetF.avatar||'😊',ready:false,score:0,hearts:3,diff:_chDiff}
     }
   }).then(()=>{
@@ -45002,7 +45034,7 @@ function joinChallengeRoom(code,chMeta){
     if(!d){ toast('Room not found or expired'); return; }
     if(d.status==='playing'){ toast('Game already in progress'); return; }
     // Update existing player entry to mark as ready (sender already added us)
-    ref.child('players/'+G.uid).update({name:G.profile.name,avatar:G.profile.avatar,ready:false,score:0,hearts:3,diff:G.diff});
+    ref.child('players/'+G.uid).update({name:G.profile.name,avatar:G.profile.avatar,photo:G.profile.photo||'',ready:false,score:0,hearts:3,diff:G.diff});
     document.getElementById('rc-disp').textContent=code;
     document.getElementById('lobby-panel').style.display='block';
     updateLobbyModeNote({qtype:(chMeta&&chMeta.qtype)||d.qtype||d.sub,difficulty:(chMeta&&chMeta.difficulty)||d.difficulty,cfg:(chMeta&&chMeta.cfg)||d.cfg||{hearts:!!G.cfg.hearts,winScore:clampRounds(G.cfg.winScore)}});

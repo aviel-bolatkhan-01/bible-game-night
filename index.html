@@ -3497,6 +3497,7 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
     <div class="eyebrow" style="margin-bottom:9px;">Achievements</div>
     <div id="prof-achs"></div>
     <div class="divider"><span>✦</span></div>
+    <button class="btn btn-share btn-sm" onclick="shareProfileProgress()" style="margin-bottom:8px;">📸 Share Progress Card</button>
     <button class="btn btn-ghost btn-sm" onclick="openOv('ov-settings')" style="margin-bottom:8px;">⚙️ Settings</button>
     <button class="btn btn-ruby btn-sm" onclick="logOut()">Sign Out</button>
     <div class="pb"></div>
@@ -43833,6 +43834,148 @@ function shareResult(){
     navigator.share({title:'Lamp - Bible Trivia',text}).catch(()=>{});
   }else{
     navigator.clipboard&&navigator.clipboard.writeText(text).then(()=>toast('Copied to clipboard!'));
+  }
+}
+function drawRoundRect(ctx,x,y,w,h,r){
+  const rr=Math.max(0,Math.min(r,Math.min(w,h)/2));
+  ctx.beginPath();
+  ctx.moveTo(x+rr,y);
+  ctx.arcTo(x+w,y,x+w,y+h,rr);
+  ctx.arcTo(x+w,y+h,x,y+h,rr);
+  ctx.arcTo(x,y+h,x,y,rr);
+  ctx.arcTo(x,y,x+w,y,rr);
+  ctx.closePath();
+}
+function canvasToBlob(canvas,type='image/png',quality=0.95){
+  return new Promise((resolve,reject)=>{
+    try{
+      canvas.toBlob(b=>b?resolve(b):reject(new Error('Canvas export failed')),type,quality);
+    }catch(e){ reject(e); }
+  });
+}
+async function shareProfileProgress(){
+  if(!G.profile){ toast('Create a profile first'); return; }
+  sfx.tap();
+  const p=G.profile;
+  const l=lvl(p.xp||0);
+  const played=p.played||0;
+  const wins=p.wins||0;
+  const winRate=played>0?Math.round((wins/played)*100):0;
+  const best=p.bestStreak||0;
+  const current=p.winStreak||0;
+  const correct=p.correct||0;
+  const w=1920,h=1080;
+  const c=document.createElement('canvas');
+  c.width=w; c.height=h;
+  const ctx=c.getContext('2d');
+  if(!ctx){ toast('Unable to create image'); return; }
+
+  const bg=ctx.createLinearGradient(0,0,w,h);
+  bg.addColorStop(0,'#131622');
+  bg.addColorStop(0.55,'#161b2b');
+  bg.addColorStop(1,'#1d1410');
+  ctx.fillStyle=bg;
+  ctx.fillRect(0,0,w,h);
+
+  ctx.globalAlpha=0.12;
+  for(let i=0;i<18;i++){
+    ctx.fillStyle=i%2?'#e0a860':'#4a6fa8';
+    ctx.beginPath();
+    ctx.arc((i*197)%w,((i*139)+180)%h,70+(i%5)*18,0,Math.PI*2);
+    ctx.fill();
+  }
+  ctx.globalAlpha=1;
+
+  ctx.fillStyle='rgba(255,255,255,0.04)';
+  drawRoundRect(ctx,96,96,w-192,h-192,34);
+  ctx.fill();
+  ctx.strokeStyle='rgba(224,168,96,0.35)';
+  ctx.lineWidth=3;
+  drawRoundRect(ctx,96,96,w-192,h-192,34);
+  ctx.stroke();
+
+  ctx.font="700 64px 'Playfair Display', serif";
+  ctx.fillStyle='#f6efe4';
+  ctx.fillText('Lamp',170,200);
+  ctx.font="600 30px 'Nunito', sans-serif";
+  ctx.fillStyle='#e0a860';
+  ctx.fillText('Bible Trivia Online',170,246);
+  ctx.font="600 22px 'Nunito', sans-serif";
+  ctx.fillStyle='rgba(246,239,228,0.75)';
+  ctx.fillText('Progress Card',170,282);
+  ctx.font="700 84px 'Nunito', sans-serif";
+  ctx.fillStyle='#f6efe4';
+  ctx.fillText(p.avatar||'😊',112,216);
+
+  ctx.font="800 70px 'Nunito', sans-serif";
+  ctx.fillStyle='#f6efe4';
+  ctx.fillText(p.name||'Player',170,380);
+  ctx.font="700 30px 'Cinzel', serif";
+  ctx.fillStyle='#e0a860';
+  ctx.fillText(`${l.name.toUpperCase()} · LEVEL ${l.lv}`,170,426);
+
+  ctx.fillStyle='rgba(255,255,255,0.12)';
+  drawRoundRect(ctx,170,462,760,24,12);
+  ctx.fill();
+  ctx.fillStyle='#e0a860';
+  drawRoundRect(ctx,170,462,Math.max(16,760*((parseFloat(l.pct)||0)/100)),24,12);
+  ctx.fill();
+  ctx.font="600 22px 'Nunito', sans-serif";
+  ctx.fillStyle='rgba(246,239,228,0.82)';
+  ctx.fillText(`${p.xp||0} XP`,170,525);
+  ctx.fillText(`NEXT ${l.lv*XP_PER_LEVEL} XP`,760,525);
+
+  const cards=[
+    ['Games',String(played)],
+    ['Wins',String(wins)],
+    ['Win Rate',`${winRate}%`],
+    ['Current Streak',String(current)],
+    ['Best Streak',String(best)],
+    ['Correct Answers',String(correct)]
+  ];
+  const sx=1050, sy=212, cw=360, ch=155, gx=26, gy=22;
+  cards.forEach((it,idx)=>{
+    const row=Math.floor(idx/2), col=idx%2;
+    const x=sx+col*(cw+gx), y=sy+row*(ch+gy);
+    ctx.fillStyle='rgba(255,255,255,0.06)';
+    drawRoundRect(ctx,x,y,cw,ch,22);
+    ctx.fill();
+    ctx.strokeStyle='rgba(224,168,96,0.28)';
+    ctx.lineWidth=2;
+    drawRoundRect(ctx,x,y,cw,ch,22);
+    ctx.stroke();
+    ctx.font="800 58px 'Nunito', sans-serif";
+    ctx.fillStyle='#f6efe4';
+    ctx.fillText(it[1],x+34,y+86);
+    ctx.font="700 20px 'Cinzel', serif";
+    ctx.fillStyle='rgba(246,239,228,0.8)';
+    ctx.fillText(it[0].toUpperCase(),x+34,y+124);
+  });
+
+  const dateStr=new Date().toLocaleDateString();
+  ctx.font="600 20px 'Nunito', sans-serif";
+  ctx.fillStyle='rgba(246,239,228,0.72)';
+  ctx.fillText(`Generated ${dateStr}`,170,918);
+  ctx.fillText('Play with friends at Lamp - Bible Trivia Online',170,952);
+
+  try{
+    const blob=await canvasToBlob(c);
+    const file=new File([blob],`lamp-progress-${Date.now()}.png`,{type:'image/png'});
+    if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({title:'Lamp - Bible Trivia Online',text:'My Bible trivia progress',files:[file]});
+      return;
+    }
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`lamp-progress-${Date.now()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1200);
+    toast('Progress image downloaded ✦');
+  }catch(e){
+    toast('Unable to share image right now');
   }
 }
 

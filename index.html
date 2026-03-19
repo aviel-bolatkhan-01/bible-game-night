@@ -42374,7 +42374,7 @@ function endGame(){
   const wXp=document.getElementById('w-xp-txt');
   if(isTie){
     const topScore=G.scores[topWinners[0].name]||0;
-    wAv.innerHTML=topWinners.map(p=>avatarMarkup(p.avatar,resolvePlayerPhoto(p),'md')).join(' ');
+    wAv.innerHTML=topWinners.map(p=>avatarMarkup(p.avatar,resolvePlayerPhoto(p),'lg')).join(' ');
     wName.textContent=topWinners.map(p=>p.name).join(' & ');
     wPts.textContent=`${topScore} points each (Tie)`;
   }else{
@@ -42394,7 +42394,7 @@ function endGame(){
     const isTopTie=isTie&&topWinners.some(w=>w.name===p.name);
     const d=document.createElement('div');
     d.style.cssText='background:rgba(255,255,255,.035);border:1px solid rgba(180,140,60,.1);border-radius:var(--r1);padding:8px 11px;text-align:center;min-width:60px;';
-    d.innerHTML=`<span style="font-size:18px;display:flex;justify-content:center;align-items:center;gap:4px;">${isTopTie?'<span>👑</span>':''}${avatarMarkup(p.avatar,resolvePlayerPhoto(p),'md')}</span><span style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:.07em;color:var(--ink3);text-transform:uppercase;">${p.name}</span><span style="font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--gold1);display:block;">${G.scores[p.name]}</span>`;
+    d.innerHTML=`<span style="font-size:18px;display:flex;justify-content:center;align-items:center;gap:4px;">${isTopTie?'<span>👑</span>':''}${avatarMarkup(p.avatar,resolvePlayerPhoto(p),'sm')}</span><span style="font-family:'Cinzel',serif;font-size:8px;letter-spacing:.07em;color:var(--ink3);text-transform:uppercase;">${p.name}</span><span style="font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--gold1);display:block;">${G.scores[p.name]}</span>`;
     oth.appendChild(d);
   });
   const playAgainBtn=document.getElementById('w-play-again');

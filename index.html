@@ -2274,6 +2274,27 @@ html[data-theme="dark"] .profile-bar .wins-num { color: #E0A860; }
 }
 html[data-theme="dark"] .mode-btn { background: var(--card-bg); border-color: var(--inp-border); color: var(--ink); }
 html[data-theme="dark"] .mode-btn.sel { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.15); }
+/* Play style mode buttons */
+.mode-btn {
+  background: rgba(255,255,255,.034);
+  border: 1px solid var(--line);
+  border-radius: var(--r2);
+  padding: 13px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink2);
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  text-align: center;
+}
+.mode-btn.sel {
+  background: rgba(212,165,116,.15);
+  border-color: #D4A574;
+  color: var(--ink);
+  box-shadow: 0 0 8px rgba(212,165,116,.15);
+}
+html[data-theme="dark"] .mode-btn { background: var(--card-bg); border-color: var(--inp-border); color: var(--ink2); }
+html[data-theme="dark"] .mode-btn.sel { background: rgba(224,168,96,.12); border-color: #C49050; color: var(--ink); }
 /* Match history boxes */
 html[data-theme="dark"] .card-sm { background: var(--card-bg); border-color: var(--inp-border); color: var(--ink); }
 /* Game screen - answer options */
@@ -3149,14 +3170,14 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
 
     <!-- Play Style -->
     <div class="chips-wrap">
-      <div class="label" style="margin-bottom:7px;">Play Style</div>
-      <div class="chips" id="mode-chips">
-        <button class="chip sel" onclick="pickMode(this,'online')">🌐 Online</button>
-        <button class="chip" onclick="pickMode(this,'nearby')">📡 Same Room</button>
-        <button class="chip" onclick="pickMode(this,'local')">👥 Pass & Play</button>
-        <button class="chip" onclick="pickMode(this,'practice')">🎓 Solo</button>
+      <div class="label" style="margin-bottom:10px;">Play Style</div>
+      <div id="mode-chips" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button class="mode-btn sel" onclick="pickMode(this,'online')">🌐 &nbsp;Online</button>
+        <button class="mode-btn" onclick="pickMode(this,'nearby')">📡 &nbsp;Same Room</button>
+        <button class="mode-btn" onclick="pickMode(this,'local')">👥 &nbsp;Pass & Play</button>
+        <button class="mode-btn" onclick="pickMode(this,'practice')">🎓 &nbsp;Solo</button>
       </div>
-      <div id="mode-style-desc" style="font-size:12px;color:var(--ink3);margin-top:8px;line-height:1.5;">Compete with believers worldwide.</div>
+      <div id="mode-style-desc" style="font-size:11px;color:var(--ink3);margin-top:9px;text-align:center;letter-spacing:.02em;">✦ &nbsp;Compete with believers worldwide</div>
     </div>
 
     <button class="btn btn-gold" onclick="onPlay()" style="margin-bottom:8px;">
@@ -42761,18 +42782,18 @@ function applyModeSubAvailability(){
   syncSubChipSelection();
 }
 const MODE_STYLE_DESCS={
-  online:'Compete with believers worldwide.',
-  nearby:'Gather in one place — same WiFi, same spirit.',
-  local:'Take turns on one device. Perfect for family night.',
-  practice:'Go at your own pace. Sharpen your knowledge solo.'
+  online:'✦ &nbsp;Compete with believers worldwide',
+  nearby:'✦ &nbsp;Same WiFi, same spirit',
+  local:'✦ &nbsp;One device, take turns together',
+  practice:'✦ &nbsp;Sharpen your faith, go solo'
 };
 function pickMode(el,m){
   sfx.tap(); haptic('tap');
   G.mode=m; G.seen.clear();
-  document.querySelectorAll('#mode-chips .chip').forEach(c=>c.classList.remove('sel'));
+  document.querySelectorAll('#mode-chips .mode-btn').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
   const d=document.getElementById('mode-style-desc');
-  if(d) d.textContent=MODE_STYLE_DESCS[m]||'';
+  if(d) d.innerHTML=MODE_STYLE_DESCS[m]||'';
   applyModeSubAvailability();
 }
 function pickSub(el,s){

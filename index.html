@@ -2409,10 +2409,10 @@ html[data-theme="dark"] .auth-divider::before, html[data-theme="dark"] .auth-div
 html[data-theme="dark"] .friend-row { background: var(--card-bg); box-shadow: 0 2px 8px rgba(0,0,0,.2); color: var(--ink); }
 html[data-theme="dark"] .friend-name { color: var(--ink); }
 html[data-theme="dark"] .friend-xp { color: var(--ink3); }
-html[data-theme="dark"] .friend-btn-chat { background: #E0A860; color: #1A1A20; }
-html[data-theme="dark"] .friend-btn-challenge { background: #C47830; color: #1A1A20; }
-html[data-theme="dark"] .friend-btn-remove { background: rgba(255,100,100,.18); color: #ff7575; }
-html[data-theme="dark"] .friend-btn-decline { background: rgba(255,255,255,.08); color: var(--ink2); }
+html[data-theme="dark"] .friend-btn-chat { background: linear-gradient(145deg, #E8B870, #C08840); color: #1A1A20; box-shadow: 0 3px 10px rgba(192,136,64,.3); }
+html[data-theme="dark"] .friend-btn-challenge { background: linear-gradient(145deg, #D09848, #A07020); color: #1A1A20; box-shadow: 0 3px 10px rgba(160,112,32,.3); }
+html[data-theme="dark"] .friend-btn-remove { background: linear-gradient(145deg, #d04040, #801010); color: #fff; box-shadow: 0 3px 10px rgba(128,16,16,.4); }
+html[data-theme="dark"] .friend-btn-decline { border-color: rgba(255,255,255,.15); color: var(--ink2); }
 /* Setup row extras */
 html[data-theme="dark"] .setup-av-btn { background: var(--bg3); border-color: var(--inp-border); }
 html[data-theme="dark"] .setup-inp { color: var(--ink); }
@@ -2581,8 +2581,8 @@ html[data-theme="green"] .btn-ghost:active { background: rgba(94,138,94,.12); co
 html[data-theme="green"] .btn-ghost.active { background: rgba(94,138,94,.12); color: #4A6F4A; border-color: rgba(94,138,94,.4); }
 html[data-theme="green"] .btn-google { background: #F8FAF6; border-color: #C4CFC0; color: var(--ink); }
 html[data-theme="green"] .btn-email-auth { background: #5E8A5E; color: #FFFFFF; }
-html[data-theme="green"] .friend-btn-chat { background: #5E8A5E; color: #FFFFFF; }
-html[data-theme="green"] .friend-btn-challenge { background: #C4842A; color: #FFFFFF; }
+html[data-theme="green"] .friend-btn-chat { background: linear-gradient(145deg, #72A072, #4A6F4A); color: #fff; box-shadow: 0 3px 10px rgba(74,111,74,.3); }
+html[data-theme="green"] .friend-btn-challenge { background: linear-gradient(145deg, #D49838, #A46818); color: #fff; box-shadow: 0 3px 10px rgba(164,104,24,.3); }
 html[data-theme="green"] .tf-t { background: rgba(94,138,94,.12); border-color: rgba(94,138,94,.3); color: #4A6F4A; }
 html[data-theme="green"] .tf-f { background: rgba(200,50,50,.1); border-color: rgba(200,50,50,.25); color: #A03030; }
 html[data-theme="green"] .diff-chip { background: #E4EAE0; border-color: #C4CFC0; color: var(--ink2); }
@@ -2664,8 +2664,8 @@ html[data-theme="warmth"] .btn-ghost:active { background: rgba(176,120,80,.12); 
 html[data-theme="warmth"] .btn-ghost.active { background: rgba(176,120,80,.12); color: #8F6040; border-color: rgba(176,120,80,.4); }
 html[data-theme="warmth"] .btn-google { background: #FDF9F4; border-color: #D8CCBC; color: var(--ink); }
 html[data-theme="warmth"] .btn-email-auth { background: #B07850; color: #FFFFFF; }
-html[data-theme="warmth"] .friend-btn-chat { background: #B07850; color: #FFFFFF; }
-html[data-theme="warmth"] .friend-btn-challenge { background: #C48838; color: #FFFFFF; }
+html[data-theme="warmth"] .friend-btn-chat { background: linear-gradient(145deg, #C48E68, #8F6040); color: #fff; box-shadow: 0 3px 10px rgba(143,96,64,.3); }
+html[data-theme="warmth"] .friend-btn-challenge { background: linear-gradient(145deg, #D49848, #A47020); color: #fff; box-shadow: 0 3px 10px rgba(164,112,32,.3); }
 html[data-theme="warmth"] .tf-t { background: rgba(94,138,94,.1); border-color: rgba(94,138,94,.25); color: #5E8A5E; }
 html[data-theme="warmth"] .tf-f { background: rgba(200,50,50,.1); border-color: rgba(200,50,50,.25); color: #A03030; }
 html[data-theme="warmth"] .diff-chip { background: #F3EBE0; border-color: #D8CCBC; color: var(--ink2); }
@@ -2797,12 +2797,12 @@ html[data-theme="warmth"] .setup-av-btn { background: #FDF9F4; border-color: #D8
 .friend-name { font-family: 'Nunito',sans-serif; font-weight: 800; font-size: 15px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .friend-xp { font-size: 12px; color: var(--ink3); }
 .friend-actions { display: flex; gap: 6px; flex-shrink: 0; }
-.friend-btn { padding: 8px 16px; border-radius: 20px; font-family: 'Nunito',sans-serif; font-weight: 800; font-size: 13px; cursor: pointer; border: none; transition: transform .12s, filter .12s, background .15s; }
-.friend-btn:active { transform: scale(.94); filter: brightness(.9); }
-.friend-btn-chat { background: var(--green1,#58cc02); color: #fff; }
-.friend-btn-challenge { background: #ff9600; color: #fff; }
-.friend-btn-remove { background: rgba(220,60,60,.1); color: #c0392b; }
-.friend-btn-decline { background: rgba(0,0,0,.06); color: var(--ink2); }
+.friend-btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 9px 15px; border-radius: var(--r2); font-family: 'Nunito',sans-serif; font-weight: 800; font-size: 12px; letter-spacing: .03em; cursor: pointer; border: none; white-space: nowrap; transition: transform .12s, filter .12s, box-shadow .15s; }
+.friend-btn:active { transform: scale(.96); opacity: .88; }
+.friend-btn-chat { background: linear-gradient(145deg, #6ada18, #38a800); color: #fff; box-shadow: 0 3px 10px rgba(56,168,0,.32); }
+.friend-btn-challenge { background: linear-gradient(145deg, #ffb040, #c07000); color: #fff; box-shadow: 0 3px 10px rgba(192,112,0,.32); }
+.friend-btn-remove { background: linear-gradient(145deg, #e05050, #901818); color: #fff; box-shadow: 0 3px 10px rgba(144,24,24,.32); }
+.friend-btn-decline { background: transparent; border: 1px solid rgba(0,0,0,.14); color: var(--ink2); }
 .my-code-box { background: var(--bg2,#f0f9e8); border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 16px; }
 .my-code { font-family: 'Nunito',sans-serif; font-weight: 900; font-size: 22px; letter-spacing: .15em; color: var(--green1,#58cc02); cursor: pointer; }
 

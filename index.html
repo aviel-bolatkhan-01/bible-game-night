@@ -3137,27 +3137,6 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
       </div>
     </div>
 
-    <!-- Game Mode -->
-    <div class="chips-wrap" id="sub-row">
-      <div class="label" style="margin-bottom:7px;">Game Mode</div>
-      <div class="chips" id="sub-chips">
-        <button class="chip sel" data-sub="classic" onclick="pickSub(this,'classic')">🎯 Multiple Choice</button>
-        <button class="chip" data-sub="truefalse" onclick="pickSub(this,'truefalse')">✅ True or False</button>
-        <button class="chip" data-sub="verse" onclick="pickSub(this,'verse')">📖 Complete the Verse</button>
-        <button class="chip" data-sub="lightning" onclick="pickSub(this,'lightning')">⚡ Lightning</button>
-      </div>
-    </div>
-
-    <!-- Difficulty -->
-    <div style="margin-bottom:14px;">
-      <div class="label" style="margin-bottom:7px;">Difficulty</div>
-      <div class="diff-row">
-        <button class="diff-chip sel" id="diff-easy"   onclick="pickDiff(this,'easy')">🌿 Easy</button>
-        <button class="diff-chip"     id="diff-medium" onclick="pickDiff(this,'medium')">📖 Medium</button>
-        <button class="diff-chip"     id="diff-hard"   onclick="pickDiff(this,'hard')">⚔️ Hard</button>
-      </div>
-    </div>
-
     <button class="btn btn-gold" onclick="onPlay()" style="margin-bottom:8px;">
       ▶ Start Game
     </button>
@@ -42782,8 +42761,8 @@ function pickSub(el,s){
 function onPlay(){
   sfx.tap();
   if(!G.profile){ go('auth'); buildAvGrid(); return; }
-  if(G.mode==='online'){ go('setup'); buildModeSetup('online',true); return; }
-  if(G.mode==='nearby'){ go('setup'); buildModeSetup('nearby',true); return; }
+  if(G.mode==='online'){ go('setup'); buildModeSetup('online'); return; }
+  if(G.mode==='nearby'){ go('setup'); buildModeSetup('nearby'); return; }
   if(G.mode==='practice'){ go('setup'); buildModeSetup('practice'); return; }
   go('setup'); buildSetup();
 }
@@ -42799,7 +42778,7 @@ function buildSetup(seedPlayers){
   document.getElementById('setup-subtitle').textContent='2–6 players · Tap avatar to cycle';
   document.getElementById('setup-list').style.display='block';
   document.getElementById('add-p-btn').style.display='flex';
-  document.getElementById('setup-room-mode-wrap').style.display='none';
+  document.getElementById('setup-room-mode-wrap').style.display='block';
   document.getElementById('setup-go-btn').innerHTML='<span class="btn-icon">🕯️</span> Let\'s Play!';
   const seeded=Array.isArray(seedPlayers)
     ? seedPlayers
@@ -42818,29 +42797,28 @@ function buildSetup(seedPlayers){
       {name:'Player 2',avatar:AVATARS[1]||'🙂'}
     ];
   }
-  renderSetup(); renderOpts();
+  renderSetup(); renderOpts(); renderSetupRoomModeChips();
+  // Hide lightning for Pass & Play
+  const lightChip=document.querySelector('#setup-room-sub-chips .chip[data-sub="lightning"]');
+  if(lightChip) lightChip.style.display='none';
+  if(G.sub==='lightning'){ G.sub='classic'; renderSetupRoomModeChips(); }
 }
 function buildModeSetup(kind,fromHomeSelection){
   _setupAction=kind;
-  _setupUseHomeSelection=!!fromHomeSelection;
+  _setupUseHomeSelection=false;
   document.getElementById('setup-list').innerHTML='';
   document.getElementById('setup-list').style.display='none';
   document.getElementById('add-p-btn').style.display='none';
-  const showModeDiff=(kind==='online'||kind==='nearby')&&!_setupUseHomeSelection;
-  document.getElementById('setup-room-mode-wrap').style.display=showModeDiff?'block':'none';
+  document.getElementById('setup-room-mode-wrap').style.display='block';
   if(kind==='online'){
     document.getElementById('setup-eyebrow').textContent='Online';
     document.getElementById('setup-title').innerHTML='Game <em>Settings</em>';
-    document.getElementById('setup-subtitle').textContent=_setupUseHomeSelection
-      ?'Using game mode and difficulty from Home. Set room rules below.'
-      :'Host picks rules; joiners receive them automatically.';
+    document.getElementById('setup-subtitle').textContent='Host picks rules; joiners receive them automatically.';
     document.getElementById('setup-go-btn').innerHTML='<span class="btn-icon">🌐</span> Host Room';
   } else if(kind==='nearby'){
     document.getElementById('setup-eyebrow').textContent='Same WiFi';
     document.getElementById('setup-title').innerHTML='Game <em>Settings</em>';
-    document.getElementById('setup-subtitle').textContent=_setupUseHomeSelection
-      ?'Using game mode and difficulty from Home. Set room rules below.'
-      :'Apply rules before creating your nearby room.';
+    document.getElementById('setup-subtitle').textContent='Apply rules before creating your nearby room.';
     document.getElementById('setup-go-btn').innerHTML='<span class="btn-icon">📡</span> Start Nearby';
   } else {
     document.getElementById('setup-eyebrow').textContent='Solo';
@@ -42856,6 +42834,8 @@ function renderSetupRoomModeChips(){
   const diffWrap=document.getElementById('setup-room-diff-chips');
   if(subWrap){
     subWrap.querySelectorAll('.chip').forEach(c=>c.classList.toggle('sel',c.dataset.sub===G.sub));
+    const lightChip=subWrap.querySelector('.chip[data-sub="lightning"]');
+    if(lightChip) lightChip.style.display=(G.mode==='local')?'none':'';
   }
   if(diffWrap){
     diffWrap.querySelectorAll('.diff-chip').forEach(c=>c.classList.toggle('sel',c.dataset.diff===G.diff));
@@ -42863,6 +42843,7 @@ function renderSetupRoomModeChips(){
 }
 function pickSetupSub(el,s){
   sfx.tap(); haptic('tap');
+  if(G.mode==='local'&&s==='lightning'){ toast('Lightning is not available in Pass & Play.'); return; }
   if(s==='team') s='classic';
   G.sub=s; G.seen.clear();
   if(s==='lightning') G.cfg.hearts=false;

@@ -42438,6 +42438,18 @@ function pullProfile(){
     normalizeSocialProfile();
     applyXpReset(G.profile);
     saveProfile();
+    // If profile has a clanCode but missing clanName, restore clan details from Firebase
+    if(G.profile.clanCode && !G.profile.clanName){
+      G.db.ref('clans/'+G.profile.clanCode).once('value').then(cs=>{
+        const c=cs.val(); if(!c) return;
+        G.profile.clanName=c.name||'';
+        G.profile.clanIcon=c.icon||'⛪';
+        G.profile.clanPhoto=c.photo||'';
+        G.profile.clanOwner=c.createdBy||'';
+        saveProfile();
+        pushProfile();
+      }).catch(()=>{});
+    }
     return G.profile;
   }).catch(()=>null);
 }

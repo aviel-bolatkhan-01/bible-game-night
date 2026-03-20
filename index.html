@@ -3946,11 +3946,9 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
       <div class="mtitle" id="ch-friend-name" style="margin-bottom:0;">Friend</div>
     </div>
 
-    <div class="chips-wrap" style="margin-bottom:0;">
-      <div class="chips">
-        <button class="chip sel" id="ch-mode-live" onclick="chSetMode('live')">⚡ Duel</button>
-        <button class="chip" id="ch-mode-ghost" onclick="chSetMode('ghost')">👻 Ghost</button>
-      </div>
+    <div style="display:flex;gap:8px;margin-bottom:0;">
+      <button class="chip sel" id="ch-mode-live" onclick="chSetMode('live')" style="flex:1;">⚡ Duel</button>
+      <button class="chip" id="ch-mode-ghost" onclick="chSetMode('ghost')" style="flex:1;">👻 Ghost</button>
     </div>
     <div id="ch-mode-desc" style="font-size:13px;color:var(--ink3);margin-bottom:16px;line-height:1.6;text-align:center;padding:10px 4px;border-bottom:1px solid rgba(201,145,13,.12);">Play live against your friend in real time.</div>
 

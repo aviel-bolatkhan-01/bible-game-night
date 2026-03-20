@@ -2313,7 +2313,7 @@ html[data-theme="dark"] .mode-btn.sel { background: rgba(224,168,96,.12); border
 .ps-v3-wrap { display:flex; background:rgba(0,0,0,.18); border-radius:10px; padding:3px; margin-bottom:8px; }
 .ps-v3-seg { flex:1; padding:14px 4px; background:transparent; border:none; border-radius:8px; cursor:pointer; color:var(--ink2); font-family:'Nunito',sans-serif; font-size:13px; font-weight:600; transition:all .15s; text-align:center; line-height:1.5; }
 .ps-v3-seg.ps-inline { padding:9px 4px; display:flex; align-items:center; justify-content:center; gap:6px; line-height:1; }
-.ps-v3-seg.sel { background:#fff; color:var(--ink); box-shadow:0 2px 8px rgba(0,0,0,.14); }
+.ps-v3-seg.sel, .ps-v3-seg.active { background:#fff; color:var(--ink); box-shadow:0 2px 8px rgba(0,0,0,.14); }
 /* V4 — dominant selected */
 .ps-v4-btn { display:flex; align-items:center; gap:7px; padding:10px 16px; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:40px; cursor:pointer; color:var(--ink3); font-family:'Cinzel',serif; font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; opacity:.5; transition:all .2s; flex-shrink:0; }
 .ps-v4-btn.sel { opacity:1; font-size:13px; padding:13px 22px; background:rgba(212,165,116,.14); border-color:#D4A574; color:var(--ink); box-shadow:0 0 14px rgba(212,165,116,.2); letter-spacing:.04em; }
@@ -2324,7 +2324,7 @@ html[data-theme="dark"] .ps-v2-btn { background:var(--card-bg); border-color:var
 html[data-theme="dark"] .ps-v2-btn.sel { background:rgba(224,168,96,.1); border-color:#C49050; }
 html[data-theme="dark"] .ps-v3-wrap { background:rgba(0,0,0,.3); }
 html[data-theme="dark"] .ps-v3-seg { color:var(--ink3); }
-html[data-theme="dark"] .ps-v3-seg.sel { background:rgba(255,255,255,.1); color:var(--ink); box-shadow:0 1px 4px rgba(0,0,0,.3); }
+html[data-theme="dark"] .ps-v3-seg.sel, html[data-theme="dark"] .ps-v3-seg.active { background:rgba(255,255,255,.1); color:var(--ink); box-shadow:0 1px 4px rgba(0,0,0,.3); }
 html[data-theme="dark"] .ps-v4-btn { background:var(--card-bg); border-color:var(--inp-border); }
 html[data-theme="dark"] .ps-v4-btn.sel { background:rgba(224,168,96,.12); border-color:#C49050; }
 /* Match history boxes */
@@ -3270,9 +3270,9 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
     <div class="h1"><em>Friends</em></div>
   </div>
   <!-- Sub-tab bar -->
-  <div class="social-tab-bar" style="flex-shrink:0;">
-    <button class="social-tab active" id="stab-friends" onclick="switchSocialTab('friends')">👥 Friends</button>
-    <button class="social-tab" id="stab-messages" onclick="switchSocialTab('messages')">💬 Messages</button>
+  <div class="ps-v3-wrap" style="flex-shrink:0;margin-bottom:12px;">
+    <button class="ps-v3-seg ps-inline active" id="stab-friends" onclick="switchSocialTab('friends')"><span style="font-size:20px;">👥</span>Friends</button>
+    <button class="ps-v3-seg ps-inline" id="stab-messages" onclick="switchSocialTab('messages')"><span style="font-size:20px;">💬</span>Messages</button>
   </div>
   <div class="scroller">
     <!-- ── Friends panel ── -->
@@ -3596,9 +3596,9 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
   <div style="padding:16px 0 12px;flex-shrink:0;">
     <div class="eyebrow">Community</div>
     <div class="h1">Connect & <em>Compete</em></div>
-    <div style="display:flex;gap:7px;margin-top:11px;">
-      <button class="btn btn-ghost btn-sm" style="flex:1;padding:8px;" id="comm-tab-rankings" onclick="communityTab('rankings')">🏆 Rankings</button>
-      <button class="btn btn-ghost btn-sm" style="flex:1;padding:8px;" id="comm-tab-clans" onclick="communityTab('clans')">⛪ Congregations</button>
+    <div class="ps-v3-wrap" style="margin-top:11px;margin-bottom:0;">
+      <button class="ps-v3-seg ps-inline active" id="comm-tab-rankings" onclick="communityTab('rankings')"><span style="font-size:20px;">🏆</span>Rankings</button>
+      <button class="ps-v3-seg ps-inline" id="comm-tab-clans" onclick="communityTab('clans')"><span style="font-size:20px;">⛪</span>Congregations</button>
     </div>
   </div>
   <div class="scroller">
@@ -42984,7 +42984,7 @@ function renderOpts(){
   if(modeDescEl) modeDescEl.textContent=MODE_DESCS[G.sub]||MODE_DESCS.classic;
   // Hearts toggle
   const heartsRow=document.createElement('div'); heartsRow.className='toggle-row';
-  if(G.cfg.hearts===undefined) G.cfg.hearts=!isLightning;
+  G.cfg.hearts=!isLightning;
   heartsRow.innerHTML=`<span class="toggle-lbl">❤️ Lives / Hearts</span>
     <button class="toggle-btn ${G.cfg.hearts?'on':'off'}" id="tog-hearts" onclick="togCfg('hearts')">${G.cfg.hearts?'ON':'OFF'}</button>`;
   el.appendChild(heartsRow);
@@ -47431,11 +47431,14 @@ function pickChQType(el,qtype){
   if(roundsRow) roundsRow.style.display=isLightning?'none':'';
   const descEl=document.getElementById('ch-mode-desc-settings');
   if(descEl) descEl.textContent=MODE_DESCS[qtype]||MODE_DESCS.classic;
-  // Default hearts off for lightning
+  // Default hearts off for lightning, on for everything else
+  const hBtn=document.getElementById('ch-tog-hearts');
   if(isLightning){
     _chCfg.hearts=false;
-    const hBtn=document.getElementById('ch-tog-hearts');
     if(hBtn){ hBtn.textContent='OFF'; hBtn.className='toggle-btn off'; }
+  } else {
+    _chCfg.hearts=true;
+    if(hBtn){ hBtn.textContent='ON'; hBtn.className='toggle-btn on'; }
   }
 }
 function togChHearts(){

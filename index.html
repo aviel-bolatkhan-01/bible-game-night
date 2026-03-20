@@ -3152,7 +3152,7 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
         <div style="font-family:'Playfair Display',serif;font-size:16px;color:var(--ink);">10 Trials</div>
         <div id="daily-streak-info" style="font-size:11px;color:var(--ink3);margin-top:2px;">Streak: 0 days</div>
       </div>
-      <div class="btn btn-gold btn-sm" style="width:auto;padding:8px 16px;">Play</div>
+      <div class="btn btn-gold btn-sm" style="width:auto;padding:8px 16px;">Start</div>
     </div>
 
 
@@ -3181,7 +3181,7 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
     </div>
 
     <button class="btn btn-gold" onclick="onPlay()" style="margin-bottom:8px;">
-      ▶ Start Game
+      ▶ Play
     </button>
     <button class="btn btn-ghost btn-sm" onclick="go('donation')" style="font-size:12px;">❤️ Support This Ministry</button>
     <div class="pb"></div>
@@ -45786,7 +45786,7 @@ function togGlobal(k){
 ══════════════════════════════════════════════════ */
 let _splashCb=null;
 function showSplash(idx,cb){
-  if(G.mode==='practice'){
+  if(G.mode!=='local'){
     const ov=document.getElementById('splash');
     if(ov) ov.classList.remove('on');
     if(typeof cb==='function') cb();

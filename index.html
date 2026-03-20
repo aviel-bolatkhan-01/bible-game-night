@@ -3973,6 +3973,7 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
     </div>
 
     <div id="ch-live-options" style="margin-bottom:16px;">
+    <div id="ch-mode-desc-settings" style="font-size:12px;color:var(--ink3);margin-bottom:10px;line-height:1.5;">Pick the right answer from 4 options.</div>
     <div class="toggle-row" style="margin-bottom:10px;">
       <span class="toggle-lbl">❤️ Hearts</span>
       <button class="toggle-btn on" id="ch-tog-hearts" onclick="togChHearts()">ON</button>
@@ -42773,6 +42774,7 @@ function pickSub(el,s){
   }
   if(s==='team') s='classic';
   G.sub=s; G.seen.clear();
+  if(s==='lightning') G.cfg.hearts=true;
   document.querySelectorAll('#sub-chips .chip').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
   renderOpts();
@@ -42863,6 +42865,7 @@ function pickSetupSub(el,s){
   sfx.tap(); haptic('tap');
   if(s==='team') s='classic';
   G.sub=s; G.seen.clear();
+  if(s==='lightning') G.cfg.hearts=true;
   document.querySelectorAll('#setup-room-sub-chips .chip').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
   renderOpts();
@@ -42905,22 +42908,36 @@ function removeP(i){
   if(setupPs.length<=2){ toast('Need at least 2 players'); return; }
   sfx.tap(); setupPs.splice(i,1); renderSetup();
 }
+const MODE_DESCS={
+  classic:'Pick the right answer from 4 options.',
+  truefalse:'Decide if each statement is true or false.',
+  verse:'Fill in the missing word from scripture.',
+  lightning:'Race the clock — answer as many as you can.'
+};
 function renderOpts(){
   const el=document.getElementById('opt-list'); el.innerHTML='';
-  const setupKind=_setupAction||'local';
-  const opts=[
-    {k:'hearts',l:'❤️ Lives / Hearts'},
-  ];
-  G.cfg.timer=true;
-  opts.forEach(o=>{
-    G.cfg[o.k]=G.cfg[o.k]!==undefined?G.cfg[o.k]:true;
-    const row=document.createElement('div'); row.className='toggle-row';
-    row.innerHTML=`<span class="toggle-lbl">${o.l}</span>
-      <button class="toggle-btn ${G.cfg[o.k]?'on':'off'}" id="tog-${o.k}" onclick="togCfg('${o.k}')">${G.cfg[o.k]?'ON':'OFF'}</button>`;
-    el.appendChild(row);
-  });
+  const isLightning=G.sub==='lightning';
+  // Force hearts on for lightning
+  if(isLightning) G.cfg.hearts=true;
+  // Mode description
+  const desc=MODE_DESCS[G.sub]||MODE_DESCS.classic;
+  const descEl=document.createElement('div');
+  descEl.style.cssText='font-size:12px;color:var(--ink3);margin-bottom:10px;line-height:1.5;';
+  descEl.textContent=desc;
+  el.appendChild(descEl);
+  // Hearts toggle (locked on for lightning)
+  const heartsRow=document.createElement('div'); heartsRow.className='toggle-row';
+  G.cfg.hearts=G.cfg.hearts!==undefined?G.cfg.hearts:true;
+  if(isLightning){
+    heartsRow.innerHTML=`<span class="toggle-lbl">❤️ Lives / Hearts</span>
+      <button class="toggle-btn on" disabled style="opacity:.5;cursor:default;">ON</button>`;
+  } else {
+    heartsRow.innerHTML=`<span class="toggle-lbl">❤️ Lives / Hearts</span>
+      <button class="toggle-btn ${G.cfg.hearts?'on':'off'}" id="tog-hearts" onclick="togCfg('hearts')">${G.cfg.hearts?'ON':'OFF'}</button>`;
+  }
+  el.appendChild(heartsRow);
   // Rounds (hidden for lightning)
-  if(G.sub!=='lightning'){
+  if(!isLightning){
     const wr=document.createElement('div'); wr.className='toggle-row';
     wr.innerHTML=`<span class="toggle-lbl">🏁 Rounds</span>
       <div class="stepper">
@@ -47331,6 +47348,8 @@ function challengeFriend(uid){
   if(modeChip) modeChip.classList.add('sel');
   const roundsRow=document.getElementById('ch-rounds-row');
   if(roundsRow) roundsRow.style.display=_chQType==='lightning'?'none':'';
+  const descEl=document.getElementById('ch-mode-desc-settings');
+  if(descEl) descEl.textContent=MODE_DESCS[_chQType]||MODE_DESCS.classic;
   const hBtn=document.getElementById('ch-tog-hearts');
   if(hBtn){
     hBtn.textContent=_chCfg.hearts?'ON':'OFF';
@@ -47355,8 +47374,20 @@ function pickChQType(el,qtype){
   _chQType=qtype;
   document.querySelectorAll('#ch-qtype-chips .chip').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
+  const isLightning=qtype==='lightning';
   const roundsRow=document.getElementById('ch-rounds-row');
-  if(roundsRow) roundsRow.style.display=qtype==='lightning'?'none':'';
+  if(roundsRow) roundsRow.style.display=isLightning?'none':'';
+  const descEl=document.getElementById('ch-mode-desc-settings');
+  if(descEl) descEl.textContent=MODE_DESCS[qtype]||MODE_DESCS.classic;
+  // Force hearts on for lightning
+  if(isLightning){
+    _chCfg.hearts=true;
+    const hBtn=document.getElementById('ch-tog-hearts');
+    if(hBtn){ hBtn.textContent='ON'; hBtn.className='toggle-btn on'; hBtn.disabled=true; hBtn.style.opacity='.5'; hBtn.style.cursor='default'; }
+  } else {
+    const hBtn=document.getElementById('ch-tog-hearts');
+    if(hBtn){ hBtn.disabled=false; hBtn.style.opacity=''; hBtn.style.cursor=''; }
+  }
 }
 function togChHearts(){
   sfx.tap();

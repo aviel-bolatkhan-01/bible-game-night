@@ -959,6 +959,16 @@ body::after {
   transition: all .14s;
   -webkit-user-select: none;
   user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.diff-hint {
+  font-size: 9px;
+  font-weight: 500;
+  opacity: 0.7;
+  line-height: 1;
 }
 .diff-chip.sel { background: rgba(196,136,10,.12); border-color: rgba(196,136,10,.45); color: var(--gold1); }
 .diff-chip:active { transform: scale(.96); }
@@ -3120,10 +3130,10 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
     <div class="chips-wrap">
       <div class="label" style="margin-bottom:7px;">Play Style</div>
       <div class="chips" id="mode-chips">
-        <button class="chip sel" onclick="pickMode(this,'online')">🌐 Online Room</button>
-        <button class="chip" onclick="pickMode(this,'nearby')">📡 Nearby</button>
-        <button class="chip" onclick="pickMode(this,'local')">👥 Pass &amp; Play</button>
-        <button class="chip" onclick="pickMode(this,'practice')">🎓 Practice</button>
+        <button class="chip sel" onclick="pickMode(this,'online')">🌐 Play Online</button>
+        <button class="chip" onclick="pickMode(this,'nearby')">📡 Same Room</button>
+        <button class="chip" onclick="pickMode(this,'local')">👥 Take Turns</button>
+        <button class="chip" onclick="pickMode(this,'practice')">🎓 Solo</button>
       </div>
     </div>
 
@@ -3131,9 +3141,9 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
     <div class="chips-wrap" id="sub-row">
       <div class="label" style="margin-bottom:7px;">Game Mode</div>
       <div class="chips" id="sub-chips">
-        <button class="chip sel" data-sub="classic" onclick="pickSub(this,'classic')">🎯 Classic</button>
-        <button class="chip" data-sub="truefalse" onclick="pickSub(this,'truefalse')">✅ True / False</button>
-        <button class="chip" data-sub="verse" onclick="pickSub(this,'verse')">📖 Fill-in-Verse</button>
+        <button class="chip sel" data-sub="classic" onclick="pickSub(this,'classic')">🎯 Multiple Choice</button>
+        <button class="chip" data-sub="truefalse" onclick="pickSub(this,'truefalse')">✅ True or False</button>
+        <button class="chip" data-sub="verse" onclick="pickSub(this,'verse')">📖 Complete the Verse</button>
         <button class="chip" data-sub="lightning" onclick="pickSub(this,'lightning')">⚡ Lightning</button>
       </div>
     </div>
@@ -3142,14 +3152,14 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
     <div style="margin-bottom:14px;">
       <div class="label" style="margin-bottom:7px;">Difficulty</div>
       <div class="diff-row">
-        <button class="diff-chip sel" id="diff-easy"   onclick="pickDiff(this,'easy')">🌿 Easy</button>
-        <button class="diff-chip"     id="diff-medium" onclick="pickDiff(this,'medium')">📖 Medium</button>
-        <button class="diff-chip"     id="diff-hard"   onclick="pickDiff(this,'hard')">⚔️ Hard</button>
+        <button class="diff-chip sel" id="diff-easy"   onclick="pickDiff(this,'easy')">🌿 Easy<span class="diff-hint">Basic questions</span></button>
+        <button class="diff-chip"     id="diff-medium" onclick="pickDiff(this,'medium')">📖 Medium<span class="diff-hint">Know your Bible</span></button>
+        <button class="diff-chip"     id="diff-hard"   onclick="pickDiff(this,'hard')">⚔️ Hard<span class="diff-hint">For scholars</span></button>
       </div>
     </div>
 
     <button class="btn btn-gold" onclick="onPlay()" style="margin-bottom:8px;">
-      ▶ Play Now
+      ▶ Start Game
     </button>
     <button class="btn btn-ghost btn-sm" onclick="go('donation')" style="font-size:12px;">❤️ Support This Ministry</button>
     <div class="pb"></div>
@@ -3284,18 +3294,18 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
       <div class="chips-wrap" style="margin-bottom:12px;">
         <div class="label" style="margin-bottom:7px;">Game Mode</div>
         <div class="chips" id="setup-room-sub-chips">
-          <button class="chip sel" data-sub="classic" onclick="pickSetupSub(this,'classic')">🎯 Classic</button>
-          <button class="chip" data-sub="truefalse" onclick="pickSetupSub(this,'truefalse')">✅ True / False</button>
-          <button class="chip" data-sub="verse" onclick="pickSetupSub(this,'verse')">📖 Fill-in-Verse</button>
+          <button class="chip sel" data-sub="classic" onclick="pickSetupSub(this,'classic')">🎯 Multiple Choice</button>
+          <button class="chip" data-sub="truefalse" onclick="pickSetupSub(this,'truefalse')">✅ True or False</button>
+          <button class="chip" data-sub="verse" onclick="pickSetupSub(this,'verse')">📖 Complete the Verse</button>
           <button class="chip" data-sub="lightning" onclick="pickSetupSub(this,'lightning')">⚡ Lightning</button>
         </div>
       </div>
       <div>
         <div class="label" style="margin-bottom:7px;">Difficulty</div>
         <div class="diff-row" id="setup-room-diff-chips">
-          <button class="diff-chip sel" data-diff="easy" onclick="pickSetupDiff(this,'easy')">🌿 Easy</button>
-          <button class="diff-chip" data-diff="medium" onclick="pickSetupDiff(this,'medium')">📖 Medium</button>
-          <button class="diff-chip" data-diff="hard" onclick="pickSetupDiff(this,'hard')">⚔️ Hard</button>
+          <button class="diff-chip sel" data-diff="easy" onclick="pickSetupDiff(this,'easy')">🌿 Easy<span class="diff-hint">Basic questions</span></button>
+          <button class="diff-chip" data-diff="medium" onclick="pickSetupDiff(this,'medium')">📖 Medium<span class="diff-hint">Know your Bible</span></button>
+          <button class="diff-chip" data-diff="hard" onclick="pickSetupDiff(this,'hard')">⚔️ Hard<span class="diff-hint">For scholars</span></button>
         </div>
       </div>
     </div>
@@ -3970,17 +3980,17 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
     </div>
     <label class="label">Game Mode</label>
     <div id="ch-qtype-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
-      <button class="chip sel" onclick="pickChQType(this,'classic')" id="ch-qtype-classic">🎯 Classic</button>
-      <button class="chip" onclick="pickChQType(this,'truefalse')" id="ch-qtype-truefalse">✅ True/False</button>
-      <button class="chip" onclick="pickChQType(this,'verse')" id="ch-qtype-fillin">📖 Fill-in-Verse</button>
+      <button class="chip sel" onclick="pickChQType(this,'classic')" id="ch-qtype-classic">🎯 Multiple Choice</button>
+      <button class="chip" onclick="pickChQType(this,'truefalse')" id="ch-qtype-truefalse">✅ True or False</button>
+      <button class="chip" onclick="pickChQType(this,'verse')" id="ch-qtype-fillin">📖 Complete the Verse</button>
       <button class="chip" onclick="pickChQType(this,'lightning')" id="ch-qtype-lightning">⚡ Lightning</button>
     </div>
 
     <label class="label">Difficulty</label>
     <div id="ch-diff-chips" style="display:flex;gap:8px;margin-bottom:20px;">
-      <button class="chip sel" onclick="pickChDiff(this,'easy')" id="ch-diff-easy">🌿 Easy</button>
-      <button class="chip" onclick="pickChDiff(this,'medium')" id="ch-diff-medium">📖 Medium</button>
-      <button class="chip" onclick="pickChDiff(this,'hard')" id="ch-diff-hard">⚔️ Hard</button>
+      <button class="chip sel" onclick="pickChDiff(this,'easy')" id="ch-diff-easy">🌿 Easy · Basic questions</button>
+      <button class="chip" onclick="pickChDiff(this,'medium')" id="ch-diff-medium">📖 Medium · Know your Bible</button>
+      <button class="chip" onclick="pickChDiff(this,'hard')" id="ch-diff-hard">⚔️ Hard · For scholars</button>
     </div>
 
     <div id="ch-ghost-count-row" style="display:none;margin-bottom:16px;">
@@ -42842,7 +42852,7 @@ function buildModeSetup(kind,fromHomeSelection){
   const showModeDiff=(kind==='online'||kind==='nearby')&&!_setupUseHomeSelection;
   document.getElementById('setup-room-mode-wrap').style.display=showModeDiff?'block':'none';
   if(kind==='online'){
-    document.getElementById('setup-eyebrow').textContent='Online Room';
+    document.getElementById('setup-eyebrow').textContent='Play Online';
     document.getElementById('setup-title').innerHTML='Game <em>Settings</em>';
     document.getElementById('setup-subtitle').textContent=_setupUseHomeSelection
       ?'Using game mode and difficulty from Home. Set room rules below.'
@@ -42856,10 +42866,10 @@ function buildModeSetup(kind,fromHomeSelection){
       :'Apply rules before creating your nearby room.';
     document.getElementById('setup-go-btn').innerHTML='<span class="btn-icon">📡</span> Start Nearby';
   } else {
-    document.getElementById('setup-eyebrow').textContent='Practice';
+    document.getElementById('setup-eyebrow').textContent='Solo';
     document.getElementById('setup-title').innerHTML='Solo <em>Settings</em>';
     document.getElementById('setup-subtitle').textContent='Single-player with selected game mode and rules.';
-    document.getElementById('setup-go-btn').innerHTML='<span class="btn-icon">🎓</span> Start Practice';
+    document.getElementById('setup-go-btn').innerHTML='<span class="btn-icon">🎓</span> Start Solo';
   }
   renderOpts();
   renderSetupRoomModeChips();
@@ -43072,7 +43082,7 @@ function buildPool(){
 }
 
 function beginGame(){
-  if(G.mode==='local'&&setupPs.length<2){ toast('Pass & Play requires at least 2 players.'); return; }
+  if(G.mode==='local'&&setupPs.length<2){ toast('Take Turns requires at least 2 players.'); return; }
   if(G.mode==='local'&&G.sub==='lightning'){
     G.sub='classic';
     syncSubChipSelection();
@@ -43223,7 +43233,7 @@ function renderQ(){
 
   const isVerseQuestion=G.sub==='verse'||q.kind==='verse'||(q&&q.b&&Array.isArray(q.o)&&q.blank!=null);
   const isTrueFalseQuestion=isTFQuestion(q)||q.kind==='truefalse';
-  const badgeLabel=isTrueFalseQuestion?'True / False':(q.cat||q.r||'');
+  const badgeLabel=isTrueFalseQuestion?'True or False':(q.cat||q.r||'');
   setCategoryBadge('g-cat',badgeLabel);
   document.getElementById('g-txt').style.marginTop=isTrueFalseQuestion?'12px':'';
   if(isVerseQuestion) renderVerseQ(q);
@@ -43541,7 +43551,7 @@ function renderTF(){
   G.done=false;
   document.getElementById('tf-round').textContent=`Round ${G.tfRound+1}/${totalRounds}`;
   document.getElementById('tf-txt').textContent=q.q;
-  setCategoryBadge('tf-cat',q.cat||q.r||'True / False');
+  setCategoryBadge('tf-cat',q.cat||q.r||'True or False');
   document.getElementById('tf-fb').style.display='none';
   document.getElementById('tf-next').style.display='none';
   const tfScores=document.getElementById('tf-scores');
@@ -44221,7 +44231,7 @@ function shouldEndOnlineGame(){
   return scoreReached||shouldEndByHearts();
 }
 function chQTypeLabel(qtype){
-  const qtLabels={classic:'🎯 Classic',truefalse:'✅ True/False',verse:'📖 Fill-in-Verse',fillin:'📖 Fill-in-Verse',lightning:'⚡ Lightning'};
+  const qtLabels={classic:'🎯 Multiple Choice',truefalse:'✅ True or False',verse:'📖 Complete the Verse',fillin:'📖 Complete the Verse',lightning:'⚡ Lightning'};
   return qtLabels[normalizeOnlineSub(qtype)]||'🎯 Classic';
 }
 function chDiffLabel(diff){
@@ -44408,7 +44418,7 @@ function renderOnlineQ(){
   const totalOnline=Math.max(1,(G.roomPool&&G.roomPool.length)||currentRounds());
   document.getElementById('g-round').textContent=`Round ${Math.min(G.qi+1,totalOnline)}/${totalOnline}`;
   renderHearts('g-hearts',me&&G.hearts[me.name]!=null?G.hearts[me.name]:3);
-  setCategoryBadge('g-cat',q.kind==='truefalse'?'True / False':(q.cat||q.r||''));
+  setCategoryBadge('g-cat',q.kind==='truefalse'?'True or False':(q.cat||q.r||''));
   const fb=document.getElementById('g-fb');
   fb.style.display='block';fb.className='fb ok';
   fb.style.background='rgba(100,80,20,0.15)';fb.style.color='var(--gold)';
@@ -45161,7 +45171,7 @@ function renderAsyncChallenges(){
   sec.style.display='';
   list.innerHTML=pending.map(([id,c])=>{
     const catLabel=c.category&&c.category!=='all'?c.category:'All Scripture';
-    const modeLabel=c.mode==='classic'?catLabel:c.mode==='truefalse'?'True/False':'Fill-in-Verse';
+    const modeLabel=c.mode==='classic'?catLabel:c.mode==='truefalse'?'True or False':'Complete the Verse';
     const diffLabel=c.difficulty?(' · '+c.difficulty.charAt(0).toUpperCase()+c.difficulty.slice(1)):'';
     const timeLeft=Math.max(0,Math.floor((c.expiresAt-now)/3600000));
     return `<div class="friend-row" style="margin-bottom:10px;border:1px solid rgba(201,145,13,.2);border-radius:14px;padding:10px 12px;background:rgba(201,145,13,.05);">
@@ -45465,7 +45475,7 @@ function updateCurrentClanPhoto(photoData){
 }
 function requestRemoveCongregation(){
   if(!G.profile||!G.profile.clanCode){ toast('You are not in a congregation'); return; }
-  const isOwner=!G.profile.clanOwner||(G.uid&&G.uid===G.profile.clanOwner);
+  const isOwner=!!(G.uid&&G.uid===G.profile.clanOwner);
   const title=document.querySelector('#ov-cong-remove .mtitle');
   const body=document.querySelector('#ov-cong-remove .cong-remove-body');
   const confirmBtn=document.querySelector('#ov-cong-remove .cong-remove-confirm');
@@ -45478,7 +45488,7 @@ function removeCongregationConfirmed(){
   closeOv('ov-cong-remove');
   if(!G.profile||!G.profile.clanCode){ toast('You are not in a congregation'); return; }
   const code=G.profile.clanCode;
-  const isOwner=!G.profile.clanOwner||(G.uid&&G.uid===G.profile.clanOwner);
+  const isOwner=!!(G.uid&&G.uid===G.profile.clanOwner);
   const clearLocal=()=>{
     delete G.profile.clanName;
     delete G.profile.clanCode;
@@ -45576,7 +45586,7 @@ function renderClans(){
   }
   const mc=document.getElementById('my-clan');
   if(G.profile?.clanName){
-    const isOwner=!G.profile.clanOwner||(G.uid&&G.uid===G.profile.clanOwner);
+    const isOwner=!!(G.uid&&G.uid===G.profile.clanOwner);
     mc.innerHTML=`<div class="clan-card" style="border-color:rgba(201,145,13,.32);">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
         ${isOwner

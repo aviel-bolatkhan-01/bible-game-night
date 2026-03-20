@@ -3977,7 +3977,7 @@ html[data-theme="warmth"] .divider::before, html[data-theme="warmth"] .divider::
       <span class="toggle-lbl">❤️ Hearts</span>
       <button class="toggle-btn on" id="ch-tog-hearts" onclick="togChHearts()">ON</button>
     </div>
-    <div class="toggle-row" style="margin-bottom:0;">
+    <div class="toggle-row" id="ch-rounds-row" style="margin-bottom:0;">
       <span class="toggle-lbl">🏁 Rounds</span>
       <div class="stepper">
         <button class="step-btn" onclick="adjChRounds(-1)">−</button>
@@ -42772,9 +42772,10 @@ function pickSub(el,s){
     return;
   }
   if(s==='team') s='classic';
-  G.sub=s; G.seen.clear(); // Clear seen on sub change
+  G.sub=s; G.seen.clear();
   document.querySelectorAll('#sub-chips .chip').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
+  renderOpts();
 }
 function onPlay(){
   sfx.tap();
@@ -42864,6 +42865,7 @@ function pickSetupSub(el,s){
   G.sub=s; G.seen.clear();
   document.querySelectorAll('#setup-room-sub-chips .chip').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
+  renderOpts();
 }
 function pickSetupDiff(el,d){
   sfx.tap(); haptic('tap');
@@ -42917,15 +42919,17 @@ function renderOpts(){
       <button class="toggle-btn ${G.cfg[o.k]?'on':'off'}" id="tog-${o.k}" onclick="togCfg('${o.k}')">${G.cfg[o.k]?'ON':'OFF'}</button>`;
     el.appendChild(row);
   });
-  // Rounds
-  const wr=document.createElement('div'); wr.className='toggle-row';
-  wr.innerHTML=`<span class="toggle-lbl">🏁 Rounds</span>
-    <div class="stepper">
-      <button class="step-btn" onclick="adjWin(-1)">−</button>
-      <span class="step-val" id="win-disp">${currentRounds()}</span>
-      <button class="step-btn" onclick="adjWin(1)">+</button>
-    </div>`;
-  el.appendChild(wr);
+  // Rounds (hidden for lightning)
+  if(G.sub!=='lightning'){
+    const wr=document.createElement('div'); wr.className='toggle-row';
+    wr.innerHTML=`<span class="toggle-lbl">🏁 Rounds</span>
+      <div class="stepper">
+        <button class="step-btn" onclick="adjWin(-1)">−</button>
+        <span class="step-val" id="win-disp">${currentRounds()}</span>
+        <button class="step-btn" onclick="adjWin(1)">+</button>
+      </div>`;
+    el.appendChild(wr);
+  }
 }
 function beginFromSetup(){
   if(_setupAction==='online'){
@@ -47325,6 +47329,8 @@ function challengeFriend(uid){
   document.querySelectorAll('#ch-qtype-chips .chip').forEach(c=>c.classList.remove('sel'));
   const modeChip=document.getElementById('ch-qtype-'+_chQType)||document.getElementById('ch-qtype-classic');
   if(modeChip) modeChip.classList.add('sel');
+  const roundsRow=document.getElementById('ch-rounds-row');
+  if(roundsRow) roundsRow.style.display=_chQType==='lightning'?'none':'';
   const hBtn=document.getElementById('ch-tog-hearts');
   if(hBtn){
     hBtn.textContent=_chCfg.hearts?'ON':'OFF';
@@ -47349,6 +47355,8 @@ function pickChQType(el,qtype){
   _chQType=qtype;
   document.querySelectorAll('#ch-qtype-chips .chip').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
+  const roundsRow=document.getElementById('ch-rounds-row');
+  if(roundsRow) roundsRow.style.display=qtype==='lightning'?'none':'';
 }
 function togChHearts(){
   sfx.tap();

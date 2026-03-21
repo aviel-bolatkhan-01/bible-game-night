@@ -46777,28 +46777,27 @@ function renderTeamPicker(){
   const el=document.getElementById('team-picker');
   if(!el) return;
   if(G.sub!=='team'){ el.style.display='none'; return; }
-  // Initialize teams if not set
   setupPs.forEach((p,i)=>{ if(!p.team) p.team=(i%2===0)?'Team A':'Team B'; });
   const teamA=setupPs.map((p,i)=>({p,i})).filter(({p})=>p.team==='Team A');
   const teamB=setupPs.map((p,i)=>({p,i})).filter(({p})=>p.team==='Team B');
-  const card=({p,i})=>`<div style="display:flex;align-items:center;gap:7px;padding:7px 9px;background:var(--bg2);border-radius:8px;margin-bottom:5px;">
-    <span style="font-size:16px;">${p.avatar}</span>
-    <span style="font-size:12px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.name||'Player '+(i+1)}</span>
-    <button onclick="switchTeam(${i})" style="background:none;border:1px solid rgba(0,0,0,.18);border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;cursor:pointer;color:var(--ink2);white-space:nowrap;">switch →</button>
+  const card=({p,i})=>`<div class="setup-row" style="margin-bottom:6px;padding:8px 10px;">
+    <span style="font-size:18px;line-height:1;">${p.avatar}</span>
+    <span style="font-size:13px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink1);">${p.name||'Player '+(i+1)}</span>
+    <button class="btn btn-ghost btn-sm" onclick="switchTeam(${i})" style="padding:4px 10px;font-size:11px;">→</button>
   </div>`;
   el.style.display='block';
-  el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-    <span style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;">Pick Teams</span>
-    <button onclick="shuffleTeams()" style="display:flex;align-items:center;gap:4px;background:none;border:1px solid rgba(0,0,0,.15);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;color:var(--ink2);">🔀 Shuffle</button>
+  el.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <div class="eyebrow" style="margin-bottom:0;">Teams</div>
+    <button class="btn btn-ghost btn-sm" onclick="shuffleTeams()" style="font-size:11px;">🔀 Shuffle</button>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
     <div>
-      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#c4842a;margin-bottom:6px;">🔶 Team A <span style="opacity:.6;font-weight:400;">(${teamA.length})</span></div>
-      ${teamA.map(card).join('')||'<div style="font-size:11px;color:var(--ink3);padding:4px 0;font-style:italic;">Empty</div>'}
+      <div class="label" style="margin-bottom:6px;color:var(--gold1);">⚔️ Team A <span style="opacity:.55;font-weight:400;">(${teamA.length})</span></div>
+      ${teamA.map(card).join('')||'<div class="empty" style="padding:6px 0;font-size:11px;">Empty</div>'}
     </div>
     <div>
-      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#4a80c4;margin-bottom:6px;">🔷 Team B <span style="opacity:.6;font-weight:400;">(${teamB.length})</span></div>
-      ${teamB.map(card).join('')||'<div style="font-size:11px;color:var(--ink3);padding:4px 0;font-style:italic;">Empty</div>'}
+      <div class="label" style="margin-bottom:6px;color:var(--ink2);">🛡️ Team B <span style="opacity:.55;font-weight:400;">(${teamB.length})</span></div>
+      ${teamB.map(card).join('')||'<div class="empty" style="padding:6px 0;font-size:11px;">Empty</div>'}
     </div>
   </div>`;
 }

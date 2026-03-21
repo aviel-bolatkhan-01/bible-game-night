@@ -46780,7 +46780,7 @@ function renderTeamPicker(){
   setupPs.forEach((p,i)=>{ if(!p.team) p.team=(i%2===0)?'Team A':'Team B'; });
   const teamA=setupPs.map((p,i)=>({p,i})).filter(({p})=>p.team==='Team A');
   const teamB=setupPs.map((p,i)=>({p,i})).filter(({p})=>p.team==='Team B');
-  const card=({p,i})=>`<div class="setup-row" style="margin-bottom:6px;padding:8px 10px;">
+  const card=({p,i})=>`<div class="setup-row" style="margin-bottom:4px;padding:5px 8px;">
     <span style="font-size:18px;line-height:1;">${p.avatar}</span>
     <span style="font-size:13px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink1);">${p.name||'Player '+(i+1)}</span>
     <button class="btn btn-ghost btn-sm" onclick="switchTeam(${i})" style="padding:2px 7px;font-size:10px;min-height:0;">→</button>

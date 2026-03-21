@@ -47596,44 +47596,97 @@ function showScores(isFinal){
   go('scores');
 }
 
-function saveMatchResult(winner, players){
+function saveMatchResult(winner, players) {
   try {
     let history = JSON.parse(localStorage.getItem('bgn_history') || '[]');
     const match = {
       date: new Date().toLocaleDateString(),
       winner: { name: winner.name, avatar: winner.avatar, photo: resolvePlayerPhoto(winner) },
-      scores: players.map(p => ({ name: p.name, score: G.scores[p.name], avatar: p.avatar, photo: resolvePlayerPhoto(p) })),
+      scores: players.map(p => ({ name: p.name, score: G.scores[p.name] || 0, avatar: p.avatar, photo: resolvePlayerPhoto(p) })),
+      mode: G.mode || 'classic',
+      difficulty: G.difficulty || 'medium',
+      category: G.category || null,
+      myName: G.profile ? G.profile.name : null,
       id: Date.now()
     };
     history.unshift(match);
-    localStorage.setItem('bgn_history', JSON.stringify(history.slice(0, 10)));
+    localStorage.setItem('bgn_history', JSON.stringify(history.slice(0, 50)));
+    // Sync to Firebase if signed in
+    if (G.uid && db) {
+      try {
+        db.ref('players/' + G.uid + '/matchHistory').set(history.slice(0, 50));
+      } catch(e) {}
+    }
   } catch(e) {}
 }
 
-function renderMatchHistory(expanded){
+function renderMatchHistory(expanded) {
   const el = document.getElementById('match-history-list');
-  if(!el) return;
-  try {
-    const history = JSON.parse(localStorage.getItem('bgn_history') || '[]');
-    if(history.length === 0){
-      el.innerHTML = '<div class="empty" style="padding:10px 0;">No matches played yet.</div>';
-      return;
+  if (!el) return;
+  let history = JSON.parse(localStorage.getItem('bgn_history') || '[]');
+  if (!history.length) {
+    el.innerHTML = '<div class="empty" style="padding:10px 0;">No matches played yet.</div>';
+    return;
+  }
+  const show = expanded ? history.length : Math.min(3, history.length);
+  const modeLabel = { classic: 'Classic MCQ', truefalse: 'True/False', fillinverse: 'Fill-in-Verse', lightning: 'Lightning', solo: 'Solo', multiplayer: 'Multiplayer' };
+  let html = '';
+  for (let i = 0; i < show; i++) {
+    const m = history[i];
+    const myName = m.myName;
+    const iWon = myName && m.winner && m.winner.name === myName;
+    const iPlayed = myName && m.scores && m.scores.some(s => s.name === myName);
+    const tied = m.scores && m.scores.length > 1 && m.scores.every(s => s.score === m.scores[0].score);
+    let badge = '';
+    if (iPlayed) {
+      if (tied) badge = '<span style="background:var(--ink3);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:20px;margin-left:6px;">T</span>';
+      else if (iWon) badge = '<span style="background:#38a800;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:20px;margin-left:6px;">W</span>';
+      else badge = '<span style="background:#e05050;color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:20px;margin-left:6px;">L</span>';
     }
-    const shown = expanded ? history : history.slice(0, 3);
-    const hasMore = history.length > 3;
-    el.innerHTML = shown.map(m => `
-      <div class="card-sm" style="margin-bottom:8px; display:flex; align-items:center; gap:10px;">
-        <span style="font-size:20px;display:flex;align-items:center;">${avatarMarkup(m.winner.avatar||'😊',m.winner.photo||'','md')}</span>
-        <div style="flex:1;">
-          <div style="font-size:13px; font-weight:700;">${m.winner.name} won</div>
-          <div style="font-size:10px; color:var(--ink3);">${m.date}</div>
-        </div>
-        <div style="font-family:'Cinzel',serif; font-size:12px; color:var(--gold1);">
-          ${m.scores.length} players
-        </div>
-      </div>
-    `).join('') + (hasMore ? `<button class="btn btn-ghost btn-sm" style="width:100%;margin-top:2px;" onclick="renderMatchHistory(${!expanded})">${expanded?'Show less':'Show all'}</button>` : '');
-  } catch(e) { el.innerHTML = ''; }
+    const winnerImg = m.winner && m.winner.photo
+      ? '<img src="' + m.winner.photo + '" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">'
+      : '<span style="font-size:22px;">' + (m.winner ? m.winner.avatar || '🎮' : '🎮') + '</span>';
+    const mLabel = modeLabel[m.mode] || m.mode || 'Game';
+    const diff = m.difficulty ? m.difficulty.charAt(0).toUpperCase() + m.difficulty.slice(1) : '';
+    const cat = m.category ? ' · ' + m.category : '';
+    const subLabel = [mLabel, diff].filter(Boolean).join(' · ') + cat;
+    const scoreStr = m.scores ? m.scores.map(s => (s.name || '?') + ' ' + (s.score || 0)).join(' · ') : '';
+    const expandedDetail = m.scores ? m.scores.map(s => {
+      const sImg = s.photo
+        ? '<img src="' + s.photo + '" style="width:20px;height:20px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:4px;">'
+        : '<span style="font-size:14px;margin-right:4px;">' + (s.avatar || '👤') + '</span>';
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0;">' +
+        '<span>' + sImg + '<span style="font-size:12px;">' + (s.name || '?') + '</span></span>' +
+        '<span style="font-size:12px;font-weight:700;color:var(--gold1);">' + (s.score || 0) + '</span>' +
+        '</div>';
+    }).join('') : '';
+    html += '<div class="card-sm" style="margin-bottom:8px;cursor:pointer;" onclick="toggleMatchDetail(this)">' +
+      '<div style="display:flex;align-items:center;gap:10px;">' +
+        '<span style="display:flex;align-items:center;">' + winnerImg + '</span>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:13px;font-weight:700;display:flex;align-items:center;flex-wrap:wrap;">' + (m.winner ? m.winner.name : '?') + ' won' + badge + '</div>' +
+          '<div style="font-size:10px;color:var(--ink3);margin-top:1px;">' + subLabel + '</div>' +
+          '<div style="font-size:10px;color:var(--ink2);margin-top:1px;">' + scoreStr + '</div>' +
+        '</div>' +
+        '<div style="font-size:10px;color:var(--ink3);white-space:nowrap;">' + (m.date || '') + '</div>' +
+      '</div>' +
+      '<div class="match-detail" style="display:none;margin-top:10px;border-top:1px solid var(--inp-border);padding-top:8px;">' +
+        expandedDetail +
+      '</div>' +
+    '</div>';
+  }
+  if (history.length > 3) {
+    if (!expanded) {
+      html += '<button class="btn-ghost" style="width:100%;font-size:12px;padding:6px;" onclick="renderMatchHistory(true)">Show all ' + history.length + ' matches</button>';
+    } else {
+      html += '<button class="btn-ghost" style="width:100%;font-size:12px;padding:6px;" onclick="renderMatchHistory(false)">Show less</button>';
+    }
+  }
+  el.innerHTML = html;
+}
+function toggleMatchDetail(card) {
+  const detail = card.querySelector('.match-detail');
+  if (detail) detail.style.display = detail.style.display === 'none' ? 'block' : 'none';
 }
 
 function endGame(){
@@ -49696,6 +49749,23 @@ function renderProfile(){
     summary.textContent=`${wins} wins in ${played} games · ${correct} correct answers total`;
   }
   renderMatchHistory();
+  // Merge Firebase match history with localStorage
+  if (G.uid && db) {
+    try {
+      db.ref('players/' + G.uid + '/matchHistory').once('value', function(snap) {
+        if (snap.exists()) {
+          const fbHistory = snap.val() || [];
+          let local = JSON.parse(localStorage.getItem('bgn_history') || '[]');
+          const ids = new Set(local.map(m => m.id));
+          fbHistory.forEach(m => { if (!ids.has(m.id)) local.push(m); });
+          local.sort((a, b) => b.id - a.id);
+          local = local.slice(0, 50);
+          localStorage.setItem('bgn_history', JSON.stringify(local));
+          renderMatchHistory(false);
+        }
+      });
+    } catch(e) {}
+  }
   const ci=document.getElementById('prof-clan');
   ci.innerHTML=p.clanName?`<div class="card-sm" style="display:flex;align-items:center;gap:10px;">
     <span style="font-size:22px;">${clanBadgeMarkup(p.clanIcon||'⛪',p.clanPhoto||'','md')}</span>

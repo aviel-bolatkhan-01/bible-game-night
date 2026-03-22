@@ -46158,6 +46158,12 @@ function initFB(){
     G.db=firebase.database();
     G.auth=firebase.auth();
     G.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
+    // Clear expired/invalid auth sessions on startup
+    G.auth.currentUser?.getIdToken(true).catch(e=>{
+      if(e.code==='auth/user-token-expired'||e.code==='auth/invalid-user-token'||e.code==='auth/user-not-found'){
+        G.auth.signOut().then(()=>{ localStorage.removeItem('bgn3'); });
+      }
+    });
     // Handle redirect sign-in result (Google/Apple redirect flow)
     G.auth.getRedirectResult().then(res=>{
       if(res && res.user){

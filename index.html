@@ -46139,6 +46139,8 @@ function signInWithGoogle(){
     .catch(e=>{
       if(e.code==='auth/popup-blocked'||e.code==='auth/cancelled-popup-request'){
         setAuthRedirectPending('google'); G.auth.signInWithRedirect(provider);
+      } else if(e.code==='auth/user-token-expired'||e.code==='auth/invalid-user-token'){
+        G.auth.signOut().then(()=>{ localStorage.removeItem('bgn3'); location.reload(); });
       } else { handleAuthError(e,'Google sign-in failed'); }
     });
 }

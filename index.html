@@ -3357,6 +3357,9 @@ html.feat-gameHeader .g-nm { font-weight: 800 !important; max-width: 100px; over
       </div>
     </div>
 
+    <!-- Sunday Bible Bowl Banner -->
+    <div id="sunday-bowl-banner" style="display:none;margin-bottom:16px;"></div>
+
     <!-- Play Style -->
     <div class="chips-wrap">
       <div class="label" style="margin-bottom:10px;">Play Style</div>
@@ -3373,7 +3376,6 @@ html.feat-gameHeader .g-nm { font-weight: 800 !important; max-width: 100px; over
       ▶ Play
     </button>
     <button class="btn btn-ghost btn-sm" onclick="go('friends');switchSocialTab('friends');setTimeout(()=>document.getElementById('friends-screen-code-inp')&&document.getElementById('friends-screen-code-inp').focus(),200)" style="margin-bottom:8px;background:rgba(201,145,13,.08);border:1.5px solid rgba(201,145,13,.3);color:var(--gold1);font-size:13px;">⚡ Challenge a Friend</button>
-    <div id="sunday-bowl-banner" style="display:none;margin-bottom:8px;"></div>
     <button class="btn btn-ghost btn-sm" onclick="go('donation')" style="font-size:12px;">❤️ Support This Ministry</button>
     <div class="pb"></div>
   </div>
@@ -4422,12 +4424,21 @@ function renderSeasonalBanner(){
     thanksgiving:{icon:'\uD83D\uDE4F',label:'Thanksgiving',color:'#795548'}
   }[season];
   banner.style.display='block';
-  banner.innerHTML='<div style="background:'+info.color+';color:#fff;padding:14px 18px;border-radius:14px;margin:10px 0;display:flex;align-items:center;gap:12px;cursor:pointer" onclick="playSeasonalQuestions(\''+season+'\')"><span style="font-size:28px">'+info.icon+'</span><div><div style="font-weight:800;font-size:15px">'+info.label+'</div><div style="font-size:12px;opacity:.85">Special questions unlocked \u2192</div></div></div>';
+  const today=new Date().toISOString().split('T')[0];
+  const playedToday=G.profile&&G.profile.lastSeasonalDate===today;
+  const subLabel=playedToday?'Played today ✓ — come back tomorrow':'Special questions unlocked →';
+  const cursor=playedToday?'default':'cursor:pointer';
+  const clickAttr=playedToday?'':'onclick="playSeasonalQuestions(\''+season+'\')"';
+  banner.innerHTML='<div style="background:'+info.color+';color:#fff;padding:14px 18px;border-radius:14px;margin:10px 0;display:flex;align-items:center;gap:12px;'+cursor+'" '+clickAttr+'><span style="font-size:28px">'+info.icon+'</span><div><div style="font-weight:800;font-size:15px">'+info.label+'</div><div style="font-size:12px;opacity:.85">'+subLabel+'</div></div></div>';
 }
 
 function playSeasonalQuestions(season){
   if(!G.profile){ go('auth'); buildAvGrid(); return; }
+  const today=new Date().toISOString().split('T')[0];
+  if(G.profile.lastSeasonalDate===today){ toast('You\'ve already played today — come back tomorrow!'); return; }
   sfx.tap();
+  G.profile.lastSeasonalDate=today;
+  saveProfile();
   const pool=shuf(SEASONAL_Q.filter(q=>q.season===season)).slice(0,10);
   if(!pool.length){ toast('No questions for this season'); return; }
   G.mode='practice'; G.sub='classic';
@@ -4478,7 +4489,7 @@ function renderSundayBowl(){
       <span style="font-size:28px">🏛️</span>
       <div style="flex:1;">
         <div style="font-weight:800;font-size:15px;">Sunday Bible Bowl</div>
-        <div style="font-size:12px;opacity:.85;">Live now — 15 questions, 15 seconds each</div>
+        <div style="font-size:12px;opacity:.85;">Live now — 15 questions, 20 seconds each</div>
       </div>
       <div class="btn btn-gold btn-sm" style="width:auto;padding:8px 16px;">Play Now</div>
     </div>`;
@@ -4501,7 +4512,7 @@ function startSundayBowl(){
   G.streaks={[G.players[0].name]:0};
   G.cfg.winScore=pool.length;
   G.cfg.hearts=false;
-  G.TIM=15;
+  G.TIM=20;
   showSplash(0,()=>{ go('game'); renderQ(); });
 }
 function finishSundayBowl(score,total){

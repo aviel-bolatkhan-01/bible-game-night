@@ -46146,12 +46146,18 @@ function initFB(){
     G.db=firebase.database();
     G.auth=firebase.auth();
     G.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
-    // Handle redirect sign-in result (mobile Google/Apple)
+    // Handle redirect sign-in result (Google/Apple redirect flow)
     G.auth.getRedirectResult().then(res=>{
       if(res && res.user){
         setAuthRedirectPending('');
-        toast('Signed in with '+(res.additionalUserInfo?.providerId?.includes('google')?'Google':'Apple')+'!');
-        updateProfileSigninCard();
+        const provider=res.additionalUserInfo?.providerId||'';
+        const name=provider.includes('google')?'Google':'Apple';
+        toast('Signed in with '+name+'!');
+        document.getElementById('main-nav').style.display='';
+        renderHomeBar();
+        go('home');
+        const pendingRoom=sessionStorage.getItem('pending_room');
+        if(pendingRoom){ sessionStorage.removeItem('pending_room'); setTimeout(()=>joinRoomByCode(pendingRoom.toUpperCase()),600); }
       }
     }).catch(e=>{ setAuthRedirectPending(''); handleAuthError(e,'Sign-in failed'); });
     // Auth state observer — handles all sign-in methods

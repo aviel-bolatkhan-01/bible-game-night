@@ -4441,15 +4441,16 @@ function playSeasonalQuestions(season){
   saveProfile();
   const pool=shuf(SEASONAL_Q.filter(q=>q.season===season)).slice(0,10);
   if(!pool.length){ toast('No questions for this season'); return; }
-  G.mode='practice'; G.sub='classic';
+  G.mode='practice'; G.sub='classic'; G._seasonalMode=true;
   G._xpAtGameStart=G.profile?(G.profile.xp||0):0;
   G._correctAtGameStart=G.profile?(G.profile.correct||0):0;
   G.players=[{name:G.profile.name||'Player',avatar:G.profile.avatar||'\uD83D\uDE0A',photo:G.profile.photo||''}];
   G.pool=pool; G.qi=0; G.pi=0; G.done=false;
   G.scores={[G.players[0].name]:0};
-  G.hearts={[G.players[0].name]:3};
+  G.hearts={[G.players[0].name]:Infinity};
   G.streaks={[G.players[0].name]:0};
   G.cfg.winScore=pool.length;
+  G.cfg.hearts=false;
   showSplash(0,()=>{ go('game'); renderQ(); });
 }
 
@@ -47911,7 +47912,7 @@ function endGame(){
     oth.appendChild(d);
   });
   const playAgainBtn=document.getElementById('w-play-again');
-  if(playAgainBtn) playAgainBtn.style.display=G.mode==='daily'?'none':'';
+  if(playAgainBtn) playAgainBtn.style.display=(G.mode==='daily'||G._seasonalMode)?'none':'';
   if(G.mode==='daily' && G._dailyPrevHearts!==null){
     G.cfg.hearts=!!G._dailyPrevHearts;
     G._dailyPrevHearts=null;
